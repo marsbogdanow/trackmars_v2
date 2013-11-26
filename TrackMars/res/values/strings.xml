@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">TrackMars</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_dialog_create_point">DialogCreatePoint</string>
+    <string name="name_the_point">Name the point</string>
+    <string name="choose_address">You can choose the address for the name</string>
+    <string name="no_name">You have to name this point or chose the address for the name</string>
+    <string name="no_conn_no_address">No internet connection. Google can not determine the point\'s address.</string>
+    <string name="map">map</string>
+    <string name="points">points</string>
+    <string name="dateFormatWOTime">dd/MM/yyyy</string>
+    <string name="timeFormat">HH:mm:ss</string>
+    <string name="day1">day</string>
+    <string name="day_more_then1">days</string>
+    <string name="hour1">hour</string>
+    <string name="hour2_4">hours</string>
+    <string name="hour5_0">hours</string>
+    <string name="min1">minute</string>
+    <string name="min2_4">minutes</string>
+    <string name="min5_0">minutes</string>
+    <string name="ago">ago</string>
+    <string name="today">today</string>
+    <string name="yesterday">yesterday</string>
+    <string name="locale">us</string>
+    
+    <color name="white">#FFFFFF</color>
+
+    <string name="title_activity_points">PointsActivity</string>
+    <string name="hello_world">Hello world!</string>
+
+</resources>
