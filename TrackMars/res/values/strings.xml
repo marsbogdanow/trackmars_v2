@@ -10,6 +10,7 @@
     <string name="no_conn_no_address">No internet connection. Google can not determine the point\'s address.</string>
     <string name="map">map</string>
     <string name="points">points</string>
+    <string name="tracks">tracks</string>
     <string name="dateFormatWOTime">dd/MM/yyyy</string>
     <string name="timeFormat">HH:mm:ss</string>
     <string name="day1">day</string>
@@ -27,7 +28,8 @@
     
     <color name="white">#FFFFFF</color>
 
-    <string name="title_activity_points">PointsActivity</string>
+    <string name="title_activity_points">Points list</string>
+    <string name="title_activity_tracks">Tracks list</string>
     <string name="hello_world">Hello world!</string>
 
 </resources>

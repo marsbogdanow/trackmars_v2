@@ -16,7 +16,6 @@ import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import android.widget.Toast;
 
 public class PointsActivity extends FragmentActivity {
 
@@ -44,103 +43,80 @@ public class PointsActivity extends FragmentActivity {
 		
 
 		
-		EntityHelper entityHelper = new EntityHelper(getApplicationContext(), Point.class);
-		
+		EntityHelper entityHelper;
 		try {
-			List<IEntity> points = entityHelper.getAllRows(0, 50, "column_created DESC");
+			entityHelper = new EntityHelper(getApplicationContext(), Point.class);
 
-			for (final IEntity entityRow : points) {
-				
-				TableRow tR = new TableRow(this);
-		        tR.setPadding(1,2,1,2);
-		        tR.setClickable(true);
-		        
-		        final String title = ((Point)entityRow).COLUMN_TITLE;
-		        final Double lng = ((Point)entityRow).COLUMN_LNG;
-		        final Double lat = ((Point)entityRow).COLUMN_LAT;
-		        final Long created = ((Point)entityRow).COLUMN_CREATED;
-		        final Integer id = ((Point)entityRow).COLUMN_ID;
-		        
-		        tR.setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						selectPoint(v, (Point)entityRow);
-					}
-					
-				});
-		        
-		        TableRow.LayoutParams flp1 = new TableRow.LayoutParams(
-		        		TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL | Gravity.FILL_HORIZONTAL);
-		        tR.setLayoutParams(flp1);
-		        
-		        FrameLayout frameLayout = new FrameLayout(this);
-		        frameLayout.setId(((Point)entityRow).COLUMN_ID);
-		        
-		        tR.addView(frameLayout);
-		        
-		        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		        
-		        ListPointsItemPoint listPointsItemPoint = new ListPointsItemPoint();
-		        
-		        Bundle args = new Bundle();
-		        
-		        args.putString("title", title);
-		        args.putDouble("lng", lng);
-		        args.putDouble("lat", lat);
-		        args.putLong("created", created);
-		        args.putInt("id", id);
-		        
-		        listPointsItemPoint.setArguments(args);
-		        
-		        ft.replace(((Point)entityRow).COLUMN_ID, listPointsItemPoint);
-		        
-		        ft.commit();         
+		
+			try {
+				List<IEntity> points = entityHelper.getAllRows(0, 50, "column_created DESC");
 
-		        tableLayout.addView(tR);		
+				for (final IEntity entityRow : points) {
+					
+					TableRow tR = new TableRow(this);
+			        tR.setPadding(1,2,1,2);
+			        tR.setClickable(true);
+			        
+			        final String title = ((Point)entityRow).COLUMN_TITLE;
+			        final Double lng = ((Point)entityRow).COLUMN_LNG;
+			        final Double lat = ((Point)entityRow).COLUMN_LAT;
+			        final Long created = ((Point)entityRow).COLUMN_CREATED;
+			        final Integer id = ((Point)entityRow).COLUMN_ID;
+			        
+			        tR.setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							selectPoint(v, (Point)entityRow);
+						}
+						
+					});
+			        
+			        TableRow.LayoutParams flp1 = new TableRow.LayoutParams(
+			        		TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL | Gravity.FILL_HORIZONTAL);
+			        tR.setLayoutParams(flp1);
+			        
+			        FrameLayout frameLayout = new FrameLayout(this);
+			        frameLayout.setId(((Point)entityRow).COLUMN_ID);
+			        
+			        tR.addView(frameLayout);
+			        
+			        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+			        
+			        ListPointsItemPoint listPointsItemPoint = new ListPointsItemPoint();
+			        
+			        Bundle args = new Bundle();
+			        
+			        args.putString("title", title);
+			        args.putDouble("lng", lng);
+			        args.putDouble("lat", lat);
+			        args.putLong("created", created);
+			        args.putInt("id", id);
+			        
+			        listPointsItemPoint.setArguments(args);
+			        
+			        ft.replace(((Point)entityRow).COLUMN_ID, listPointsItemPoint);
+			        
+			        ft.commit();         
+
+			        tableLayout.addView(tR);		
+				}
+			
+			
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+			
 		
 		
-		} catch (IllegalArgumentException e) {
+		} catch (IllegalAccessException e1) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
+			e1.printStackTrace();
+		} catch (InstantiationException e1) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e1.printStackTrace();
 		}
-		
-		
-		
-		
-//		TableRow tR = new TableRow(this);
-//        tR.setPadding(5,5,5,5);
-//
-//        FrameLayout frameLayout = new FrameLayout(this);
-//        frameLayout.setId(1);
-//        
-//        tR.addView(frameLayout);
-//        
-//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//        ft.replace(frameLayout.getId(), new ListPointsItemPoint());
-//        ft.commit();         
-//        
-//        TableRow tR1 = new TableRow(this);
-//        tR1.setPadding(5,5,5,5);
-//
-//        frameLayout = new FrameLayout(this);
-//        frameLayout.setId(2);
-//        
-//        tR1.addView(frameLayout);
-//        
-//        ft = getSupportFragmentManager().beginTransaction();
-//        ft.replace(frameLayout.getId(), new ListPointsItemPoint());
-//        ft.commit();         
-//
-//        tableLayout.addView(tR);		
-//        tableLayout.addView(tR1);		
 		
 	}
 	

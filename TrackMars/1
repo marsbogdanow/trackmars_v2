@@ -1,0 +1,119 @@
+# On branch master
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#	deleted:    bin/AndroidManifest.xml
+#	deleted:    bin/R.txt
+#	deleted:    bin/TrackMars.apk
+#	deleted:    bin/classes.dex
+#	deleted:    bin/classes/com/google/android/gms/R$attr.class
+#	deleted:    bin/classes/com/google/android/gms/R$color.class
+#	deleted:    bin/classes/com/google/android/gms/R$drawable.class
+#	deleted:    bin/classes/com/google/android/gms/R$id.class
+#	deleted:    bin/classes/com/google/android/gms/R$string.class
+#	deleted:    bin/classes/com/google/android/gms/R$styleable.class
+#	deleted:    bin/classes/com/google/android/gms/R.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/BuildConfig.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/DialogCreatePoint$AddressObj.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/DialogCreatePoint.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/FragmentTest.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/ListPointsItemPoint.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/MainActivity$1.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/MainActivity$2.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/MainActivity.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/Manifest$permission.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/Manifest.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/PointViewActivity.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/PointsActivity$1.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/PointsActivity.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/R$attr.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/R$color.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/R$dimen.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/R$drawable.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/R$id.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/R$layout.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/R$menu.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/R$string.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/R$style.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/R$styleable.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/R.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/dataUtils/DataUtils.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/dataUtils/EntityField.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/dataUtils/EntityHelper.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/dataUtils/IEntity.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/model/Point.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/utils/ILocationReceiver.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/utils/LocationUtils$1.class
+#	deleted:    bin/classes/com/trackmars/and/tracker/utils/LocationUtils.class
+#	deleted:    bin/dexedLibs/android-support-v4-2b09757e5fa9e557f93ac51f72f128e2.jar
+#	deleted:    bin/dexedLibs/annotations-98d46743bed0dccb1dfd46a00c678b38.jar
+#	deleted:    bin/dexedLibs/google-play-services-87f4a9782afcef9615c60935823ad560.jar
+#	deleted:    bin/dexedLibs/google-play-services_lib-43b470cfbd0bc26e4ecf61f9ebcc4e6b.jar
+#	deleted:    bin/jarlist.cache
+#	deleted:    bin/res/crunch/drawable-hdpi/ic_launcher.png
+#	deleted:    bin/res/crunch/drawable-mdpi/button_back.png
+#	deleted:    bin/res/crunch/drawable-mdpi/button_menu.png
+#	deleted:    bin/res/crunch/drawable-mdpi/button_ok.png
+#	deleted:    bin/res/crunch/drawable-mdpi/button_point.png
+#	deleted:    bin/res/crunch/drawable-mdpi/button_record.png
+#	deleted:    bin/res/crunch/drawable-mdpi/button_resume.png
+#	deleted:    bin/res/crunch/drawable-mdpi/check.png
+#	deleted:    bin/res/crunch/drawable-mdpi/horisontal_line.png
+#	deleted:    bin/res/crunch/drawable-mdpi/ic_launcher.png
+#	deleted:    bin/res/crunch/drawable-mdpi/new_point_background.png
+#	deleted:    bin/res/crunch/drawable-mdpi/new_point_list_bg.png
+#	deleted:    bin/res/crunch/drawable-mdpi/point.png
+#	deleted:    bin/res/crunch/drawable-mdpi/point_list_item_bg.png
+#	deleted:    bin/res/crunch/drawable-mdpi/thumb_dn.png
+#	deleted:    bin/res/crunch/drawable-mdpi/thumb_up.png
+#	deleted:    bin/res/crunch/drawable-xhdpi/ic_launcher.png
+#	deleted:    bin/res/crunch/drawable-xxhdpi/ic_launcher.png
+#	deleted:    bin/resources.ap_
+#	modified:   res/drawable-mdpi/Thumbs.db
+#	new file:   res/drawable-mdpi/button_pause.png
+#	new file:   res/drawable-mdpi/button_stop.png
+#	new file:   res/drawable-mdpi/track.png
+#
+# Changes not staged for commit:
+#   (use "git add <file>..." to update what will be committed)
+#   (use "git checkout -- <file>..." to discard changes in working directory)
+#
+#	modified:   .classpath
+#	modified:   .settings/org.eclipse.jdt.core.prefs
+#	modified:   AndroidManifest.xml
+#	modified:   gen/com/google/android/gms/R.java
+#	modified:   gen/com/trackmars/and/tracker/R.java
+#	modified:   res/layout/activity_main.xml
+#	modified:   res/values/strings.xml
+#	modified:   src/com/trackmars/and/tracker/DialogCreatePoint.java
+#	modified:   src/com/trackmars/and/tracker/MainActivity.java
+#	modified:   src/com/trackmars/and/tracker/PointViewActivity.java
+#	modified:   src/com/trackmars/and/tracker/PointsActivity.java
+#	modified:   src/com/trackmars/and/tracker/dataUtils/EntityHelper.java
+#	modified:   src/com/trackmars/and/tracker/dataUtils/IEntity.java
+#	modified:   src/com/trackmars/and/tracker/model/Point.java
+#	modified:   src/com/trackmars/and/tracker/utils/ILocationReceiver.java
+#	modified:   src/com/trackmars/and/tracker/utils/LocationUtils.java
+#
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+#
+#	../.gitignore
+#	../1
+#	../PlayServicesTest/
+#	../RoboErrorReporter-master/
+#	.gitignore
+#	1
+#	res/layout/activity_track_list.xml
+#	res/layout/track_list_item.xml
+#	src/com/trackmars/and/tracker/ListTracksItemTrack.java
+#	src/com/trackmars/and/tracker/TrackMarsApp.java
+#	src/com/trackmars/and/tracker/TrackRecorderReceiver.java
+#	src/com/trackmars/and/tracker/TrackRecorderService.java
+#	src/com/trackmars/and/tracker/TracksActivity.java
+#	src/com/trackmars/and/tracker/model/Track.java
+#	src/com/trackmars/and/tracker/model/TrackPoint.java
+#	src/com/trackmars/and/tracker/model/TrackPointData.java
+#	src/ru/
+#	../google-play-services-lib/
+#	../trackerPics/

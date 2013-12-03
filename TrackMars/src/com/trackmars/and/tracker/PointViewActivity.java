@@ -43,7 +43,7 @@ import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-public class PointViewActivity extends FragmentActivity implements ILocationReceiver {
+public class PointViewActivity extends FragmentActivity {
 	
 	private GoogleMap map;
 	Double longitude;
@@ -111,12 +111,6 @@ public class PointViewActivity extends FragmentActivity implements ILocationRece
         }    	
     }
 
-	@Override
-	public void newLocation(Location location) {
-	}
-	
-    
-    
     
 	public void onClick(View view) {
  	}

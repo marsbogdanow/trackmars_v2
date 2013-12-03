@@ -221,7 +221,7 @@ public class DialogCreatePoint extends Activity {
 		return addressObjs;
 	}
 	
-	public void onClick(View view) {
+	public void onClick(View view) throws IllegalAccessException, InstantiationException {
 		
 		if (view.getId() == R.id.buttonOk) {
 			
@@ -246,14 +246,7 @@ public class DialogCreatePoint extends Activity {
 					} catch (IllegalArgumentException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-					} catch (IllegalAccessException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (InstantiationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
 					}
-					
 					
 				    Intent intent = new Intent(this, MainActivity.class);
 				    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

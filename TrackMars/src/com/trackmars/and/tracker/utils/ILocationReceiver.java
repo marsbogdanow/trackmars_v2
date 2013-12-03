@@ -4,4 +4,6 @@ import android.location.Location;
 
 public interface ILocationReceiver {
 	public void newLocation(Location location);
+
+	public void askLocation();
 }

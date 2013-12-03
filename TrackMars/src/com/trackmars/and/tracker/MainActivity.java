@@ -1,5 +1,7 @@
 package com.trackmars.and.tracker;
 
+import java.util.List;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -7,6 +9,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 //import com.google.android.gms.maps.MapFragment;
 
 import android.location.Criteria;
@@ -16,13 +19,19 @@ import android.location.LocationProvider;
 //import com.google.android.gms.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.opengl.Visibility;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 //import android.app.Activity;
@@ -37,15 +46,19 @@ import com.trackmars.and.tracker.utils.LocationUtils;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageButton;
 import android.widget.Toast;
+import android.util.Log;
 
 public class MainActivity extends FragmentActivity implements ILocationReceiver {
 	
 	private GoogleMap map;	
-	private LocationUtils locationUtils;
 	private Boolean mapPositioned = false;
-    Marker myCurrentPositionMarker;
+    private Marker myCurrentPositionMarker;
     private Location location;
+    private TrackRecorderReceiver trackRecorderReceiver = new TrackRecorderReceiver();
+    private TrackRecorderService trackRecorderService;
+    
       
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -57,6 +70,9 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
     @SuppressLint("NewApi")
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
+    	
+        Log.d(MainActivity.class.getName(), "Main activity onCreate started");
+    	
         updateServices();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -67,32 +83,121 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 	                .getMap();
         } finally {}
         
-        locationUtils = new LocationUtils(this, this);
+        Intent intent = new Intent(this, TrackRecorderService.class);
+        startService(intent);
+        //bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         
     }
 
+    
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        public void onServiceConnected(ComponentName className, IBinder binder) {
+        	trackRecorderService = ((TrackRecorderService.ManagerBinder) binder).getMe();
+            buttonsArrange();
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+        }
+        
+    };    
+    
     /* Request updates at startup */
     @Override
     protected void onResume() {
       super.onResume();
       
+      Log.d(MainActivity.class.getName(), "Main activity onResume started");
+
+      Intent intent = new Intent(this, TrackRecorderService.class);
+      bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+      
+      
 	  Toast.makeText(this, "onResume",
 		        Toast.LENGTH_SHORT).show();
       mapPositioned = false;
-	  locationUtils.onResume();
+      
+      trackRecorderReceiver.setLocationReceiver(this);
+      registerReceiver(trackRecorderReceiver, new IntentFilter(LocationUtils.LOCATION_RECEIVER_ACTION));
+      
+      //trackRecorderService.resume();
+      
+	  //locationUtils.onResume();
 	    
     }
 
     @Override
     protected void onPause() {
       super.onPause();
-      locationUtils.onPause();
+      unregisterReceiver(trackRecorderReceiver);
+      
+      Log.d(MainActivity.class.getName(), "Ready to unbind");
+      unbindService(mConnection);
+      //trackRecorderService.pause();
+      //locationUtils.onPause();
+    }
+    
+    private void buttonsArrange () {
+    	if (trackRecorderService != null) {
+	    	if (trackRecorderService.isRecording()) {
+	    		if (! trackRecorderService.isPaused()) {
+		    		ImageButton recordButton = (ImageButton) findViewById(R.id.imageButtonRecord);
+		    		recordButton.setImageResource(R.drawable.button_pause);
+		    		ImageButton resumeButton = (ImageButton) findViewById(R.id.imageButtonResume);
+		    		resumeButton.setVisibility(View.INVISIBLE);
+	    		} else {
+		    		ImageButton recordButton = (ImageButton) findViewById(R.id.imageButtonRecord);
+		    		recordButton.setImageResource(R.drawable.button_record);
+		    		ImageButton resumeButton = (ImageButton) findViewById(R.id.imageButtonResume);
+		    		resumeButton.setVisibility(View.VISIBLE);
+		    		resumeButton.setImageResource(R.drawable.button_stop);
+	    		}
+	    	} else {
+	    		ImageButton recordButton = (ImageButton) findViewById(R.id.imageButtonRecord);
+	    		recordButton.setImageResource(R.drawable.button_record);
+	    		ImageButton resumeButton = (ImageButton) findViewById(R.id.imageButtonResume);
+	    		resumeButton.setVisibility(View.VISIBLE);
+	    		resumeButton.setImageResource(R.drawable.button_resume);
+	    	}
+    	}
+    		
     }
 
-	@Override
+    private void showTrackOnTheMap () throws IllegalAccessException, InstantiationException {
+    	
+    	Log.d(MainActivity.class.getName(), "call showTrackOnTheMap");
+    	List<LatLng> latLngs =  trackRecorderService.getAllTrackPoint(); 
+    	
+    	PolylineOptions polylineOptions = new PolylineOptions();
+    	polylineOptions.geodesic(true);
+    	
+    	for (LatLng latLng : latLngs) {
+    		Log.d(MainActivity.class.getName(), "latLng " + latLng.latitude + " " + latLng.longitude);
+    		polylineOptions.add(latLng);
+    	}
+
+    	if (map != null) {
+	    	this.map.addPolyline(polylineOptions);
+    	}
+    }
+    
+    @Override
 	public void newLocation(Location location) {
         this.location = location;
-        if (map != null) {
+
+    	if (trackRecorderService.isRecording()) {
+    		try {
+				showTrackOnTheMap();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+        
+        if (map != null && location != null) {
             	
             	if (location != null) {
             		
@@ -113,6 +218,7 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 		            
 		            mapPositioned = true;
             	}
+            	
             
         } else {
 //              FragmentTest fragment = (FragmentTest) getSupportFragmentManager()
@@ -122,12 +228,14 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 //	            fragment.setText("Here is the place for LIST");
 //	          } 
         }
-	}
+		buttonsArrange();
+		
+    }
 	
     
     
     
-	public void onClick(View view) {
+	public void onClick(View view) throws IllegalAccessException, InstantiationException {
 		if (view.getId() == R.id.imageButtonPoint) {
 			
 			  if (location != null) {
@@ -142,14 +250,56 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 			  } else {
 				  // <TODO> have to append null location proceed. Some sort of user notification
 			  }
+			  
 		} else if (view.getId() == R.id.buttonPoints) {
+			
 		      Intent intent = new Intent(this, PointsActivity.class);
 		      intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		      
 		      startActivity(intent);
+		      
+		} else if (view.getId() == R.id.buttonTracks) {
+			
+		      Intent intent = new Intent(this, TracksActivity.class);
+		      intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		      
+		      startActivity(intent);
+		      
+		} else if (view.getId() == R.id.imageButtonRecord) {
+			
+			if (!trackRecorderService.isRecording()) {
+				trackRecorderService.startRecord(false);
+			} else if (trackRecorderService.isRecording() && !trackRecorderService.isPaused()) {
+				trackRecorderService.trackPause();
+			} else if (trackRecorderService.isRecording() && trackRecorderService.isPaused()) {
+				trackRecorderService.startRecord(true);
+			}
+			
+		} else if (view.getId() == R.id.imageButtonResume) {
+			
+			if (!trackRecorderService.isRecording()) {
+				trackRecorderService.startRecord(true);
+			} else if (trackRecorderService.isRecording() && trackRecorderService.isPaused()) {
+				trackRecorderService.trackStop();
+			}
+			
 		}
+		
+		
+		buttonsArrange();
+		
  	}
 
+	
+	@Override
+	public void askLocation() {
+		if (trackRecorderService != null ) {
+			this.location = trackRecorderService.getLocation();
+			this.newLocation(this.location);
+		}
+	}
+	
+	
     private void updateServices() {
 
     	
@@ -221,6 +371,5 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
     	}    	
     	
     }
-
 	
 }

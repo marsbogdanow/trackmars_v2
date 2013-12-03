@@ -5,8 +5,6 @@ import com.trackmars.and.tracker.dataUtils.IEntity;
 
 public class Point implements IEntity{
 
-	static final public String TABLE_NAME = "points";
-	
 	@EntityField(type=EntityField.TYPE_INTEGER, primaryKey=true, autoIncrement=true)
 	public Integer COLUMN_ID;
 	

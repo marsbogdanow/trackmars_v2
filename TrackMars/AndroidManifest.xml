@@ -24,6 +24,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
+        android:name="com.trackmars.and.tracker.TrackMarsApp"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -54,9 +55,16 @@
             android:label="@string/title_activity_points" >
         </activity>
         <activity
+            android:name="com.trackmars.and.tracker.TracksActivity"
+            android:label="@string/title_activity_tracks" >
+        </activity>
+        <activity
             android:name="com.trackmars.and.tracker.PointViewActivity"
             android:label="@string/app_name" >
         </activity>
-        </application>
+        
+		<service android:name="com.trackmars.and.tracker.TrackRecorderService" >
+        </service>        
+    </application>
 
 </manifest>

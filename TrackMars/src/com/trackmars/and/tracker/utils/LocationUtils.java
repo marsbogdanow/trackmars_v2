@@ -4,6 +4,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import android.app.Service;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
@@ -17,8 +18,10 @@ public class LocationUtils implements LocationListener {
 	
 	private ILocationReceiver locationReceiver;
     private LocationManager locationManager;
-    private FragmentActivity activity;
 	private LocationProvider provider;
+	
+	final public static String LOCATION_RECEIVER_ACTION = "com.trackmars.and.tracker.locationMessage"; 
+	
 	
 	private LocationListener dummyListener =  new LocationListener() {
         @Override
@@ -73,7 +76,6 @@ public class LocationUtils implements LocationListener {
 	
 	public LocationUtils(ILocationReceiver locationReceiver, FragmentActivity activity) {
 		this.locationReceiver = locationReceiver;
-		this.activity = activity;
 
 	    locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
 	    
@@ -86,7 +88,21 @@ public class LocationUtils implements LocationListener {
 	
 	}
 	
+	public LocationUtils(ILocationReceiver locationReceiver, Service service) {
+		this.locationReceiver = locationReceiver;
 
+	    locationManager = (LocationManager) service.getSystemService(Context.LOCATION_SERVICE);
+	    
+	    
+	    
+	    locationManager.requestLocationUpdates(
+	    	    LocationManager.GPS_PROVIDER, 0, 0, dummyListener 
+	    	    );	    
+	    
+	
+	}
+
+	
 	public void onResume() {
 		
     	provider = locationManager.getProvider(this.getBestProvider(locationManager));
@@ -116,22 +132,17 @@ public class LocationUtils implements LocationListener {
 	
 	@Override
 	public void onLocationChanged(Location location) {
-    	Toast.makeText(activity, "using privider " + provider.getName(), Toast.LENGTH_LONG);
 		this.locationReceiver.newLocation(location);
 	}
 
 
 	@Override
 	public void onProviderEnabled(String provider) {
-	    Toast.makeText(activity, "Enabled new provider " + provider,
-	        Toast.LENGTH_SHORT).show();
 
 	  }
 
 	@Override
 	public void onProviderDisabled(String provider) {
-	    Toast.makeText(activity, "Disabled provider " + provider,
-	        Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
