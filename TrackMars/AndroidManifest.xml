@@ -62,6 +62,14 @@
             android:name="com.trackmars.and.tracker.PointViewActivity"
             android:label="@string/app_name" >
         </activity>
+        <activity
+            android:name="com.trackmars.and.tracker.TrackViewActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="com.trackmars.and.tracker.TrackRecordActivity"
+            android:label="@string/app_name" >
+        </activity>
         
 		<service android:name="com.trackmars.and.tracker.TrackRecorderService" >
         </service>        

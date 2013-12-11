@@ -22,21 +22,37 @@ public class LocationUtils implements LocationListener {
 	
 	final public static String LOCATION_RECEIVER_ACTION = "com.trackmars.and.tracker.locationMessage"; 
 	
+
+	public static double distFrom(double lat1, double lng1, double lat2, double lng2) {
+	    double earthRadius = 3958.75;
+	    double dLat = Math.toRadians(lat2-lat1);
+	    double dLng = Math.toRadians(lng2-lng1);
+	    double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+	               Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+	               Math.sin(dLng/2) * Math.sin(dLng/2);
+	    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+	    double dist = earthRadius * c;
+
+	    int meterConversion = 1609;
+
+	    return dist * meterConversion;
+	    }
 	
-	private LocationListener dummyListener =  new LocationListener() {
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
-        @Override
-        public void onProviderEnabled(String provider) {
-        }
-        @Override
-        public void onProviderDisabled(String provider) {
-        }
-        @Override
-        public void onLocationChanged(final Location location) {
-        }
-	};
+	
+//	private LocationListener dummyListener =  new LocationListener() {
+//        @Override
+//        public void onStatusChanged(String provider, int status, Bundle extras) {
+//        }
+//        @Override
+//        public void onProviderEnabled(String provider) {
+//        }
+//        @Override
+//        public void onProviderDisabled(String provider) {
+//        }
+//        @Override
+//        public void onLocationChanged(final Location location) {
+//        }
+//	};
 	
 	
 	
@@ -50,7 +66,7 @@ public class LocationUtils implements LocationListener {
 		for (String currentProvider : locationManager.getAllProviders() ) {
 			Location location = locationManager.getLastKnownLocation(currentProvider);
 			
-			if (currentProvider == locationManager.GPS_PROVIDER) {
+			if (currentProvider.equals(locationManager.GPS_PROVIDER)) {
 				return locationManager.GPS_PROVIDER;
 			}
 			
@@ -81,9 +97,9 @@ public class LocationUtils implements LocationListener {
 	    
 	    
 	    
-	    locationManager.requestLocationUpdates(
-	    	    LocationManager.GPS_PROVIDER, 0, 0, dummyListener 
-	    	    );	    
+//	    locationManager.requestLocationUpdates(
+//	    	    LocationManager.GPS_PROVIDER, 0, 0, dummyListener 
+//	    	    );	    
 	    
 	
 	}
@@ -95,13 +111,14 @@ public class LocationUtils implements LocationListener {
 	    
 	    
 	    
-	    locationManager.requestLocationUpdates(
-	    	    LocationManager.GPS_PROVIDER, 0, 0, dummyListener 
-	    	    );	    
+//	    locationManager.requestLocationUpdates(
+//	    	    LocationManager.GPS_PROVIDER, 0, 0, dummyListener 
+//	    	    );	    
 	    
 	
 	}
 
+	
 	
 	public void onResume() {
 		
@@ -118,7 +135,7 @@ public class LocationUtils implements LocationListener {
 	        }    	
 	        
 	        if (locationManager != null) {
-	      	  locationManager.requestLocationUpdates(provider.getName(), 4000, 1, this);
+	      	  locationManager.requestLocationUpdates(provider.getName(), 5000, 0, this);
 	        }
     	}
     	
@@ -126,9 +143,9 @@ public class LocationUtils implements LocationListener {
 	
 	public void onPause() { 
 		locationManager.removeUpdates(this);
-		locationManager.removeUpdates(dummyListener);
+		//locationManager.removeUpdates(dummyListener);
 		provider = null;
-	}
+	}	
 	
 	@Override
 	public void onLocationChanged(Location location) {
@@ -138,8 +155,7 @@ public class LocationUtils implements LocationListener {
 
 	@Override
 	public void onProviderEnabled(String provider) {
-
-	  }
+	}
 
 	@Override
 	public void onProviderDisabled(String provider) {
@@ -159,7 +175,5 @@ public class LocationUtils implements LocationListener {
 	public LocationProvider getProvider() {
 		return provider;
 	}
-
-
 	
 }

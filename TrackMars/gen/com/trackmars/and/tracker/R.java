@@ -141,8 +141,9 @@ containing a value of this type.
         public static final int common_signin_btn_light_text_disabled=0x7f040006;
         public static final int common_signin_btn_light_text_focused=0x7f040007;
         public static final int common_signin_btn_light_text_pressed=0x7f040005;
-        public static final int common_signin_btn_text_dark=0x7f04000b;
-        public static final int common_signin_btn_text_light=0x7f04000c;
+        public static final int common_signin_btn_text_dark=0x7f04000c;
+        public static final int common_signin_btn_text_light=0x7f04000d;
+        public static final int middle_gray=0x7f04000b;
         public static final int white=0x7f04000a;
     }
     public static final class dimen {
@@ -201,55 +202,65 @@ containing a value of this type.
         public static final int track=0x7f02002a;
     }
     public static final class id {
-        public static final int action_settings=0x7f050026;
-        public static final int address1=0x7f050018;
-        public static final int address2=0x7f05001a;
-        public static final int address3=0x7f05001c;
-        public static final int address4=0x7f05001e;
+        public static final int action_settings=0x7f05002e;
+        public static final int address1=0x7f050020;
+        public static final int address2=0x7f050022;
+        public static final int address3=0x7f050024;
+        public static final int address4=0x7f050026;
+        public static final int avg_speed=0x7f05001a;
+        public static final int avg_speed_caption=0x7f050019;
         public static final int buttonBack=0x7f05000f;
-        public static final int buttonMap=0x7f050008;
-        public static final int buttonOk=0x7f050015;
-        public static final int buttonPoints=0x7f050009;
-        public static final int buttonTrack=0x7f050023;
+        public static final int buttonDetails=0x7f050009;
+        public static final int buttonOk=0x7f05001d;
+        public static final int buttonPoints=0x7f050008;
+        public static final int buttonTrack=0x7f05002b;
         public static final int buttonTracks=0x7f05000a;
-        public static final int check1=0x7f050017;
-        public static final int check2=0x7f050019;
-        public static final int check3=0x7f05001b;
-        public static final int check4=0x7f05001d;
-        public static final int chooseTheAddress=0x7f050016;
-        public static final int coord=0x7f050021;
-        public static final int detailsText=0x7f05001f;
+        public static final int check1=0x7f05001f;
+        public static final int check2=0x7f050021;
+        public static final int check3=0x7f050023;
+        public static final int check4=0x7f050025;
+        public static final int chooseTheAddress=0x7f05001e;
+        public static final int coord=0x7f050029;
+        public static final int detailsText=0x7f050027;
+        public static final int distance=0x7f050016;
+        public static final int distanceBG=0x7f050015;
         public static final int editText1=0x7f050010;
         public static final int hybrid=0x7f050004;
         public static final int imageButton1=0x7f050005;
-        public static final int imageButtonPoint=0x7f05000d;
+        public static final int imageButtonPoint=0x7f05000b;
         public static final int imageButtonRecord=0x7f05000e;
-        public static final int imageButtonResume=0x7f05000c;
+        public static final int imageButtonResume=0x7f05000d;
         public static final int imageView1=0x7f050006;
         public static final int imageView2=0x7f050007;
-        public static final int intoFrame=0x7f050014;
+        public static final int in_motion=0x7f050018;
+        public static final int in_motion_caption=0x7f050017;
+        public static final int intoFrame=0x7f05001c;
         public static final int listTable=0x7f050012;
-        public static final int map=0x7f05000b;
-        public static final int map_back=0x7f050013;
-        public static final int nameOfThePoint=0x7f050020;
-        public static final int nameOfTheTrack=0x7f050024;
+        public static final int map=0x7f05000c;
+        public static final int map_back=0x7f05001b;
+        public static final int nameOfThePoint=0x7f050028;
+        public static final int nameOfTheTrack=0x7f05002c;
         public static final int nameThePoint=0x7f050011;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
-        public static final int pointDate=0x7f050022;
+        public static final int pointDate=0x7f05002a;
         public static final int satellite=0x7f050002;
         public static final int terrain=0x7f050003;
-        public static final int trackDate=0x7f050025;
+        public static final int time=0x7f050014;
+        public static final int timeBG=0x7f050013;
+        public static final int trackDate=0x7f05002d;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
         public static final int activity_point_list=0x7f030001;
         public static final int activity_track_list=0x7f030002;
-        public static final int activity_view_point=0x7f030003;
-        public static final int dialog_create_point=0x7f030004;
-        public static final int fragment_test=0x7f030005;
-        public static final int point_list_item=0x7f030006;
-        public static final int track_list_item=0x7f030007;
+        public static final int activity_track_record=0x7f030003;
+        public static final int activity_view_point=0x7f030004;
+        public static final int activity_view_track=0x7f030005;
+        public static final int dialog_create_point=0x7f030006;
+        public static final int fragment_test=0x7f030007;
+        public static final int point_list_item=0x7f030008;
+        public static final int track_list_item=0x7f030009;
     }
     public static final class menu {
         public static final int dialog_create_point=0x7f090000;
@@ -258,7 +269,7 @@ containing a value of this type.
     }
     public static final class string {
         public static final int action_settings=0x7f060016;
-        public static final int ago=0x7f060029;
+        public static final int ago=0x7f06002f;
         public static final int app_name=0x7f060015;
         /**   Title for notification shown when GooglePlayServices is unavailable [CHAR LIMIT=70] 
          */
@@ -269,6 +280,7 @@ containing a value of this type.
         /**   Requested by string saying which app requested the notification. [CHAR LIMIT=42] 
          */
         public static final int auth_client_requested_by_msg=0x7f060011;
+        public static final int avg_speed=0x7f060036;
         public static final int choose_address=0x7f060019;
         /**  Button in confirmation dialog to enable Google Play services.  Clicking it
         will direct user to application settings of Google Play services where they
@@ -325,14 +337,20 @@ containing a value of this type.
         /**  Long form sign-in button text [CHAR LIMIT=30] 
          */
         public static final int common_signin_button_text_long=0x7f06000e;
-        public static final int dateFormatWOTime=0x7f06001f;
-        public static final int day1=0x7f060021;
-        public static final int day_more_then1=0x7f060022;
-        public static final int hello_world=0x7f06002f;
-        public static final int hour1=0x7f060023;
-        public static final int hour2_4=0x7f060024;
-        public static final int hour5_0=0x7f060025;
-        public static final int locale=0x7f06002c;
+        public static final int dateFormatWOTime=0x7f060020;
+        public static final int day1=0x7f060022;
+        public static final int day_more_then1=0x7f060023;
+        public static final int details=0x7f06001d;
+        public static final int distance=0x7f060034;
+        public static final int hello_world=0x7f06003b;
+        public static final int hour=0x7f060024;
+        public static final int hour1=0x7f060029;
+        public static final int hour2_4=0x7f06002a;
+        public static final int hour5_0=0x7f06002b;
+        public static final int in_motion=0x7f060035;
+        public static final int kilometer=0x7f060027;
+        public static final int kmph=0x7f060037;
+        public static final int locale=0x7f060032;
         /**  Location client code resources (prefix with location_client) 
 
         Begin strings for location.reporting
@@ -345,20 +363,25 @@ containing a value of this type.
         public static final int location_client_ulr_inactive_age_unknown=0x7f060013;
         public static final int location_client_ulr_inactive_unknown_restriction=0x7f060014;
         public static final int map=0x7f06001c;
-        public static final int min1=0x7f060026;
-        public static final int min2_4=0x7f060027;
-        public static final int min5_0=0x7f060028;
+        public static final int meter=0x7f060028;
+        public static final int min1=0x7f06002c;
+        public static final int min2_4=0x7f06002d;
+        public static final int min5_0=0x7f06002e;
+        public static final int minute=0x7f060025;
+        public static final int mph=0x7f060038;
         public static final int name_the_point=0x7f060018;
         public static final int no_conn_no_address=0x7f06001b;
         public static final int no_name=0x7f06001a;
-        public static final int points=0x7f06001d;
-        public static final int timeFormat=0x7f060020;
+        public static final int points=0x7f06001e;
+        public static final int second=0x7f060026;
+        public static final int time=0x7f060033;
+        public static final int timeFormat=0x7f060021;
         public static final int title_activity_dialog_create_point=0x7f060017;
-        public static final int title_activity_points=0x7f06002d;
-        public static final int title_activity_tracks=0x7f06002e;
-        public static final int today=0x7f06002a;
-        public static final int tracks=0x7f06001e;
-        public static final int yesterday=0x7f06002b;
+        public static final int title_activity_points=0x7f060039;
+        public static final int title_activity_tracks=0x7f06003a;
+        public static final int today=0x7f060030;
+        public static final int tracks=0x7f06001f;
+        public static final int yesterday=0x7f060031;
     }
     public static final class style {
         /** 

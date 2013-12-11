@@ -33,13 +33,35 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 	private Boolean isRecording = false;
 	private Boolean isPaused = false;
 	private int currentRecordingTrackId;
-	private Integer id = null;
-
+	
 	
 	private TrackPoint trackPoint = new TrackPoint();
     private List<TrackPointData> trackPointsToSave = new ArrayList<TrackPointData>();
 	
-	
+    private Track track;
+    private Rectangle rectangle;
+    private Long lastSavePointTime;
+    private LatLng lastSavePointLatLng; 
+    
+
+    private Long currentTravelTime = 0l;
+    private Long trackCreatedTime = 0l;
+    private Double currentDistance = 0d;
+    
+    
+    
+	public Long getTrackCreatedTime() {
+		return trackCreatedTime;
+	}
+
+	public Long getCurrentTravelTime() {
+		return currentTravelTime;
+	}
+
+	public Double getCurrentDistance() {
+		return currentDistance;
+	}
+
 	public void setInterval(Integer interval) {
 		
 	}
@@ -52,21 +74,48 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		return this.isPaused;
 	}
 	
-	public void trackPause() {
+	// нажата кнопка "пауза"
+	public void trackPause() throws IllegalAccessException, InstantiationException {
+		
 		this.isPaused = true;
+		
+		if (isRecording) {
+			saveTrackPoint(location);
+		
+		}
+		
+		this.lastSavePointTime = null;
+		this.lastSavePointLatLng = null;
+		
 	}
 	
-	public void trackStop() {
+	public void trackStop() throws IllegalAccessException, InstantiationException {
+		
 		this.isPaused = false;
 		this.isRecording = false;
+
+		saveTrackPoint(location);
+		
+		this.track = null;
+		this.rectangle = null;
+		
+		this.lastSavePointTime = null;
+		this.lastSavePointLatLng = null;
+		
+	    currentTravelTime = 0l;
+	    currentDistance = 0d;
 	}
 	
 	public void resume() {
-		//locationUtils.onResume();
+		locationUtils.onResume();
 	}
 	
-	public void pause() {
-		locationUtils.onPause();
+	// пауза при потере фокуса главного окна
+	public void pause() throws IllegalAccessException, InstantiationException {
+		if (!this.isRecording || this.isPaused) {
+			//saveTrackPoint(location);
+			locationUtils.onPause();
+		}
 	}
 	
 	public Location getLocation () {
@@ -74,11 +123,15 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 	}
 	
 	public List<LatLng> getAllTrackPoint () throws IllegalAccessException, InstantiationException {
+		return getAllTrackPoint(null);
+	}
+	
+	public List<LatLng> getAllTrackPoint (Integer trackId) throws IllegalAccessException, InstantiationException {
 		EntityHelper entityHelper = new EntityHelper(getApplicationContext(), TrackPoint.class);
 		
 		List<LatLng> locations = new ArrayList<LatLng>();
 		
-		for (IEntity trackPoint : entityHelper.getAllRowsWhere("id_track", id.toString(), 0, null, "created")) {
+		for (IEntity trackPoint : entityHelper.getAllRowsWhere("id_track", trackId!=null?trackId.toString():track.ID.toString(), 0, null, "created")) {
 			String pointData = ((TrackPoint)trackPoint).POINTS_DATA;
 			
 			List<TrackPointData> datas = new ArrayList<TrackPointData>();
@@ -95,12 +148,16 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 			
 		}
 
-		for (TrackPointData data : trackPointsToSave) {
+		if (trackId == null) {
 			
-			LatLng location = new LatLng(data.LAT, data.LNG);
-			locations.add(location);
+			for (TrackPointData data : trackPointsToSave) {
+				
+				LatLng location = new LatLng(data.LAT, data.LNG);
+				locations.add(location);
+				
+			}
+			
 		}
-		
 		
 		return locations;
 	}
@@ -110,16 +167,20 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		this.isRecording = true;
 		this.isPaused = false;
 		
+		this.rectangle = new Rectangle();
+		
 		EntityHelper entityHelper = new EntityHelper(getApplicationContext(), Track.class);
 		
 		if (resumeLastTrack) {
 			
-			id = ((Track)entityHelper.getRow(null)).ID;
-			this.currentRecordingTrackId = id;
+			track = (Track)entityHelper.getRow(null); 
+			this.currentRecordingTrackId = track.ID;
+			
+			this.rectangle.create(track.LEFT, track.RIGHT, track.TOP, track.BOTTOM); 
 			
 		} else {
 		
-			Track track = new Track();
+			track = new Track();
 			track.CREATED = new Date().getTime();
 			
 			
@@ -127,9 +188,9 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 				entityHelper.save(track);
 	
 				try {
-					id = ((Track)entityHelper.getRow(null)).ID;
+					track = (Track)entityHelper.getRow(null);
 					
-					this.currentRecordingTrackId = id;
+					this.currentRecordingTrackId = track.ID;
 					
 				} catch (IllegalArgumentException e) {
 					// TODO Auto-generated catch block
@@ -143,16 +204,29 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 			
 		}
 		
-		return id;
+		trackCreatedTime = track.CREATED;
+		
+		return track.ID;
 		
 	}
 	
-	private void saveTrackPoint(Location location) throws IllegalAccessException, InstantiationException {
-		EntityHelper entityHelper = new EntityHelper(getApplicationContext(), TrackPoint.class);
+	private void saveTrackPoint(Location location) {
 		
 		Long curDate = new Date().getTime();
 		
-		if (trackPoint.ID_TRACK == null) {
+		// время в пути
+		if (this.lastSavePointTime == null) {// если например поставили паузу в время записи трека или начали писать новый трек
+			 // отметим время самой первой точки, чтобы потом от него продолжить считать
+			this.lastSavePointTime = curDate;
+		}
+
+		// общее расстояние
+		if (this.lastSavePointLatLng == null) {// если например поставили паузу в время записи трека или начали писать новый трек
+			 // отметим координаты самой первой точки, чтобы потом от него продолжить считать
+			this.lastSavePointLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+		}
+		
+		if (trackPoint.ID_TRACK == null) { // Track point was just saved. Use ID_TRACK == null to determine this event
 			trackPoint.ID_TRACK = this.currentRecordingTrackId;
 			trackPoint.CREATED = curDate;
 			trackPoint.LAT = location.getLatitude();
@@ -164,7 +238,23 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		trackPointData.LAT = location.getLatitude();
 		trackPointData.LNG = location.getLongitude();
 		
-	    if (this.MAX_SERIA_QUANTITY <= trackPointsToSave.size() || (trackPointsToSave.size() > 0 && (curDate >= this.MAX_SERIA_TIME + trackPointsToSave.get(0).CREATED))) {
+		this.track.TRAVEL_TIME = (this.track.TRAVEL_TIME != null ? this.track.TRAVEL_TIME
+				: 0l)
+				+ curDate - lastSavePointTime;
+
+		this.currentTravelTime = this.track.TRAVEL_TIME;
+
+		this.track.DISTANCE = (this.track.DISTANCE != null ? this.track.DISTANCE
+				: 0)
+				+ LocationUtils.distFrom(location.getLatitude(),
+						location.getLongitude(),
+						lastSavePointLatLng.latitude,
+						lastSavePointLatLng.longitude);
+
+		this.currentDistance = this.track.DISTANCE;
+		
+	    if (this.MAX_SERIA_QUANTITY <= trackPointsToSave.size() || (trackPointsToSave.size() > 0 && (curDate >= this.MAX_SERIA_TIME + trackPointsToSave.get(0).CREATED))
+	    		|| this.isPaused || !this.isRecording) {
 	    	
 	    	Gson gson = new Gson();
 	    	trackPoint.POINTS_DATA = gson.toJson(trackPointsToSave);
@@ -177,6 +267,7 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 			Log.d(TrackRecorderService.class.getName(), "trackPoint.POINTS_DATA " + trackPoint.POINTS_DATA);
 
 			try {
+				EntityHelper entityHelper = new EntityHelper(getApplicationContext(), TrackPoint.class);
 				entityHelper.save(trackPoint);
 			    Log.d(TrackRecorderService.class.getName(), "trackPoint saved");
 			    
@@ -186,8 +277,44 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 			} catch (IllegalArgumentException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+			
+			EntityHelper entityHelperTrack;
+			
+			try {
+				entityHelperTrack = new EntityHelper(getApplicationContext(),
+						Track.class);
 
+				if (this.rectangle.isAltered()) {
+					this.track.BOTTOM = rectangle.getBottom();
+					this.track.LEFT = rectangle.getLeft();
+					this.track.RIGHT = rectangle.getRight();
+					this.track.TOP = rectangle.getTop();
+				}
+
+
+				entityHelperTrack.save(this.track);
+
+				// текущие заначения
+				this.lastSavePointTime = curDate;
+				this.lastSavePointLatLng = new LatLng(location.getLatitude(),
+						location.getLongitude());
+
+				this.rectangle.setAltered(false);
+
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	    }
 		
 	    trackPointsToSave.add(trackPointData);
@@ -224,17 +351,12 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		Intent intent = new Intent(LocationUtils.LOCATION_RECEIVER_ACTION);
 		sendBroadcast(intent);
 		
-		if (isRecording) {
-			// TODO call record the point of the recording track
-			try {
-				saveTrackPoint(location);
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		if (isRecording && !isPaused) {
+			
+			rectangle.shape(location);
+			
+			
+			saveTrackPoint(location);
 		}
 		
 	}
@@ -246,3 +368,5 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 	}
 	
 }
+
+

@@ -48,6 +48,14 @@ public class TracksActivity extends FragmentActivity {
 	
 	
 	public void selectTrack(View v, Track track) {
+	      Intent intent = new Intent(this, TrackViewActivity.class);
+	      intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	      
+	      intent.putExtra("title", track.TITLE);
+	      intent.putExtra("created", track.CREATED);
+	      intent.putExtra("id", track.ID);
+	      
+	      startActivity(intent);
 	}
 	
 	private void createList() {

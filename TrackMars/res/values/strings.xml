@@ -8,13 +8,21 @@
     <string name="choose_address">You can choose the address for the name</string>
     <string name="no_name">You have to name this point or chose the address for the name</string>
     <string name="no_conn_no_address">No internet connection. Google can not determine the point\'s address.</string>
+    
     <string name="map">map</string>
+    <string name="details">details</string>
     <string name="points">points</string>
     <string name="tracks">tracks</string>
+    
     <string name="dateFormatWOTime">dd/MM/yyyy</string>
     <string name="timeFormat">HH:mm:ss</string>
     <string name="day1">day</string>
     <string name="day_more_then1">days</string>
+    <string name="hour">h</string>
+    <string name="minute">m</string>
+    <string name="second">s</string>
+    <string name="kilometer">km</string>
+    <string name="meter">m</string>
     <string name="hour1">hour</string>
     <string name="hour2_4">hours</string>
     <string name="hour5_0">hours</string>
@@ -25,11 +33,18 @@
     <string name="today">today</string>
     <string name="yesterday">yesterday</string>
     <string name="locale">us</string>
-    
-    <color name="white">#FFFFFF</color>
-
+    <string name="time">time</string>
+    <string name="distance">distance</string>
+    <string name="in_motion">in motion</string>
+    <string name="avg_speed">avg speed</string>
+    <string name="kmph">km/h</string>
+    <string name="mph">mph</string>
     <string name="title_activity_points">Points list</string>
     <string name="title_activity_tracks">Tracks list</string>
     <string name="hello_world">Hello world!</string>
+    
+    
+    <color name="white">#FFFFFF</color>
+    <color name="middle_gray">#848484</color>
 
 </resources>

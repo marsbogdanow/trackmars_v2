@@ -38,7 +38,7 @@
         android:layout_marginTop="5dp"
         android:src="@drawable/horisontal_line" />
 
-    	
+    
     <Button
         android:id="@+id/buttonPoints"
         style="?android:attr/buttonStyleSmall"
@@ -68,7 +68,7 @@
         android:background="@null"
         android:onClick="onClick"
 	    android:textSize="21dp" 
-        android:text="@string/details" />
+        android:text="@string/map" />
     
     
     <Button
@@ -87,21 +87,6 @@
         android:text="@string/tracks" />
     
     
-
-	<LinearLayout
-	    android:layout_width="match_parent"
-	    android:layout_height="match_parent"
-	    android:layout_above="@+id/imageButtonPoint"
-        android:layout_below="@+id/buttonPoints"
-	    android:layout_marginTop="10dp"
-	    android:layout_marginBottom="10dp"
-	    android:background="@drawable/back">
-	<fragment
-	    android:layout_width="match_parent"
-	    android:layout_height="match_parent"
-	    android:id="@+id/map"
-	    class="com.google.android.gms.maps.SupportMapFragment" />
-	</LinearLayout>
     
     <ImageButton
         android:id="@+id/imageButtonResume"
@@ -136,5 +121,128 @@
         android:onClick="onClick"
         android:src="@drawable/button_record" />
 
+	<RelativeLayout
+	        android:id="@+id/timeBG"
+	        android:layout_width="145dp"
+	        android:layout_height="60dp"
+	        android:layout_alignParentLeft="true"
+	        android:layout_marginLeft="10dp"
+	        android:layout_below="@+id/buttonPoints"
+	        android:layout_marginTop="10dp"
+	        android:stretchColumns="1"
+			android:background="#c9c9c9"
+	        >
+	        
+	    	<TextView
+	    	    android:layout_width="wrap_content" 
+	    	    android:layout_height="wrap_content"
+	    	    android:layout_alignParentTop="true" 
+	    	    android:layout_alignParentLeft="true"
+	    	    android:layout_marginLeft="3dp" 
+	    	    android:layout_marginTop="3dp"
+	    	    android:text="@string/time"
+	    	    android:textSize="12dp" 
+	    	    android:textColor="#848484"
+	    	    />	    
+	    
+	    	<TextView
+	    	    android:id="@+id/time"
+	    	    android:layout_width="wrap_content" 
+	    	    android:layout_height="wrap_content"
+	    	    android:layout_alignParentBottom="true" 
+	    	    android:layout_alignParentLeft="true"
+	    	    android:layout_marginLeft="6dp" 
+	    	    android:layout_marginBottom="1dp"
+	    	    android:text="@string/time" 
+	    	    android:textSize="22dp" 
+	    	    />	    
+	    	
+	</RelativeLayout>
     
+	<RelativeLayout
+	        android:id="@+id/distanceBG"
+	        android:layout_width="145dp"
+	        android:layout_height="60dp"
+	        android:layout_alignParentRight="true"
+	        android:layout_marginRight="10dp"
+	        android:layout_below="@+id/buttonPoints"
+	        android:layout_marginTop="10dp"
+	        android:stretchColumns="1"
+			android:background="#c9c9c9"
+	        >
+	    	<TextView
+	    	    android:layout_width="wrap_content" 
+	    	    android:layout_height="wrap_content"
+	    	    android:layout_alignParentTop="true" 
+	    	    android:layout_alignParentRight="true"
+	    	    android:layout_marginRight="3dp" 
+	    	    android:layout_marginTop="3dp"
+	    	    android:text="@string/distance" 
+	    	    android:textSize="12dp" 
+	    	    android:textColor="#848484"
+	    	    />	    
+	    	<TextView
+	    	    android:id="@+id/distance"
+	    	    android:layout_width="wrap_content" 
+	    	    android:layout_height="wrap_content"
+	    	    android:layout_alignParentBottom="true" 
+	    	    android:layout_alignParentLeft="true"
+	    	    android:layout_marginLeft="6dp" 
+	    	    android:layout_marginBottom="1dp"
+	    	    android:text="@string/time" 
+	    	    android:textSize="22dp" 
+	    	    />	    
+	</RelativeLayout>
+	
+	<TextView
+	    android:id="@+id/in_motion_caption"
+	    	    android:layout_width="wrap_content" 
+	    	    android:layout_height="wrap_content"
+	    	    android:layout_below="@+id/timeBG"
+	        	android:layout_alignParentRight="true"
+	        	android:layout_marginRight="165dp"
+	        	android:layout_marginTop="16dp"
+	    	    android:textSize="21dp" 
+	    	    android:textColor="@color/middle_gray"
+	    	    android:text="@string/in_motion"
+	    />
+    
+	<TextView
+	    android:id="@+id/in_motion"
+	    	    android:layout_width="wrap_content" 
+	    	    android:layout_height="wrap_content"
+	    	    android:layout_alignBottom="@+id/in_motion_caption"
+	        	android:layout_alignParentLeft="true"
+	        	android:layout_marginLeft="165dp"
+	        	android:layout_marginBottom="-5dp"
+	    	    android:textSize="21dp" 
+	    	    android:text="@string/in_motion"
+	    />
+
+	<TextView
+	    android:id="@+id/avg_speed_caption"
+	    	    android:layout_width="wrap_content" 
+	    	    android:layout_height="wrap_content"
+	    	    android:layout_below="@+id/in_motion_caption"
+	        	android:layout_alignParentRight="true"
+	        	android:layout_marginRight="165dp"
+	        	android:layout_marginTop="16dp"
+	    	    android:textSize="21dp" 
+	    	    android:textColor="@color/middle_gray"
+	    	    android:text="@string/avg_speed"
+	    />
+    
+	<TextView
+	    android:id="@+id/avg_speed"
+	    	    android:layout_width="wrap_content" 
+	    	    android:layout_height="wrap_content"
+	    	    android:layout_alignBottom="@+id/avg_speed_caption"
+	        	android:layout_alignParentLeft="true"
+	        	android:layout_marginLeft="165dp"
+	        	android:layout_marginBottom="-5dp"
+	    	    android:textSize="21dp" 
+	    	    android:text="@string/avg_speed"
+	    />
+		
+		
 </RelativeLayout>

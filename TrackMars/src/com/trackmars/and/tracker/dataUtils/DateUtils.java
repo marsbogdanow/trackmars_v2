@@ -8,13 +8,13 @@ import com.trackmars.and.tracker.R;
 import android.app.Activity;
 import android.content.res.Resources;
 
-public class DataUtils {
+public class DateUtils {
 
 	public static final Integer MILLISECONDS_IN_SECOND = 1000;
 	public static final Integer MILLISECONDS_IN_MINUTE = 1000 * 60;
 	public static final Integer MILLISECONDS_IN_HOUR = 1000 * 60 * 60;
 	
-	public static String getDataVisualRepresentaion(Long dataInt, Activity activity) {
+	public static String getDateVisualRepresentaion(Long dataInt, Activity activity) {
 		
 		Date date = new Date(dataInt);
 		Date now = new Date();
@@ -32,9 +32,9 @@ public class DataUtils {
 		SimpleDateFormat simpleDate = new SimpleDateFormat(resources.getString(R.string.dateFormatWOTime));
 		
 		
-		if (now.getTime() - date.getTime() < 24 * DataUtils.MILLISECONDS_IN_HOUR) {
-			if (now.getTime() - date.getTime() < DataUtils.MILLISECONDS_IN_HOUR) {
-				minutesToShow = Math.round((now.getTime() - date.getTime()) / DataUtils.MILLISECONDS_IN_MINUTE); 
+		if (now.getTime() - date.getTime() < 24 * DateUtils.MILLISECONDS_IN_HOUR) {
+			if (now.getTime() - date.getTime() < DateUtils.MILLISECONDS_IN_HOUR) {
+				minutesToShow = Math.round((now.getTime() - date.getTime()) / DateUtils.MILLISECONDS_IN_MINUTE); 
 
 				if(minutesToShow == 1) {
 					toReturn = resources.getString(R.string.min1) + " " + resources.getString(R.string.ago);
@@ -59,8 +59,8 @@ public class DataUtils {
 					toReturn = minutesToShow.toString() + " " + resources.getString(R.string.min2_4) + " " + resources.getString(R.string.ago);
 				}
 			
-			} else if (now.getTime() - date.getTime() < (3 * DataUtils.MILLISECONDS_IN_HOUR)) {
-				hoursToShow = Math.round((now.getTime() - date.getTime()) / DataUtils.MILLISECONDS_IN_HOUR);
+			} else if (now.getTime() - date.getTime() < (3 * DateUtils.MILLISECONDS_IN_HOUR)) {
+				hoursToShow = Math.round((now.getTime() - date.getTime()) / DateUtils.MILLISECONDS_IN_HOUR);
 				
 				if(hoursToShow == 1) {
 					toReturn = resources.getString(R.string.hour1) + " " + resources.getString(R.string.ago);
@@ -79,9 +79,9 @@ public class DataUtils {
 				SimpleDateFormat simpleTime = new SimpleDateFormat(resources.getString(R.string.timeFormat));
 				toReturn += " " + simpleTime.format(date);
 			}
-		} else if (now.getTime() - date.getTime() < (4 * DataUtils.MILLISECONDS_IN_HOUR * 24)) {
+		} else if (now.getTime() - date.getTime() < (4 * DateUtils.MILLISECONDS_IN_HOUR * 24)) {
 				showHowManyDayAgo = true;
-				Integer days = Math.round(now.getTime() - date.getTime()) / (DataUtils.MILLISECONDS_IN_HOUR * 24); 
+				Integer days = Math.round(now.getTime() - date.getTime()) / (DateUtils.MILLISECONDS_IN_HOUR * 24); 
 				if (days <= 1) {
 					toReturn = resources.getString(R.string.day1) + " " +resources.getString(R.string.ago); 
 				} else {

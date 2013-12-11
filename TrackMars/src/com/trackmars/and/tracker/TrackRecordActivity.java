@@ -1,5 +1,6 @@
 package com.trackmars.and.tracker;
 
+import java.util.Date;
 import java.util.List;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -34,12 +35,16 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 //import android.app.Activity;
 //import android.app.Activity;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.Fragment;
+import android.text.Html;
+
 import com.google.android.gms.maps.SupportMapFragment;
+import com.trackmars.and.tracker.dataUtils.DateUtils;
 import com.trackmars.and.tracker.utils.ILocationReceiver;
 import com.trackmars.and.tracker.utils.LocationUtils;
 
@@ -47,10 +52,11 @@ import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
 
-public class MainActivity extends FragmentActivity implements ILocationReceiver {
+public class TrackRecordActivity extends FragmentActivity implements ILocationReceiver {
 	
 	private GoogleMap map;	
 	private Boolean mapPositioned = false;
@@ -73,23 +79,10 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
     	
-        Log.d(MainActivity.class.getName(), "Main activity onCreate started");
-    	
         lastPoint = null; 
         
-        updateServices();
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        
-
-        try {
-	        map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
-	                .getMap();
-        } finally {}
-        
-        Intent intent = new Intent(this, TrackRecorderService.class);
-        startService(intent);
-        //bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        setContentView(R.layout.activity_track_record);
         
     }
 
@@ -113,13 +106,9 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
     protected void onResume() {
       super.onResume();
       
-      Log.d(MainActivity.class.getName(), "Main activity onResume started");
-
       Intent intent = new Intent(this, TrackRecorderService.class);
       bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 
-      mapPositioned = false;
-      
       trackRecorderReceiver.setLocationReceiver(this);
       registerReceiver(trackRecorderReceiver, new IntentFilter(LocationUtils.LOCATION_RECEIVER_ACTION));
       
@@ -133,7 +122,7 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
       super.onPause();
       unregisterReceiver(trackRecorderReceiver);
       
-      Log.d(MainActivity.class.getName(), "Ready to unbind");
+      Log.d(TrackRecordActivity.class.getName(), "Ready to unbind");
       unbindService(mConnection);
       try {
 		trackRecorderService.pause();
@@ -173,85 +162,84 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
     		
     }
 
-    private void showTrackOnTheMap (Location location) throws IllegalAccessException, InstantiationException {
-    	
-    	Log.d(MainActivity.class.getName(), "call showTrackOnTheMap");
-    	
-    	PolylineOptions polylineOptions = new PolylineOptions();
-    	polylineOptions.geodesic(true);
-    	
-    	
-    	if (lastPoint == null) {
-        	List<LatLng> latLngs =  trackRecorderService.getAllTrackPoint(); 
-	    	for (LatLng latLng : latLngs) {
-	    		Log.d(MainActivity.class.getName(), "latLng " + latLng.latitude + " " + latLng.longitude);
-	    		polylineOptions.add(latLng);
-	    	}
-    	} else {
-    		polylineOptions.add(lastPoint);
-    		polylineOptions.add(new LatLng(location.getLatitude(), location.getLongitude()));
-    	}
-    	
-		lastPoint = new LatLng(location.getLatitude(), location.getLongitude());
-
-    	if (map != null) {
-	    	this.map.addPolyline(polylineOptions);
-    	}
-    }
     
     @Override
 	public void newLocation(Location location) {
         this.location = location;
 
-    	if (trackRecorderService.isRecording()) {
-    		try {
-				showTrackOnTheMap(location);
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-    	}
+        final Long travelTime = this.trackRecorderService.getCurrentTravelTime();
+        final Double distance = this.trackRecorderService.getCurrentDistance();
+        final Long totalTime = (new Date()).getTime() - this.trackRecorderService.getTrackCreatedTime();
         
-        if (map != null && location != null) {
-            	
-            	if (location != null) {
-            		
-            		if (myCurrentPositionMarker != null) {
-            			myCurrentPositionMarker.remove();
-            		}
-	            	
-	            	LatLng myCurrentPosition = new LatLng(location.getLatitude(), location.getLongitude()); 
-	            	
-	            	myCurrentPositionMarker = map.addMarker(new MarkerOptions().position(myCurrentPosition)
-	                .title("You are here"));
-	            	
-		            
-		            map.moveCamera(CameraUpdateFactory.newLatLng(myCurrentPosition));
-		            if (!mapPositioned) {
-			            map.animateCamera(CameraUpdateFactory.zoomTo(16), 2000, null);
-	            	}
-		            
-		            mapPositioned = true;
-            	}
-            	
-            
-        } else {
-//              FragmentTest fragment = (FragmentTest) getSupportFragmentManager()
-//              .findFragmentById(R.id.map);
-//              
-//	          if (fragment != null && fragment.isInLayout()) {
-//	            fragment.setText("Here is the place for LIST");
-//	          } 
+        Resources res = getResources();
+        
+        if (this.trackRecorderService.getTrackCreatedTime() != null) {
+        	
+	        final Integer hours = (int) (totalTime / DateUtils.MILLISECONDS_IN_HOUR);
+	        final Integer minutes = (int)((totalTime - hours * DateUtils.MILLISECONDS_IN_HOUR) / DateUtils.MILLISECONDS_IN_MINUTE);
+	        
+	        
+	        String fieldText = "<big><big><b>" + hours.toString() + "</b></big></big>";
+	        fieldText += "<small>" + res.getString(R.string.hour) + ":</small>";
+	        fieldText += "  <big><big><b>" + minutes.toString() + "</b></big></big>";
+	        fieldText += "<small>" + res.getString(R.string.minute) + "</small>";
+	        
+	        ((TextView)findViewById(R.id.time)).setText(Html.fromHtml(fieldText));
+        
         }
-		buttonsArrange();
+
+        
+        if (travelTime != null) {
+        	
+	        final Integer hours = (int) (travelTime / DateUtils.MILLISECONDS_IN_HOUR);
+	        final Integer minutes = (int)((travelTime - hours * DateUtils.MILLISECONDS_IN_HOUR) / DateUtils.MILLISECONDS_IN_MINUTE);
+	        
+	        String fieldText = "<big><big><b>" + hours.toString() + "</b></big></big>";
+	        fieldText += "<small>" + res.getString(R.string.hour) + ":</small>";
+	        fieldText += "  <big><big><b>" + minutes.toString() + "</b></big></big>";
+	        fieldText += "<small>" + res.getString(R.string.minute) + "</small>";
+	        
+	        ((TextView)findViewById(R.id.in_motion)).setText(Html.fromHtml(fieldText));
+        
+        }
+        
+        if (distance != null) {
+        	
+	        final Integer km = (int) (distance / 1000);
+	        final Integer meter = (int)(distance - km * 1000);
+	        
+	        
+	        String fieldText = "<big><big><b>" + km.toString() + "</b></big></big>";
+	        fieldText += "<small>" + res.getString(R.string.kilometer) + ", </small>";
+	        fieldText += "  <big><big><b>" + meter.toString() + "</b></big></big>";
+	        fieldText += "<small>" + res.getString(R.string.meter) + "</small>";
+	        
+	        ((TextView)findViewById(R.id.distance)).setText(Html.fromHtml(fieldText));
+        
+        }
+        
+        if (distance != null && travelTime != null && travelTime != 0l && distance != 0d) {
+        	Integer speed = (int)  (distance / (double)travelTime / 1000d * (double)DateUtils.MILLISECONDS_IN_HOUR); 
+
+	        String fieldText = "<big><big><b>" + speed.toString() + "</b></big></big>";
+	        fieldText += "<small>" + res.getString(R.string.kmph) + ", </small>";
+	        
+	        ((TextView)findViewById(R.id.avg_speed)).setText(Html.fromHtml(fieldText));
+        
+        
+        } else {
+        	
+	        String fieldText = "<big><big><b> --</b></big></big>";
+	        fieldText += "<small>" + res.getString(R.string.kmph) + ", </small>";
+	        
+	        ((TextView)findViewById(R.id.avg_speed)).setText(Html.fromHtml(fieldText));
+        	
+        }
+        
+        buttonsArrange();
 		
     }
 	
-    
-    
     
 	public void onClick(View view) throws IllegalAccessException, InstantiationException {
 		if (view.getId() == R.id.imageButtonPoint) {
@@ -287,12 +275,6 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 			
 			if (!trackRecorderService.isRecording()) {
 				trackRecorderService.startRecord(false);
-				
-			    Intent intent = new Intent(this, TrackRecordActivity.class);
-			    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			    startActivity(intent);
-				
-				
 			} else if (trackRecorderService.isRecording() && !trackRecorderService.isPaused()) {
 				trackRecorderService.trackPause();
 			} else if (trackRecorderService.isRecording() && trackRecorderService.isPaused()) {
@@ -303,24 +285,17 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 			
 			if (!trackRecorderService.isRecording()) {
 				trackRecorderService.startRecord(true);
-				
-			    Intent intent = new Intent(this, TrackRecordActivity.class);
-			    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			    startActivity(intent);
 			} else if (trackRecorderService.isRecording() && trackRecorderService.isPaused()) {
 				trackRecorderService.trackStop();
 			}
 			
 		} else if (view.getId() == R.id.buttonDetails) {
 			
-			if (trackRecorderService.isRecording()) {
-			    Intent intent = new Intent(this, TrackRecordActivity.class);
+			    Intent intent = new Intent(this, MainActivity.class);
 			    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			    startActivity(intent);
-			}
 			
 		}
-		
 		
 		buttonsArrange();
 		
@@ -336,76 +311,5 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 	}
 	
 	
-    private void updateServices() {
-
-    	
-    	boolean services = false;
-    	try
-    	{
-    		ApplicationInfo info = getPackageManager().getApplicationInfo("com.google.android.gms", 0);
-    		services = true;
-    	}
-    	catch(PackageManager.NameNotFoundException e)
-    	{
-    		services = false;
-    	}
-
-    	if (services)
-    	{
-    		// Ok, do whatever.
-    		Toast.makeText(MainActivity.this, "Play Services are installed. Would start map now...", Toast.LENGTH_LONG).show();
-    		return;
-    	}
-    	else
-    	{
-    		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
-
-    		// set dialog message
-    		alertDialogBuilder
-    				.setTitle("Google Play Services")
-    				.setMessage("The map requires Google Play Services to be installed.")
-    				.setCancelable(true)
-    				.setPositiveButton("Install", new DialogInterface.OnClickListener() {
-    					public void onClick(DialogInterface dialog,int id) {
-    						dialog.dismiss();
-    						// Try the new HTTP method (I assume that is the official way now given that google uses it).
-    						try
-    						{
-    							Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=com.google.android.gms"));
-    							intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-    							intent.setPackage("com.android.vending");
-    							startActivity(intent);
-    						}
-    						catch (ActivityNotFoundException e)
-    						{
-    							// Ok that didn't work, try the market method.
-    							try
-    							{
-    								Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.google.android.gms"));
-    								intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-    								intent.setPackage("com.android.vending");
-    								startActivity(intent);
-    							}
-    							catch (ActivityNotFoundException f)
-    							{
-    								// Ok, weird. Maybe they don't have any market app. Just show the website.
-
-    								Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=com.google.android.gms"));
-    								intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-    								startActivity(intent);
-    							}
-    						}
-    					}
-    				})
-    				.setNegativeButton("No",new DialogInterface.OnClickListener() {
-    					public void onClick(DialogInterface dialog,int id) {
-    						dialog.cancel();
-    					}
-    				})
-    				.create()
-    				.show();
-    	}    	
-    	
-    }
 	
 }

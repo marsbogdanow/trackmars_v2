@@ -26,7 +26,7 @@ import com.trackmars.and.tracker.model.TrackPoint;
 public class EntityHelper extends SQLiteOpenHelper {
 	
 	static final private String DATABASE_NAME = "trackmars.db";
-	static final private Integer DATABASE_VERSION = 11;
+	static final private Integer DATABASE_VERSION = 14;
 	
 	private Class entityClass; 
 	private Context context;
@@ -286,7 +286,7 @@ public class EntityHelper extends SQLiteOpenHelper {
 		if (id == null) {
 			cursor = database.rawQuery("SELECT " + fielsStrings + " FROM " + entityClass.getSimpleName() + " WHERE ID = (SELECT MAX(ID) FROM  " + entityClass.getSimpleName() + " );", null);
 		} else { 
-			cursor = database.rawQuery("SELECT " + fielsStrings + " FROM " + entityClass.getSimpleName() + " WHERE ID = 1);", new String[]{id.toString()});
+			cursor = database.rawQuery("SELECT " + fielsStrings + " FROM " + entityClass.getSimpleName() + " WHERE ID = ?;", new String[]{id.toString()});
 		}
 		
 		
@@ -309,14 +309,29 @@ public class EntityHelper extends SQLiteOpenHelper {
 							if (field.getAnnotation(EntityField.class).type()==EntityField.TYPE_TEXT) {
 								field.set(row, cursor.getString(fieldCounter));
 							} else if (field.getAnnotation(EntityField.class).type()==EntityField.TYPE_INTEGER) {
-								if (field.getType() == Long.class){
-									field.set(row, cursor.getLong(fieldCounter));
+								
+								if (cursor.getString(fieldCounter) != null) {
+								
+									if (field.getType() == Long.class){
+										field.set(row, cursor.getLong(fieldCounter));
+									} else {
+										field.set(row, cursor.getInt(fieldCounter));
+									}
+								
 								} else {
-									field.set(row, cursor.getInt(fieldCounter));
+									field.set(row, null);
 								}
+								
 							} else if (field.getAnnotation(EntityField.class).type()==EntityField.TYPE_REAL) {
-								field.set(row, cursor.getDouble(fieldCounter));
+								
+								if (cursor.getString(fieldCounter) != null) {
+									field.set(row, cursor.getDouble(fieldCounter));
+								} else {
+									field.set(row, null);
+								}
+								
 							}
+							
 							fieldCounter++;
 						} 
 						
@@ -343,7 +358,7 @@ public class EntityHelper extends SQLiteOpenHelper {
 		String subStatement = new String("");
 		String firstField = new String("");
 		String primaryKeyFieldName = new String("");
-		String primaryKeyValue = new String("");
+		Object primaryKeyValue = new String("");
 		String primaryKeyType = new String("");
 		
 		Boolean isUpdate = false;
@@ -358,7 +373,12 @@ public class EntityHelper extends SQLiteOpenHelper {
 					
 					if (entityField.primaryKey()) {
 						
-						primaryKeyValue = (String)field.get(entityClass.newInstance());
+						Object fieldValue = new String();
+						fieldValue = field.get(entity);
+						
+						primaryKeyValue = fieldValue;
+						primaryKeyFieldName = field.getName();
+						
 						isUpdate = primaryKeyValue != null;
 						primaryKeyType = entityField.type();
 						
@@ -385,7 +405,7 @@ public class EntityHelper extends SQLiteOpenHelper {
 						
 						statement += (firstField + field.getName() + " = " +
 								(field.getAnnotation(EntityField.class).type()==EntityField.TYPE_TEXT?"\'":"") +
-								//((String)fieldValue).replaceAll ('\"', ['\"', '\"'}) +
+								fieldValue +
 								(field.getAnnotation(EntityField.class).type()==EntityField.TYPE_TEXT?"\' ":" ")
 							); 
 						
@@ -409,8 +429,6 @@ public class EntityHelper extends SQLiteOpenHelper {
 				
 			}
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
 			e.printStackTrace();
 		}
 		
@@ -478,6 +496,24 @@ public class EntityHelper extends SQLiteOpenHelper {
 				onCreate(db);	
 			}
 			
+			if (n == 12) {
+				db.execSQL("ALTER TABLE " + Track.class.getSimpleName() + " ADD COLUMN LEFT REAL");
+				db.execSQL("ALTER TABLE " + Track.class.getSimpleName() + " ADD COLUMN RIGHT REAL");
+				db.execSQL("ALTER TABLE " + Track.class.getSimpleName() + " ADD COLUMN TOP REAL");
+				db.execSQL("ALTER TABLE " + Track.class.getSimpleName() + " ADD COLUMN BOTTOM REAL");
+			}
+			
+			if (n == 13) {
+				String sqlS = "CREATE INDEX IF NOT EXISTS IDXTrackPoint_Created ON TrackPoint (created DESC)";
+				db.execSQL(sqlS);
+				sqlS = "CREATE INDEX IF NOT EXISTS IDXTrackPoint_id_track ON TrackPoint (id_track DESC)";
+				db.execSQL(sqlS);
+			}
+			
+			if (n == 14) {
+				db.execSQL("ALTER TABLE " + Track.class.getSimpleName() + " ADD COLUMN DISTANCE REAL");
+				db.execSQL("ALTER TABLE " + Track.class.getSimpleName() + " ADD COLUMN TRAVEL_TIME INTEGER");
+			}
 			
     	}
 	}

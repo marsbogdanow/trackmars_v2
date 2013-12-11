@@ -4,7 +4,7 @@ import java.text.DecimalFormat;
 
 import org.w3c.dom.Text;
 
-import com.trackmars.and.tracker.dataUtils.DataUtils;
+import com.trackmars.and.tracker.dataUtils.DateUtils;
 
 import android.os.Bundle;
 import android.os.Parcelable.Creator;
@@ -41,7 +41,7 @@ public class ListTracksItemTrack extends Fragment {
 		}
 		
 		TextView dateView = (TextView) view.findViewById(R.id.trackDate);
-		dateView.setText(DataUtils.getDataVisualRepresentaion(date, this.getActivity()));
+		dateView.setText(DateUtils.getDateVisualRepresentaion(date, this.getActivity()));
 
 		return view;
 	}
