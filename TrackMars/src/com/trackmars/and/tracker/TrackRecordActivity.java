@@ -41,6 +41,7 @@ import android.content.res.Resources;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager.LayoutParams;
 import android.text.Html;
 
 import com.google.android.gms.maps.SupportMapFragment;
@@ -48,10 +49,14 @@ import com.trackmars.and.tracker.dataUtils.DateUtils;
 import com.trackmars.and.tracker.utils.ILocationReceiver;
 import com.trackmars.and.tracker.utils.LocationUtils;
 
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
@@ -301,6 +306,33 @@ public class TrackRecordActivity extends FragmentActivity implements ILocationRe
 		
  	}
 
+	
+	public void showSettings(View view) {
+		
+		   //LayoutInflater layoutInflater  = (LayoutInflater)getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+		   
+		   View popupView = getLayoutInflater().inflate(R.layout.popup_settings, null);
+		   
+		   final PopupWindow popupWindow = new PopupWindow(
+		               popupView, 
+		               LayoutParams.WRAP_CONTENT,  
+		                     LayoutParams.WRAP_CONTENT, true);  
+		   
+		   popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+		   //popupWindow.showAsDropDown(findViewById(R.id.imageButton1));
+		   
+		   ImageButton btnDismiss = (ImageButton)popupView.findViewById(R.id.buttonBack);
+		   
+		   btnDismiss.setOnClickListener(new ImageButton.OnClickListener() {
+			   public void onClick(View v) {    
+				   popupWindow.dismiss();
+				  }
+		   }
+		 );
+		               
+		   
+		         
+		   }
 	
 	@Override
 	public void askLocation() {

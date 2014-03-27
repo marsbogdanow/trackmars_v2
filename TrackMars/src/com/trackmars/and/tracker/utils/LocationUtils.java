@@ -3,6 +3,7 @@ package com.trackmars.and.tracker.utils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.trackmars.and.tracker.dataUtils.DateUtils;
 
 import android.app.Service;
 import android.content.Context;
@@ -20,9 +21,31 @@ public class LocationUtils implements LocationListener {
     private LocationManager locationManager;
 	private LocationProvider provider;
 	
+	private Integer interval = -1;
+	
 	final public static String LOCATION_RECEIVER_ACTION = "com.trackmars.and.tracker.locationMessage"; 
 	
-
+	private Integer getIntervalTime() {
+		Integer intervatTime = 0;
+		if (interval == 0) {
+			intervatTime = 30 * DateUtils.MILLISECONDS_IN_SECOND;
+		} else if (interval == 1 || interval == 2) {
+			intervatTime = interval * DateUtils.MILLISECONDS_IN_MINUTE;
+		}  else if (interval == 3) {
+			intervatTime = 5 * DateUtils.MILLISECONDS_IN_MINUTE;
+		}  else if (interval == 4) {
+			intervatTime = 10 * DateUtils.MILLISECONDS_IN_MINUTE;
+		}  else if (interval == 5) {
+			intervatTime = 30 * DateUtils.MILLISECONDS_IN_MINUTE;
+		}  else if (interval == 6) {
+			intervatTime = 60 * DateUtils.MILLISECONDS_IN_MINUTE;
+		} else if (interval == -1) {
+			intervatTime = 10 * DateUtils.MILLISECONDS_IN_SECOND;
+		}
+		
+		return intervatTime;
+	}
+	
 	public static double distFrom(double lat1, double lng1, double lat2, double lng2) {
 	    double earthRadius = 3958.75;
 	    double dLat = Math.toRadians(lat2-lat1);
@@ -90,6 +113,15 @@ public class LocationUtils implements LocationListener {
 	}
 	
 	
+	public void setInterval (Integer interval) {
+		this.interval = interval;
+	}
+	
+	public void restartWithNewInterval() {
+		locationManager.removeUpdates(this);
+		this.onResume();
+	}
+	
 	public LocationUtils(ILocationReceiver locationReceiver, FragmentActivity activity) {
 		this.locationReceiver = locationReceiver;
 
@@ -135,7 +167,7 @@ public class LocationUtils implements LocationListener {
 	        }    	
 	        
 	        if (locationManager != null) {
-	      	  locationManager.requestLocationUpdates(provider.getName(), 5000, 0, this);
+	      	  locationManager.requestLocationUpdates(provider.getName(), this.getIntervalTime(), 0, this);
 	        }
     	}
     	

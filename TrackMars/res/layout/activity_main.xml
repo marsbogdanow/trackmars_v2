@@ -8,43 +8,20 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
-    <ImageButton
-        android:id="@+id/imageButton1"
+   
+	<fragment
+        android:id="@+id/headerFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="5dp"
-        android:background="@null"
-        android:src="@drawable/button_menu" />
-
-    <ImageView
-        android:id="@+id/imageView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="5dp"
-        android:src="@drawable/ic_launcher" />
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/imageView1"
-        android:layout_marginTop="5dp"
-        android:src="@drawable/horisontal_line" />
-
+        android:layout_marginTop="0dp"
+        class="com.trackmars.and.tracker.Header" />
     	
     <Button
         android:id="@+id/buttonPoints"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imageView2"
+        android:layout_below="@+id/headerFragment"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="35dp"
         android:layout_alignParentLeft="true"
@@ -60,7 +37,7 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imageView2"
+        android:layout_below="@+id/headerFragment"
         android:layout_marginTop="10dp"
         
         android:layout_centerHorizontal="true"
@@ -76,7 +53,7 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imageView2"
+        android:layout_below="@+id/headerFragment"
         android:layout_marginTop="10dp"
         android:layout_marginRight="35dp"
         android:layout_alignParentRight="true"

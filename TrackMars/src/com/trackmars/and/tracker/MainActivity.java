@@ -100,7 +100,9 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
         	trackRecorderService = ((TrackRecorderService.ManagerBinder) binder).getMe();
             buttonsArrange();
             
+            trackRecorderService.setInterval(-1); // real time;
             trackRecorderService.resume();
+            
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -134,17 +136,19 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
       unregisterReceiver(trackRecorderReceiver);
       
       Log.d(MainActivity.class.getName(), "Ready to unbind");
+      trackRecorderService.setInterval(null); // real time;
       unbindService(mConnection);
+      
       try {
 		trackRecorderService.pause();
-	} catch (IllegalAccessException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} catch (InstantiationException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-      //locationUtils.onPause();
+	  } catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+	  } catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+	  }
+	      //locationUtils.onPause();
     }
     
     private void buttonsArrange () {

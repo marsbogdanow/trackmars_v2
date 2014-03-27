@@ -17,6 +17,7 @@ import com.trackmars.and.tracker.utils.LocationUtils;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Binder;
 import android.os.IBinder;
@@ -48,6 +49,7 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
     private Long trackCreatedTime = 0l;
     private Double currentDistance = 0d;
     
+    private Integer interval = 1;
     
     
 	public Long getTrackCreatedTime() {
@@ -62,7 +64,18 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		return currentDistance;
 	}
 
-	public void setInterval(Integer interval) {
+	public void setInterval(Integer intvl) {
+		interval = intvl;
+		
+		if (intvl == null) {
+			SharedPreferences sPref = getSharedPreferences(Header.PREFERENCES_NAME, MODE_PRIVATE);
+		    interval = sPref.getInt(Header.PREF_INTERVAL, 1);
+		}
+		
+		locationUtils.setInterval(interval);
+		if (!this.isRecording || this.isPaused) {
+			locationUtils.restartWithNewInterval();
+		}
 		
 	}
 	
@@ -330,9 +343,10 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 	    super.onCreate();
 
 	    Log.d(TrackRecorderService.class.getName(), "service onCreate");
-	    
+
 	    locationUtils = new LocationUtils(this, this);
 	    locationUtils.onResume();
+	    
 	}
 
 	
@@ -354,7 +368,6 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		if (isRecording && !isPaused) {
 			
 			rectangle.shape(location);
-			
 			
 			saveTrackPoint(location);
 		}
