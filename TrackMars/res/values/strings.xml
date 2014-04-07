@@ -41,6 +41,7 @@
     <string name="title_activity_tracks">Tracks list</string>
     <string name="hello_world">Hello world!</string>
     <string name="track_record_settings">Track record settings</string>
+    <string name="interval">interval</string>
     
     <color name="white">#FFFFFF</color>
     <color name="middle_gray">#848484</color>

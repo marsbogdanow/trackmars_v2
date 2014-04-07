@@ -100,7 +100,18 @@ public class TracksActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_track_list);
 		
-
+		//на всякий случай создадим таблицу
+		EntityHelper entityHelper;
+		try {
+			entityHelper = new EntityHelper(getApplicationContext(), Track.class);
+		} catch (IllegalAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (InstantiationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		handler = new Handler() {
 			@Override
 			public void handleMessage(Message msg) {

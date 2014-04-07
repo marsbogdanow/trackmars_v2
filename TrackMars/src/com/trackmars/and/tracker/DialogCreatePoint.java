@@ -6,15 +6,27 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import com.trackmars.and.tracker.TracksActivity.MyTask;
 import com.trackmars.and.tracker.dataUtils.EntityHelper;
+import com.trackmars.and.tracker.dataUtils.IEntity;
 import com.trackmars.and.tracker.model.Point;
+import com.trackmars.and.tracker.model.Track;
 
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.app.FragmentTransaction;
+import android.view.Gravity;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.app.Activity;
@@ -24,6 +36,8 @@ public class DialogCreatePoint extends Activity {
 
 	double longitude;
 	double latitude;
+	
+	private Handler handler;
 	
 	private class AddressObj {
 		
@@ -72,6 +86,41 @@ public class DialogCreatePoint extends Activity {
 		}
 		
 	}
+
+	
+	
+	
+	private void showGeocodingText() {
+		List<AddressObj> addressObjs = setAddressInitially();
+		
+        Message msg = new Message();
+        msg.obj = addressObjs;
+		
+        handler.sendMessage(msg);
+	}
+
+	class MyTask extends AsyncTask<Void, Void, Void> {
+
+	    @Override
+	    protected void onPreExecute() {
+	      super.onPreExecute();
+	      //tvInfo.setText("Begin");
+	    }
+
+	    @Override
+	    protected Void doInBackground(Void... params) {
+	      //TimeUnit.SECONDS.sleep(2);
+		  showGeocodingText();
+	      return null;
+	    }
+
+	    @Override
+	    protected void onPostExecute(Void result) {
+	      super.onPostExecute(result);
+	      //tvInfo.setText("End");
+	    }
+	  }	
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -92,66 +141,78 @@ public class DialogCreatePoint extends Activity {
 		
 		EditText description = (EditText) findViewById(R.id.address1);
 		EditText title = (EditText) findViewById(R.id.editText1);
-		
-		
-		
-		List<AddressObj> addressObjs = setAddressInitially();
-		
-		if (addressObjs != null && addressObjs.size() > 0) {
-		
-			((EditText) findViewById(R.id.address1)).setVisibility(View.VISIBLE);
-			((ImageButton) findViewById(R.id.check1)).setVisibility(View.VISIBLE);
-			((EditText) findViewById(R.id.address1)).setText(addressObjs.get(0).getLine());
-	
-			if (addressObjs.size() >= 2) {
-				AddressObj addrObj = addressObjs.get(1);
-				if (addrObj != null && addrObj.getLine() != null && !addrObj.getLine().equals("")) {
-					String addrLine = addrObj.getLine();
-					
-					((EditText) findViewById(R.id.address2)).setText(addrLine);
-					((EditText) findViewById(R.id.address2)).setVisibility(View.VISIBLE);
-					((ImageButton) findViewById(R.id.check2)).setVisibility(View.VISIBLE);
-				} else {
-					((EditText) findViewById(R.id.address2)).setVisibility(View.INVISIBLE);
-					((ImageButton) findViewById(R.id.check2)).setVisibility(View.INVISIBLE);
-				}
-			}
-		
 
-			if (addressObjs.size() >= 3) {
-				AddressObj addrObj = addressObjs.get(2);
-				if (addrObj != null && addrObj.getLine() != null && !addrObj.getLine().equals("")) {
-					String addrLine = addrObj.getLine();
+		
+		
+		handler = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				
+				List<AddressObj> addressObjs = (List<AddressObj>)msg.obj; 
+				
+				if (addressObjs != null && addressObjs.size() > 0) {
 					
-					((EditText) findViewById(R.id.address3)).setText(addrLine);
-					((EditText) findViewById(R.id.address3)).setVisibility(View.VISIBLE);
-					((ImageButton) findViewById(R.id.check3)).setVisibility(View.VISIBLE);
-				} else {
-					((EditText) findViewById(R.id.address3)).setVisibility(View.INVISIBLE);
-					((ImageButton) findViewById(R.id.check3)).setVisibility(View.INVISIBLE);
-				}
-			}
+					((EditText) findViewById(R.id.address1)).setVisibility(View.VISIBLE);
+					((ImageButton) findViewById(R.id.check1)).setVisibility(View.VISIBLE);
+					((EditText) findViewById(R.id.address1)).setText(addressObjs.get(0).getLine());
 			
+					if (addressObjs.size() >= 2) {
+						AddressObj addrObj = addressObjs.get(1);
+						if (addrObj != null && addrObj.getLine() != null && !addrObj.getLine().equals("")) {
+							String addrLine = addrObj.getLine();
+							
+							((EditText) findViewById(R.id.address2)).setText(addrLine);
+							((EditText) findViewById(R.id.address2)).setVisibility(View.VISIBLE);
+							((ImageButton) findViewById(R.id.check2)).setVisibility(View.VISIBLE);
+						} else {
+							((EditText) findViewById(R.id.address2)).setVisibility(View.INVISIBLE);
+							((ImageButton) findViewById(R.id.check2)).setVisibility(View.INVISIBLE);
+						}
+					}
+				
 
-			if (addressObjs.size() >= 4) {
-				AddressObj addrObj = addressObjs.get(3);
-				if (addrObj != null && addrObj.getLine() != null && !addrObj.getLine().equals("")) {
-					String addrLine = addrObj.getLine();
+					if (addressObjs.size() >= 3) {
+						AddressObj addrObj = addressObjs.get(2);
+						if (addrObj != null && addrObj.getLine() != null && !addrObj.getLine().equals("")) {
+							String addrLine = addrObj.getLine();
+							
+							((EditText) findViewById(R.id.address3)).setText(addrLine);
+							((EditText) findViewById(R.id.address3)).setVisibility(View.VISIBLE);
+							((ImageButton) findViewById(R.id.check3)).setVisibility(View.VISIBLE);
+						} else {
+							((EditText) findViewById(R.id.address3)).setVisibility(View.INVISIBLE);
+							((ImageButton) findViewById(R.id.check3)).setVisibility(View.INVISIBLE);
+						}
+					}
 					
-					((EditText) findViewById(R.id.address4)).setText(addrLine);
-					((EditText) findViewById(R.id.address4)).setVisibility(View.VISIBLE);
-					((ImageButton) findViewById(R.id.check4)).setVisibility(View.VISIBLE);
+
+					if (addressObjs.size() >= 4) {
+						AddressObj addrObj = addressObjs.get(3);
+						if (addrObj != null && addrObj.getLine() != null && !addrObj.getLine().equals("")) {
+							String addrLine = addrObj.getLine();
+							
+							((EditText) findViewById(R.id.address4)).setText(addrLine);
+							((EditText) findViewById(R.id.address4)).setVisibility(View.VISIBLE);
+							((ImageButton) findViewById(R.id.check4)).setVisibility(View.VISIBLE);
+						} else {
+							((EditText) findViewById(R.id.address4)).setVisibility(View.INVISIBLE);
+							((ImageButton) findViewById(R.id.check4)).setVisibility(View.INVISIBLE);
+						}
+					}
+					
+					//title.setText(addressObjs.get(0).getLocality());
 				} else {
-					((EditText) findViewById(R.id.address4)).setVisibility(View.INVISIBLE);
-					((ImageButton) findViewById(R.id.check4)).setVisibility(View.INVISIBLE);
+					((TextView) findViewById(R.id.chooseTheAddress)).setText(getResources().getString(R.string.no_conn_no_address));
+					
 				}
+				
 			}
-			
-			//title.setText(addressObjs.get(0).getLocality());
-		} else {
-			((TextView) findViewById(R.id.chooseTheAddress)).setText(getResources().getString(R.string.no_conn_no_address));
-			
-		}
+		};		
+		
+		
+		
+		MyTask mt = new MyTask();
+	    mt.execute();		
 		
 		
 	}

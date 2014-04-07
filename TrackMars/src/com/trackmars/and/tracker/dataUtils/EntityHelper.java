@@ -463,37 +463,29 @@ public class EntityHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		try {
-			db.execSQL(createStatement(this.tableToUpdate));
+				this.modifyData(db, 0, EntityHelper.DATABASE_VERSION);
 		} catch (SQLiteException e) {
 			// do nothing
 		}
 		
 	}
 
-	@Override
-	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-	    //Log.w(entityClass.getName(),
-	    //        "Upgrading database from version " + oldVersion + " to "
-	    //            + newVersion + ", which will destroy all old data");
-	    //db.execSQL("DROP TABLE IF EXISTS " + entityClass.getSimpleName());
-
-    	Log.d(EntityHelper.class.getName(), "Update database from " + new Integer(oldVersion) + " " + new Integer(newVersion));
-		
+	private void modifyData(SQLiteDatabase db, int oldVersion, int newVersion) {
 		
     	for(int n=oldVersion+1;n<=newVersion;n++) {
-    	
+        	
 			if (n == 11) {
 				this.tableToUpdate = Point.class;
 				db.execSQL("DROP TABLE IF EXISTS " + this.tableToUpdate.getSimpleName());
-				onCreate(db);	
+				db.execSQL(createStatement(this.tableToUpdate));	
 		    	
 				this.tableToUpdate = Track.class;
 				db.execSQL("DROP TABLE IF EXISTS " + this.tableToUpdate.getSimpleName());
-				onCreate(db);
+				db.execSQL(createStatement(this.tableToUpdate));
 				
 				this.tableToUpdate = TrackPoint.class;
 				db.execSQL("DROP TABLE IF EXISTS " + this.tableToUpdate.getSimpleName());
-				onCreate(db);	
+				db.execSQL(createStatement(this.tableToUpdate));
 			}
 			
 			if (n == 12) {
@@ -516,5 +508,14 @@ public class EntityHelper extends SQLiteOpenHelper {
 			}
 			
     	}
+	}
+	
+	
+	@Override
+	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+    	Log.d(EntityHelper.class.getName(), "Update database from " + new Integer(oldVersion) + " " + new Integer(newVersion));
+		this.modifyData(db, oldVersion, newVersion);
+		
 	}
 }

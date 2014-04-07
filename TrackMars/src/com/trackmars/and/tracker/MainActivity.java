@@ -133,7 +133,10 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
     @Override
     protected void onPause() {
       super.onPause();
-      unregisterReceiver(trackRecorderReceiver);
+      
+      if (trackRecorderService == null || !trackRecorderService.isRecording()) {
+    	  unregisterReceiver(trackRecorderReceiver);
+      }
       
       Log.d(MainActivity.class.getName(), "Ready to unbind");
       trackRecorderService.setInterval(null); // real time;
