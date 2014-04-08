@@ -1,11 +1,12 @@
 package com.trackmars.and.tracker;
 
-import java.util.List;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.internal.IPolylineDelegate;
+
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,14 +17,21 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+
 import com.google.android.gms.maps.SupportMapFragment;
 import com.trackmars.and.tracker.dataUtils.EntityHelper;
+import com.trackmars.and.tracker.dataUtils.IEntity;
+import com.trackmars.and.tracker.model.Point;
 import com.trackmars.and.tracker.model.Track;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
+
+import java.util.List;
 
 public class TrackViewActivity extends FragmentActivity {
 	
@@ -118,11 +126,17 @@ public class TrackViewActivity extends FragmentActivity {
     		
     		this.shapeRectangle = getRectangle(track);
     		
-    		
 			List<LatLng> latLngs = trackRecorderService.getAllTrackPoint(id);
 			
+			entityHelper = new EntityHelper(getApplicationContext(), Point.class);
+			List<IEntity> points = entityHelper.getAllRowsWhere("COLUMN_ID_TRACK", track.ID.toString(), 0, null, null);
+			
+			TrackWithPoinsToShow trackWithPoinsToShow = new TrackWithPoinsToShow();
+			trackWithPoinsToShow.setPoints(points);
+			trackWithPoinsToShow.setTrackPoints(latLngs);
+			
 	        Message msg = new Message();
-	        msg.obj = latLngs;
+	        msg.obj = trackWithPoinsToShow;
 	        
 	        handler.sendMessage(msg);
 	        
@@ -145,15 +159,16 @@ public class TrackViewActivity extends FragmentActivity {
 
         public void onServiceDisconnected(ComponentName className) {
         }
-        
     };    
-
     
 	private Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			
-			final List<LatLng> latLngs = (List<LatLng>)msg.obj;
+			final TrackWithPoinsToShow trackWithPoinsToShow = (TrackWithPoinsToShow) msg.obj;
+			final List<LatLng> latLngs = trackWithPoinsToShow.getTrackPoints();
+			final List<IEntity> points = trackWithPoinsToShow.getPoints();
+			
 			Boolean updateShape = TrackViewActivity.this.shapeRectangle == null;
 			
 			if (updateShape) {
@@ -186,11 +201,21 @@ public class TrackViewActivity extends FragmentActivity {
 	    	}
 	    	
 	    	if (map != null) {
+		    	for(IEntity point: points) {
+		    		Point pnt = (Point) point;
+		    		map.addCircle(new CircleOptions()
+		            .center(new LatLng(pnt.COLUMN_LAT, pnt.COLUMN_LNG))
+		            .radius(30)
+		            .strokeColor(Color.RED)
+		            .fillColor(Color.BLUE));
+		    	}
+	    	}
+			
+	    	if (map != null) {
 	        	LatLng myCurrentPosition = new LatLng((track.TOP + track.BOTTOM) / 2, (track.LEFT + track.RIGHT) / 2); 
 	            map.moveCamera(CameraUpdateFactory.newLatLng(myCurrentPosition));
 		        map.animateCamera(CameraUpdateFactory.zoomTo(12), 2000, null);
 	    	}
-			
 		}
 	};		
     
@@ -199,8 +224,6 @@ public class TrackViewActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
         
-        Log.d(MainActivity.class.getName(), "Main activity onResume started");
-
         Intent intent = new Intent(this, TrackRecorderService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     	

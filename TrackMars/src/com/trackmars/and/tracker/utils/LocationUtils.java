@@ -7,6 +7,7 @@ import com.trackmars.and.tracker.dataUtils.DateUtils;
 
 import android.app.Service;
 import android.content.Context;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -20,6 +21,7 @@ public class LocationUtils implements LocationListener {
 	private ILocationReceiver locationReceiver;
     private LocationManager locationManager;
 	private LocationProvider provider;
+	private LocationProvider provider1;
 	
 	private Integer interval = -1;
 	
@@ -86,12 +88,16 @@ public class LocationUtils implements LocationListener {
 		String bestPrivider = new String();
 		Location bestLocation;
 		
+		Criteria criteria = new Criteria();
+		return locationManager.getBestProvider(criteria, true);
+		
+		/*
 		for (String currentProvider : locationManager.getAllProviders() ) {
 			Location location = locationManager.getLastKnownLocation(currentProvider);
 			
-			if (currentProvider.equals(locationManager.GPS_PROVIDER)) {
-				return locationManager.GPS_PROVIDER;
-			}
+			//if (currentProvider.equals(locationManager.GPS_PROVIDER)) {
+			//	return locationManager.GPS_PROVIDER;
+			//}
 			
 			if (location != null) {
 				float accuracy = location.getAccuracy();
@@ -110,6 +116,7 @@ public class LocationUtils implements LocationListener {
 		}
 		
 		return bestProvider;
+		*/
 	}
 	
 	
@@ -125,6 +132,8 @@ public class LocationUtils implements LocationListener {
 	public LocationUtils(ILocationReceiver locationReceiver, FragmentActivity activity) {
 		this.locationReceiver = locationReceiver;
 
+		Context context = activity;
+		
 	    locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
 	    
 	    
@@ -140,36 +149,48 @@ public class LocationUtils implements LocationListener {
 		this.locationReceiver = locationReceiver;
 
 	    locationManager = (LocationManager) service.getSystemService(Context.LOCATION_SERVICE);
-	    
-	    
-	    
-//	    locationManager.requestLocationUpdates(
-//	    	    LocationManager.GPS_PROVIDER, 0, 0, dummyListener 
-//	    	    );	    
-	    
 	
 	}
 
 	
 	
 	public void onResume() {
-		
-    	provider = locationManager.getProvider(this.getBestProvider(locationManager));
-    	
-    	if (provider != null) {
-	    	
-	    	//locationManager.req
-	    	Location location = locationManager.getLastKnownLocation(provider.getName());
-	
+		Location location = null;
+    	provider1 = locationManager.getProvider(locationManager.NETWORK_PROVIDER);
+    	if (provider1 != null) {
+	    	location = locationManager.getLastKnownLocation(provider1.getName());
 	    	
 	        if (location != null) {
+	        	
+	          //Toast.makeText(, "gps", Toast.LENGTH_LONG);
+	        	
 	          onLocationChanged(location);
 	        }    	
 	        
 	        if (locationManager != null) {
-	      	  locationManager.requestLocationUpdates(provider.getName(), this.getIntervalTime(), 0, this);
+	      	  locationManager.requestLocationUpdates(provider1.getName(), this.getIntervalTime(), 0, this);
 	        }
     	}
+		
+		//if (location == null) {
+	    	//provider = locationManager.getProvider(this.getBestProvider(locationManager));
+	    	provider = locationManager.getProvider(locationManager.GPS_PROVIDER);
+	    	
+	    	if (provider != null) {
+		    	
+		    	//locationManager.req
+		    	location = locationManager.getLastKnownLocation(provider.getName());
+		
+		    	
+		        if (location != null) {
+		          onLocationChanged(location);
+		        }    	
+		        
+		        if (locationManager != null) {
+		      	  locationManager.requestLocationUpdates(provider.getName(), this.getIntervalTime(), 0, this);
+		        }
+	    	}
+		//}
     	
 	}
 	

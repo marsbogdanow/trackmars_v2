@@ -223,6 +223,11 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		
 	}
 	
+	public int getCurrentRecordingTrackId() {
+		return currentRecordingTrackId;
+	}
+
+
 	private void saveTrackPoint(Location location) {
 		
 		Long curDate = new Date().getTime();

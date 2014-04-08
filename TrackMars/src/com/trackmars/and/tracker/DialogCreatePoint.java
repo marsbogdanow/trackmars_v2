@@ -36,8 +36,10 @@ public class DialogCreatePoint extends Activity {
 
 	double longitude;
 	double latitude;
+	Integer trackId;
 	
 	private Handler handler;
+    private TrackRecorderService trackRecorderService;
 	
 	private class AddressObj {
 		
@@ -130,6 +132,7 @@ public class DialogCreatePoint extends Activity {
 		Bundle extras = getIntent().getExtras();
 		longitude = extras.getDouble("long");
 		latitude = extras.getDouble("lat");
+		trackId = extras.getInt("track_id");
 		
 
 		((TextView) findViewById(R.id.nameThePoint)).setTextSize(20);
@@ -301,6 +304,7 @@ public class DialogCreatePoint extends Activity {
 					point.COLUMN_LAT = latitude;
 					point.COLUMN_LNG = longitude;
 					point.COLUMN_CREATED = (new Date().getTime());
+					point.COLUMN_ID_TRACK = trackId;
 					
 					try {
 						entityHelper.save(point);
