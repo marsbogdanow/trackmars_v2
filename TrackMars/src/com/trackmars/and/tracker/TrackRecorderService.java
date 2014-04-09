@@ -362,7 +362,7 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 	}
 
 	@Override
-	public void newLocation(Location location) {
+	public void newLocation(Location location, Class listenerType, Float accuracy) {
 		// TODO Add Broadcast
 	    Log.d(TrackRecorderService.class.getName(), "newLocation");
 	    

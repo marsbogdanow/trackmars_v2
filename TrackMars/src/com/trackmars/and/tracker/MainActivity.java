@@ -56,6 +56,8 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 	private Boolean mapPositioned = false;
     private Marker myCurrentPositionMarker;
     private Location location;
+    private Class listenerType;
+    private Float accuracy;
     private TrackRecorderReceiver trackRecorderReceiver = new TrackRecorderReceiver();
     private TrackRecorderService trackRecorderService;
     
@@ -207,8 +209,10 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
     }
     
     @Override
-	public void newLocation(Location location) {
+	public void newLocation(Location location, Class listenerType, Float accuracy) {
         this.location = location;
+        this.listenerType = listenerType;
+        this.accuracy = accuracy;
 
     	if (trackRecorderService.isRecording()) {
     		try {
@@ -345,7 +349,7 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 	public void askLocation() {
 		if (trackRecorderService != null ) {
 			this.location = trackRecorderService.getLocation();
-			this.newLocation(this.location);
+			this.newLocation(this.location, this.listenerType, this.accuracy);
 		}
 	}
 	

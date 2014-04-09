@@ -351,6 +351,7 @@ containing a value of this type.
         public static final int day_more_then1=0x7f060023;
         public static final int details=0x7f06001d;
         public static final int distance=0x7f060034;
+        public static final int gps=0x7f06003f;
         public static final int hello_world=0x7f06003b;
         public static final int hour=0x7f060024;
         public static final int hour1=0x7f060029;
@@ -380,6 +381,7 @@ containing a value of this type.
         public static final int minute=0x7f060025;
         public static final int mph=0x7f060038;
         public static final int name_the_point=0x7f060018;
+        public static final int network=0x7f060040;
         public static final int no_conn_no_address=0x7f06001b;
         public static final int no_name=0x7f06001a;
         public static final int points=0x7f06001e;

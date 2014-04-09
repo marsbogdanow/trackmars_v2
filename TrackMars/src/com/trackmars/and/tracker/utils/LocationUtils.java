@@ -14,18 +14,82 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.widget.Toast;
+//import android.widget.Toast;
 
-public class LocationUtils implements LocationListener {
+public class LocationUtils{
 	
 	private ILocationReceiver locationReceiver;
     private LocationManager locationManager;
 	private LocationProvider provider;
 	private LocationProvider provider1;
 	
+	
+	private NetworkListener networkListener = new NetworkListener();
+	private GpsListener gpsListener = new GpsListener();
+	
+	private Location gpsLocation;
+	private Location networkLocation;
+	
 	private Integer interval = -1;
 	
 	final public static String LOCATION_RECEIVER_ACTION = "com.trackmars.and.tracker.locationMessage"; 
+	
+	public class NetworkListener implements LocationListener {
+
+		@Override
+		public void onLocationChanged(Location arg0) {
+			networkLocation = arg0;
+			LocationUtils.this.onLocationChanged();
+			
+		}
+
+		@Override
+		public void onProviderDisabled(String arg0) {
+			
+		}
+
+		@Override
+		public void onProviderEnabled(String arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	
+	public class GpsListener implements LocationListener {
+
+		@Override
+		public void onLocationChanged(Location arg0) {
+			gpsLocation = arg0;
+			LocationUtils.this.onLocationChanged();
+		}
+
+		@Override
+		public void onProviderDisabled(String arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onProviderEnabled(String arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+			// TODO Auto-generated method stub
+			
+		}
+	
+	}
+	
 	
 	private Integer getIntervalTime() {
 		Integer intervatTime = 0;
@@ -62,24 +126,6 @@ public class LocationUtils implements LocationListener {
 
 	    return dist * meterConversion;
 	    }
-	
-	
-//	private LocationListener dummyListener =  new LocationListener() {
-//        @Override
-//        public void onStatusChanged(String provider, int status, Bundle extras) {
-//        }
-//        @Override
-//        public void onProviderEnabled(String provider) {
-//        }
-//        @Override
-//        public void onProviderDisabled(String provider) {
-//        }
-//        @Override
-//        public void onLocationChanged(final Location location) {
-//        }
-//	};
-	
-	
 	
 	private String getBestProvider(LocationManager locationManager) {
 		
@@ -125,23 +171,15 @@ public class LocationUtils implements LocationListener {
 	}
 	
 	public void restartWithNewInterval() {
-		locationManager.removeUpdates(this);
+		locationManager.removeUpdates(this.gpsListener);
+		locationManager.removeUpdates(this.networkListener);
 		this.onResume();
 	}
 	
 	public LocationUtils(ILocationReceiver locationReceiver, FragmentActivity activity) {
 		this.locationReceiver = locationReceiver;
 
-		Context context = activity;
-		
-	    locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
-	    
-	    
-	    
-//	    locationManager.requestLocationUpdates(
-//	    	    LocationManager.GPS_PROVIDER, 0, 0, dummyListener 
-//	    	    );	    
-	    
+		locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
 	
 	}
 	
@@ -155,71 +193,84 @@ public class LocationUtils implements LocationListener {
 	
 	
 	public void onResume() {
-		Location location = null;
-    	provider1 = locationManager.getProvider(locationManager.NETWORK_PROVIDER);
+		
+		// Пробуем подключиться сразу к двум провайдерам к gps и network
+		
+		
+		provider1 = locationManager.getProvider(LocationManager.NETWORK_PROVIDER);
+		
     	if (provider1 != null) {
-	    	location = locationManager.getLastKnownLocation(provider1.getName());
-	    	
-	        if (location != null) {
-	        	
-	          //Toast.makeText(, "gps", Toast.LENGTH_LONG);
-	        	
-	          onLocationChanged(location);
-	        }    	
+	    	Location location = locationManager.getLastKnownLocation(provider1.getName());
 	        
 	        if (locationManager != null) {
-	      	  locationManager.requestLocationUpdates(provider1.getName(), this.getIntervalTime(), 0, this);
+	      	  locationManager.requestLocationUpdates(provider1.getName(), this.getIntervalTime(), 0, this.networkListener);
 	        }
     	}
 		
-		//if (location == null) {
-	    	//provider = locationManager.getProvider(this.getBestProvider(locationManager));
-	    	provider = locationManager.getProvider(locationManager.GPS_PROVIDER);
+	    provider = locationManager.getProvider(locationManager.GPS_PROVIDER);
 	    	
-	    	if (provider != null) {
+	    if (provider != null) {
 		    	
-		    	//locationManager.req
-		    	location = locationManager.getLastKnownLocation(provider.getName());
-		
+		    	Location location = locationManager.getLastKnownLocation(provider.getName());
 		    	
-		        if (location != null) {
-		          onLocationChanged(location);
-		        }    	
-		        
 		        if (locationManager != null) {
-		      	  locationManager.requestLocationUpdates(provider.getName(), this.getIntervalTime(), 0, this);
+		      	  locationManager.requestLocationUpdates(provider.getName(), this.getIntervalTime(), 0, this.gpsListener);
 		        }
-	    	}
-		//}
+	    }
     	
 	}
 	
 	public void onPause() { 
-		locationManager.removeUpdates(this);
+		locationManager.removeUpdates(this.gpsListener);
+		locationManager.removeUpdates(this.networkListener);
 		//locationManager.removeUpdates(dummyListener);
 		provider = null;
 	}	
 	
-	@Override
-	public void onLocationChanged(Location location) {
-		this.locationReceiver.newLocation(location);
-	}
-
-
-	@Override
-	public void onProviderEnabled(String provider) {
-	}
-
-	@Override
-	public void onProviderDisabled(String provider) {
-	}
-
-	@Override
-	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-		// TODO Auto-generated method stub
+	public void onLocationChanged() {
+		// теперь поймем, с какого ресивера взять точку
 		
-	}
+		Float gpsAccuracy = null;
+		Float networkAccuracy = null;
+		Float accuracy = null;
+		Location location = null;
+		Class listener = null;
+		
+		if (gpsLocation != null) {
+			gpsAccuracy = gpsLocation.getAccuracy();
+		}
+		
+		if (networkLocation != null) {
+			networkAccuracy = networkLocation.getAccuracy();
+			
+			if (gpsAccuracy != null) {
+				if (networkAccuracy < gpsAccuracy) {
+					listener = NetworkListener.class;
+					location = networkLocation;
+					accuracy = networkAccuracy;
+				} else {
+					listener = GpsListener.class;
+					location = gpsLocation;
+					accuracy = gpsAccuracy;
+				}
+			} else {
+				listener = NetworkListener.class;
+				location = networkLocation;
+				accuracy = networkAccuracy;
+			}
+		} else {
+			
+			if (gpsAccuracy != null) {
+				listener = GpsListener.class;
+				location = gpsLocation;
+				accuracy = gpsAccuracy;
+			}
+		}
 
+		
+		
+		this.locationReceiver.newLocation(location, listener, accuracy);
+	}
 
 	public LocationManager getLocationManager() {
 		return locationManager;
