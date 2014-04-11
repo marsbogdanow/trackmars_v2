@@ -349,6 +349,8 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 	public void askLocation() {
 		if (trackRecorderService != null ) {
 			this.location = trackRecorderService.getLocation();
+			this.accuracy = trackRecorderService.getAccuracy();
+			this.listenerType = trackRecorderService.getLastPointProvider();
 			this.newLocation(this.location, this.listenerType, this.accuracy);
 		}
 	}

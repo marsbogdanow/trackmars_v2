@@ -31,9 +31,11 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 	private LocationUtils locationUtils;
 	private ManagerBinder binder = new ManagerBinder();
 	private Location location;
+	private Float accuracy;
 	private Boolean isRecording = false;
 	private Boolean isPaused = false;
 	private int currentRecordingTrackId;
+	private Class lastPointProvider;
 	
 	
 	private TrackPoint trackPoint = new TrackPoint();
@@ -52,6 +54,19 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
     private Integer interval = 1;
     
     
+    
+	public Float getAccuracy() {
+		return accuracy;
+	}
+
+	public void setAccuracy(Float accuracy) {
+		this.accuracy = accuracy;
+	}
+
+	public void setLastPointProvider(Class lastPointProvider) {
+		this.lastPointProvider = lastPointProvider;
+	}
+
 	public Long getTrackCreatedTime() {
 		return trackCreatedTime;
 	}
@@ -377,12 +392,18 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 			saveTrackPoint(location);
 		}
 		
+		this.lastPointProvider = listenerType;
+		this.accuracy = accuracy;
 	}
 
 	@Override
 	public void askLocation() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public Class getLastPointProvider() {
+		return lastPointProvider;
 	}
 	
 }
