@@ -6,11 +6,16 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 //import com.google.android.gms.maps.MapFragment;
+
+
+
 
 import android.location.Criteria;
 import android.location.Location;
@@ -34,11 +39,13 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 //import android.app.Activity;
 //import android.app.Activity;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.Fragment;
+
 import com.google.android.gms.maps.SupportMapFragment;
 import com.trackmars.and.tracker.utils.ILocationReceiver;
 import com.trackmars.and.tracker.utils.LocationUtils;
@@ -60,6 +67,7 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
     private Float accuracy;
     private TrackRecorderReceiver trackRecorderReceiver = new TrackRecorderReceiver();
     private TrackRecorderService trackRecorderService;
+    Circle circle;
     
     private LatLng lastPoint;
     
@@ -244,6 +252,17 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 		            if (!mapPositioned) {
 			            map.animateCamera(CameraUpdateFactory.zoomTo(16), 2000, null);
 	            	}
+		            
+		            if (circle != null) {
+		            	circle.remove();
+		            }
+		            
+		            CircleOptions circleOptions = new CircleOptions();
+		            circleOptions.center(new LatLng(location.getLatitude(), location.getLongitude()));
+		            circleOptions.fillColor(Color.BLUE).strokeColor(Color.BLUE).strokeWidth(2).radius(this.accuracy / 2);
+		            circleOptions.fillColor(0x40ff0000);
+		            circle = map.addCircle(circleOptions);
+		            
 		            
 		            mapPositioned = true;
             	}

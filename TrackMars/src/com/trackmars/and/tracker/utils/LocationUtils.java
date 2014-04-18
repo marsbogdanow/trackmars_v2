@@ -1,20 +1,18 @@
 package com.trackmars.and.tracker.utils;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import ru.elifantiev.android.roboerrorreporter.Logger;
+
+import com.google.android.gms.internal.ar;
 import com.trackmars.and.tracker.dataUtils.DateUtils;
 
 import android.app.Service;
 import android.content.Context;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-//import android.widget.Toast;
 
 public class LocationUtils{
 	
@@ -27,8 +25,8 @@ public class LocationUtils{
 	private NetworkListener networkListener = new NetworkListener();
 	private GpsListener gpsListener = new GpsListener();
 	
-	private Location gpsLocation;
-	private Location networkLocation;
+	//private Location gpsLocation;
+	//private Location networkLocation;
 	
 	private Integer interval = -1;
 	
@@ -38,54 +36,59 @@ public class LocationUtils{
 
 		@Override
 		public void onLocationChanged(Location arg0) {
-			networkLocation = arg0;
-			LocationUtils.this.onLocationChanged();
+			//networkLocation = arg0;
+			Logger.log(this.toString() + " " + "onLocationChanged ");
+			LocationUtils.this.onLocationChanged(this.getClass(), arg0);
 			
 		}
 
 		@Override
 		public void onProviderDisabled(String arg0) {
+			Logger.log(this.toString() + " " + "onProviderDisabled ");
 			
 		}
 
 		@Override
 		public void onProviderEnabled(String arg0) {
-			// TODO Auto-generated method stub
-			
+			Logger.log(this.toString() + " " + "onProviderEnabled ");
 		}
 
 		@Override
 		public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-			// TODO Auto-generated method stub
-			
+			Logger.log(this.toString() + " " + " onStatusChanged arg0" + arg0 + " arg1 " + arg1);
 		}
 		
 	}
 	
 	public class GpsListener implements LocationListener {
-
+		
+		//int listenerAvailable = LocationProvider.OUT_OF_SERVICE;
+		int listenerAvailable = LocationProvider.AVAILABLE;
+		
 		@Override
 		public void onLocationChanged(Location arg0) {
-			gpsLocation = arg0;
-			LocationUtils.this.onLocationChanged();
+			//if (this.listenerAvailable == LocationProvider.AVAILABLE) {
+			Logger.log(this.toString() + " " + "onLocationChanged ");
+			//gpsLocation = arg0;
+			LocationUtils.this.onLocationChanged(this.getClass(), arg0);
+			//}
 		}
 
 		@Override
 		public void onProviderDisabled(String arg0) {
-			// TODO Auto-generated method stub
+			Logger.log(this.toString() + " " + "onProviderDisabled ");
 			
 		}
 
 		@Override
 		public void onProviderEnabled(String arg0) {
-			// TODO Auto-generated method stub
-			
+			Logger.log(this.toString() + " " + "onProviderEnabled ");
 		}
 
 		@Override
 		public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-			// TODO Auto-generated method stub
-			
+			Logger.log(this.toString() + " " + " onStatusChanged arg0" + arg0 + " arg1 " + arg1);
+			this.listenerAvailable = (arg1 == LocationProvider.AVAILABLE)?1:0;
 		}
 	
 	}
@@ -126,45 +129,6 @@ public class LocationUtils{
 
 	    return dist * meterConversion;
 	    }
-	
-	private String getBestProvider(LocationManager locationManager) {
-		
-		String bestProvider = new String();
-		Float bestAccuracy = null;
-		String bestPrivider = new String();
-		Location bestLocation;
-		
-		Criteria criteria = new Criteria();
-		return locationManager.getBestProvider(criteria, true);
-		
-		/*
-		for (String currentProvider : locationManager.getAllProviders() ) {
-			Location location = locationManager.getLastKnownLocation(currentProvider);
-			
-			//if (currentProvider.equals(locationManager.GPS_PROVIDER)) {
-			//	return locationManager.GPS_PROVIDER;
-			//}
-			
-			if (location != null) {
-				float accuracy = location.getAccuracy();
-				if (bestAccuracy == null) {
-					bestAccuracy = accuracy;
-					bestProvider = currentProvider;
-					bestLocation = location;
-				}
-				
-				if (accuracy < bestAccuracy) {
-					bestAccuracy = accuracy;
-					bestProvider = currentProvider;
-					bestLocation = location;
-				}
-			}
-		}
-		
-		return bestProvider;
-		*/
-	}
-	
 	
 	public void setInterval (Integer interval) {
 		this.interval = interval;
@@ -227,15 +191,15 @@ public class LocationUtils{
 		provider = null;
 	}	
 	
-	public void onLocationChanged() {
+	public void onLocationChanged(Class listenerProvider, Location location) {
 		// теперь поймем, с какого ресивера взять точку
 		
-		Float gpsAccuracy = null;
-		Float networkAccuracy = null;
-		Float accuracy = null;
-		Location location = null;
-		Class listener = null;
-		
+		//Float gpsAccuracy = null;
+		//Float networkAccuracy = null;
+		//Float accuracy = null;
+		//Location location = null;
+		//Class listener = null;
+		/*
 		if (gpsLocation != null) {
 			gpsAccuracy = gpsLocation.getAccuracy();
 		}
@@ -266,10 +230,14 @@ public class LocationUtils{
 				accuracy = gpsAccuracy;
 			}
 		}
-
+		*/
 		
+		Logger.log(this.toString() + " " + "#############################" );
+		Logger.log(this.toString() + " " + "onLocationChanged() " + listenerProvider.getName());
+		Logger.log(this.toString() + " " + "onLocationChanged() --- accuracy" + location.getAccuracy());
+		Logger.log(this.toString() + " " + "#############################" );
 		
-		this.locationReceiver.newLocation(location, listener, accuracy);
+		this.locationReceiver.newLocation(location, listenerProvider, location.getAccuracy());
 	}
 
 	public LocationManager getLocationManager() {
