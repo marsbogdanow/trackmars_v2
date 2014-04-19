@@ -7,6 +7,7 @@ import com.trackmars.and.tracker.dataUtils.DateUtils;
 
 import android.app.Service;
 import android.content.Context;
+import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -21,12 +22,12 @@ public class LocationUtils{
 	private LocationProvider provider;
 	private LocationProvider provider1;
 	
+	private Location lastNetworkProviderLocation;
+	private Class lastNetworkProviderClass;
+	
 	
 	private NetworkListener networkListener = new NetworkListener();
 	private GpsListener gpsListener = new GpsListener();
-	
-	//private Location gpsLocation;
-	//private Location networkLocation;
 	
 	private Integer interval = -1;
 	
@@ -38,7 +39,40 @@ public class LocationUtils{
 		public void onLocationChanged(Location arg0) {
 			//networkLocation = arg0;
 			Logger.log(this.toString() + " " + "onLocationChanged ");
-			LocationUtils.this.onLocationChanged(this.getClass(), arg0);
+			// позовем изменение локации только есть нетворк провайдер был вызван второй раз подряд
+			// это сделано чтобы свести к кминимуму дурацкие точки по сети между точками по gps
+			// (это условие пока отлючено)
+			// if (LocationUtils.this.lastNetworkProviderClass == NetworkListener.class) {
+				//если никуда не двигаемся, то не зовем изменения локации
+				if (LocationUtils.this.lastNetworkProviderLocation != null)  {
+					Logger.log("----ANTENNA");
+					Logger.log("arg0.getLatitude() " + arg0.getLatitude());
+					Logger.log("arg0.getLongitude() " + arg0.getLongitude());
+					Logger.log("arg0.getLongitude() " + arg0.getLongitude());
+					Logger.log("LocationUtils.this.lastNetworkProviderLocation.getLatitude() " +
+							LocationUtils.this.lastNetworkProviderLocation.getLatitude());
+					Logger.log("LocationUtils.this.lastNetworkProviderLocation.getLongitude() " +
+							LocationUtils.this.lastNetworkProviderLocation.getLongitude());
+					
+					
+					double distBetweenNetworkPoint = LocationUtils.distFrom(arg0.getLatitude(), 
+								arg0.getLongitude(), 
+								LocationUtils.this.lastNetworkProviderLocation.getLatitude(), 
+								LocationUtils.this.lastNetworkProviderLocation.getLongitude());
+					
+					Logger.log("distBetweenNetworkPoint " + distBetweenNetworkPoint);
+					
+					
+					if (distBetweenNetworkPoint > LocationUtils.this.lastNetworkProviderLocation.getAccuracy()) {
+						//arg0.getLatitude() != LocationUtils.this.lastNetworkProviderLocation.getLatitude() ||
+						//arg0.getLongitude() != LocationUtils.this.lastNetworkProviderLocation.getLongitude()) 
+						LocationUtils.this.onLocationChanged(this.getClass(), arg0);
+					}
+				}
+				LocationUtils.this.lastNetworkProviderLocation = arg0;
+			//} 
+			// установим признак, что последнее изменение локации было на основе сети
+			LocationUtils.this.lastNetworkProviderClass = NetworkListener.class;
 			
 		}
 
@@ -57,21 +91,18 @@ public class LocationUtils{
 		public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
 			Logger.log(this.toString() + " " + " onStatusChanged arg0" + arg0 + " arg1 " + arg1);
 		}
-		
 	}
 	
 	public class GpsListener implements LocationListener {
 		
-		//int listenerAvailable = LocationProvider.OUT_OF_SERVICE;
 		int listenerAvailable = LocationProvider.AVAILABLE;
 		
 		@Override
 		public void onLocationChanged(Location arg0) {
-			//if (this.listenerAvailable == LocationProvider.AVAILABLE) {
 			Logger.log(this.toString() + " " + "onLocationChanged ");
-			//gpsLocation = arg0;
 			LocationUtils.this.onLocationChanged(this.getClass(), arg0);
-			//}
+			// установим признак, что последнее изменение локации ьыло вызвано именно gps
+			LocationUtils.this.lastNetworkProviderClass = this.getClass();
 		}
 
 		@Override
@@ -140,10 +171,30 @@ public class LocationUtils{
 		this.onResume();
 	}
 	
+	private GpsStatus.Listener listener = new GpsStatus.Listener() {
+	    public void onGpsStatusChanged(int event) {
+	    	if (event == GpsStatus.GPS_EVENT_FIRST_FIX) {
+	    		Logger.log("GpsStatus.GPS_EVENT_FIRST_FIX");
+	    	} else
+	    	if (event == GpsStatus.GPS_EVENT_SATELLITE_STATUS) {
+	    		Logger.log("GpsStatus.GPS_EVENT_SATELLITE_STATUS");
+	    	} else
+	    	if (event == GpsStatus.GPS_EVENT_STARTED) {
+	    		Logger.log("GpsStatus.GPS_EVENT_STARTED");
+	    	} else 
+	    	if (event == GpsStatus.GPS_EVENT_STOPPED) {
+	    		Logger.log("GpsStatus.GPS_EVENT_STOPPED");
+	    	} else {
+	    		Logger.log("GpsStatus UNKNOWN " + event);
+	    	}
+	    }
+	};	
+	
 	public LocationUtils(ILocationReceiver locationReceiver, FragmentActivity activity) {
 		this.locationReceiver = locationReceiver;
-
+		
 		locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+		locationManager.addGpsStatusListener(listener);
 	
 	}
 	
@@ -151,6 +202,7 @@ public class LocationUtils{
 		this.locationReceiver = locationReceiver;
 
 	    locationManager = (LocationManager) service.getSystemService(Context.LOCATION_SERVICE);
+		locationManager.addGpsStatusListener(listener);
 	
 	}
 
