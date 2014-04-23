@@ -26,6 +26,8 @@ import com.trackmars.and.tracker.dataUtils.EntityHelper;
 import com.trackmars.and.tracker.dataUtils.IEntity;
 import com.trackmars.and.tracker.model.Point;
 import com.trackmars.and.tracker.model.Track;
+import com.trackmars.and.tracker.model.TrackPointData;
+import com.trackmars.and.tracker.utils.Tools;
 
 import android.util.Log;
 import android.view.View;
@@ -126,7 +128,7 @@ public class TrackViewActivity extends FragmentActivity {
     		
     		this.shapeRectangle = getRectangle(track);
     		
-			List<LatLng> latLngs = trackRecorderService.getAllTrackPoint(id);
+			List<TrackPointData> latLngs = trackRecorderService.getAllTrackPoint(id);
 			
 			entityHelper = new EntityHelper(getApplicationContext(), Point.class);
 			List<IEntity> points = entityHelper.getAllRowsWhere("COLUMN_ID_TRACK", track.ID.toString(), 0, null, null);
@@ -166,7 +168,7 @@ public class TrackViewActivity extends FragmentActivity {
 		public void handleMessage(Message msg) {
 			
 			final TrackWithPoinsToShow trackWithPoinsToShow = (TrackWithPoinsToShow) msg.obj;
-			final List<LatLng> latLngs = trackWithPoinsToShow.getTrackPoints();
+			final List<TrackPointData> latLngs = trackWithPoinsToShow.getTrackPoints();
 			final List<IEntity> points = trackWithPoinsToShow.getPoints();
 			
 			Boolean updateShape = TrackViewActivity.this.shapeRectangle == null;
@@ -178,12 +180,20 @@ public class TrackViewActivity extends FragmentActivity {
 	    	PolylineOptions polylineOptions = new PolylineOptions();
 	    	polylineOptions.geodesic(true);
 	    	
-	    	for (LatLng latLng : latLngs) {
-	    		Log.d(MainActivity.class.getName(), "latLng " + latLng.latitude + " " + latLng.longitude);
-	    		polylineOptions.add(latLng);
+	    	for (TrackPointData latLng : latLngs) {
+	    		polylineOptions.add(new LatLng(latLng.LAT, latLng.LNG));
+	    		
+	    		if (latLng.paused) {
+	    	    	if (map != null) {
+	    		    	map.addPolyline(polylineOptions);
+	    		    	polylineOptions = null;
+	    		    	polylineOptions = new PolylineOptions();
+	    		    	polylineOptions.geodesic(true);
+	    	    	}
+	    		}
 	    		
 	    		if (updateShape) {
-	    			TrackViewActivity.this.shapeRectangle.shape(latLng);
+	    			TrackViewActivity.this.shapeRectangle.shape(new LatLng(latLng.LAT, latLng.LNG));
 	    		}
 	    		
 	    	}
@@ -215,6 +225,7 @@ public class TrackViewActivity extends FragmentActivity {
 	        	LatLng myCurrentPosition = new LatLng((track.TOP + track.BOTTOM) / 2, (track.LEFT + track.RIGHT) / 2); 
 	            map.moveCamera(CameraUpdateFactory.newLatLng(myCurrentPosition));
 		        map.animateCamera(CameraUpdateFactory.zoomTo(12), 2000, null);
+	            //map.moveCamera(CameraUpdateFactory.newLatLng(myCurrentPosition));
 	    	}
 		}
 	};		

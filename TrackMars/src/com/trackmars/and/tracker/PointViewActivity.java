@@ -105,8 +105,8 @@ public class PointViewActivity extends FragmentActivity {
                 .title(title));
             	
 	            
-	            map.moveCamera(CameraUpdateFactory.newLatLng(myCurrentPosition));
 		        map.animateCamera(CameraUpdateFactory.zoomTo(16), 2000, null);
+	            map.moveCamera(CameraUpdateFactory.newLatLng(myCurrentPosition));
         
         }    	
     }

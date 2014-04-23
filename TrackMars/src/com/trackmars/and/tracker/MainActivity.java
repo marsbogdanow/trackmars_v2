@@ -17,6 +17,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 
 
+
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -47,6 +48,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.Fragment;
 
 import com.google.android.gms.maps.SupportMapFragment;
+import com.trackmars.and.tracker.model.TrackPointData;
 import com.trackmars.and.tracker.utils.ILocationReceiver;
 import com.trackmars.and.tracker.utils.LocationUtils;
 
@@ -198,20 +200,28 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
     	polylineOptions.geodesic(true);
     	
     	
-    	if (lastPoint == null) {
-        	List<LatLng> latLngs =  trackRecorderService.getAllTrackPoint(); 
-	    	for (LatLng latLng : latLngs) {
-	    		Log.d(MainActivity.class.getName(), "latLng " + latLng.latitude + " " + latLng.longitude);
-	    		polylineOptions.add(latLng);
+    	if (lastPoint == null) { // рисуем трек целиком после открытия активити. Т.е. целиком
+        	List<TrackPointData> latLngs =  trackRecorderService.getAllTrackPoint(); 
+	    	for (TrackPointData latLng : latLngs) {
+	    		Log.d(MainActivity.class.getName(), "latLng " + latLng.LAT + " " + latLng.LNG);
+	    		polylineOptions.add(new LatLng(latLng.LAT, latLng.LNG));
+	    		
+	        	if (map != null && latLng.paused) {
+	    	    	this.map.addPolyline(polylineOptions);
+	    	    	polylineOptions = null;
+	    	    	polylineOptions = new PolylineOptions();
+	    	    	polylineOptions.geodesic(true);
+	        	}
 	    	}
     	} else {
+    		// на момент появления точки активити уже было открыто. Т.е. дополняем уже отрисованный трек
     		polylineOptions.add(lastPoint);
     		polylineOptions.add(new LatLng(location.getLatitude(), location.getLongitude()));
     	}
     	
 		lastPoint = new LatLng(location.getLatitude(), location.getLongitude());
 
-    	if (map != null) {
+    	if (map != null && !trackRecorderService.isPaused()) {
 	    	this.map.addPolyline(polylineOptions);
     	}
     }

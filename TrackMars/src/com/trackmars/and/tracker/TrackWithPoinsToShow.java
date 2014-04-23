@@ -4,15 +4,16 @@ import java.util.List;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.trackmars.and.tracker.dataUtils.IEntity;
+import com.trackmars.and.tracker.model.TrackPointData;
 
 public class TrackWithPoinsToShow {
-	private List<LatLng> trackPoints;
+	private List<TrackPointData> trackPoints;
 	private List<IEntity> points;
 	
-	public List<LatLng> getTrackPoints() {
+	public List<TrackPointData> getTrackPoints() {
 		return trackPoints;
 	}
-	public void setTrackPoints(List<LatLng> trackPoints) {
+	public void setTrackPoints(List<TrackPointData> trackPoints) {
 		this.trackPoints = trackPoints;
 	}
 	public List<IEntity> getPoints() {

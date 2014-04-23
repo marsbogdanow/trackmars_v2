@@ -14,4 +14,6 @@ public class TrackPointData{
 	@EntityField(type=EntityField.TYPE_REAL)
 	public Double LAT;
 	
+	public Boolean paused;
+	
 }

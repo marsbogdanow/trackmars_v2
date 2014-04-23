@@ -150,14 +150,14 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		return location;
 	}
 	
-	public List<LatLng> getAllTrackPoint () throws IllegalAccessException, InstantiationException {
+	public List<TrackPointData> getAllTrackPoint () throws IllegalAccessException, InstantiationException {
 		return getAllTrackPoint(null);
 	}
 	
-	public List<LatLng> getAllTrackPoint (Integer trackId) throws IllegalAccessException, InstantiationException {
+	public List<TrackPointData> getAllTrackPoint (Integer trackId) throws IllegalAccessException, InstantiationException {
 		EntityHelper entityHelper = new EntityHelper(getApplicationContext(), TrackPoint.class);
 		
-		List<LatLng> locations = new ArrayList<LatLng>();
+		List<TrackPointData> locations = new ArrayList<TrackPointData>();
 		
 		for (IEntity trackPoint : entityHelper.getAllRowsWhere("id_track", trackId!=null?trackId.toString():track.ID.toString(), 0, null, "created")) {
 			String pointData = ((TrackPoint)trackPoint).POINTS_DATA;
@@ -168,22 +168,27 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 			
 			datas = gson.fromJson(pointData, new TypeToken<ArrayList<TrackPointData>>(){}.getType());
 			
-			for (TrackPointData data : datas) {
-				
-				LatLng location = new LatLng(data.LAT, data.LNG);
-				locations.add(location);
-			}
+			locations.addAll(datas);
+			
+			//for (TrackPointData data : datas) {
+			//	
+			//	LatLng location = new LatLng(data.LAT, data.LNG);
+			//	locations.add(location);
+			//}
 			
 		}
 
 		if (trackId == null) {
 			
+			return trackPointsToSave;
+			/*
 			for (TrackPointData data : trackPointsToSave) {
 				
 				LatLng location = new LatLng(data.LAT, data.LNG);
 				locations.add(location);
 				
 			}
+			*/
 			
 		}
 		
@@ -270,6 +275,8 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		trackPointData.CREATED = curDate;
 		trackPointData.LAT = location.getLatitude();
 		trackPointData.LNG = location.getLongitude();
+		trackPointData.paused = this.isPaused;
+		
 		
 		this.track.TRAVEL_TIME = (this.track.TRAVEL_TIME != null ? this.track.TRAVEL_TIME
 				: 0l)
