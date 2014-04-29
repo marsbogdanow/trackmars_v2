@@ -3,10 +3,12 @@ package com.trackmars.and.tracker.utils;
 import ru.elifantiev.android.roboerrorreporter.Logger;
 
 import com.google.android.gms.internal.ar;
+import com.trackmars.and.tracker.TrackRecorderService;
 import com.trackmars.and.tracker.dataUtils.DateUtils;
 
 import android.app.Service;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
@@ -30,6 +32,8 @@ public class LocationUtils{
 	private GpsListener gpsListener = new GpsListener();
 	
 	private Integer interval = -1;
+	
+	private Service trackRecorderService;
 	
 	final public static String LOCATION_RECEIVER_ACTION = "com.trackmars.and.tracker.locationMessage"; 
 	
@@ -127,8 +131,14 @@ public class LocationUtils{
 	
 	private Integer getIntervalTime() {
 		Integer intervatTime = 0;
+		
+		
+		SharedPreferences sPref = trackRecorderService.getSharedPreferences(Tools.PREFERENCES_NAME, trackRecorderService.MODE_PRIVATE);
+	    interval = sPref.getInt(Tools.PREF_INTERVAL, 1);		
+		
+		
 		if (interval == 0) {
-			intervatTime = 30 * DateUtils.MILLISECONDS_IN_SECOND;
+			intervatTime = 5 * DateUtils.MILLISECONDS_IN_SECOND;
 		} else if (interval == 1 || interval == 2) {
 			intervatTime = interval * DateUtils.MILLISECONDS_IN_MINUTE;
 		}  else if (interval == 3) {
@@ -200,6 +210,7 @@ public class LocationUtils{
 	
 	public LocationUtils(ILocationReceiver locationReceiver, Service service) {
 		this.locationReceiver = locationReceiver;
+		this.trackRecorderService = service;
 
 	    locationManager = (LocationManager) service.getSystemService(Context.LOCATION_SERVICE);
 		locationManager.addGpsStatusListener(listener);

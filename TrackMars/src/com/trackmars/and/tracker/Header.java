@@ -2,6 +2,7 @@ package com.trackmars.and.tracker;
 
 import com.trackmars.and.tracker.utils.ILocationReceiver;
 import com.trackmars.and.tracker.utils.LocationUtils;
+import com.trackmars.and.tracker.utils.Tools;
 
 import android.location.Location;
 import android.os.Bundle;
@@ -16,9 +17,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager.LayoutParams;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -26,7 +25,6 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -36,12 +34,10 @@ public class Header extends Fragment implements ILocationReceiver{
 	
     private TrackRecorderReceiver trackRecorderReceiver = new TrackRecorderReceiver();
     private TrackRecorderService trackRecorderService;
-	
+	private View view;
 	
 	// settings
 	// interval 0=0,5min; 1=1min; 2=2min; 3=5min; 4=10min; 5=30min; 6=1hour
-	final public static String PREF_INTERVAL = "interval";
-	final public static String PREFERENCES_NAME = "settings";
 	
 	private Integer interval = 1 ; // default 1=1min
 	
@@ -52,7 +48,7 @@ public class Header extends Fragment implements ILocationReceiver{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 		      Bundle savedInstanceState) {
 		
-		View view = inflater.inflate(R.layout.fragment_header,
+		view = inflater.inflate(R.layout.fragment_header,
 		        container, false);
 		
 		ImageButton menuBtn = (ImageButton)view.findViewById(R.id.imageButtonSettings);
@@ -66,7 +62,7 @@ public class Header extends Fragment implements ILocationReceiver{
 			
 		});
 		
-	    data = new String[]{"0.5", "1", "2", "5", "10", "30", "1" + getActivity().getResources().getString(R.string.hour1)};		    
+	    data = new String[]{"0.1", "1", "2", "5", "10", "30", "1" + getActivity().getResources().getString(R.string.hour1)};		    
 
 		Button intervalButton = (Button) view.findViewById(R.id.headerIntervalButton);
 		intervalButton.setOnClickListener(new Button.OnClickListener(){
@@ -77,10 +73,6 @@ public class Header extends Fragment implements ILocationReceiver{
 			}
 			
 		});
-		
-		getSettings();
-		intervalButton.setText(getResources().getString(R.string.interval) + " " + data[interval]);
-		
 		
 		//Подключаемся к серверу для получения обновлений позиции
 		
@@ -97,8 +89,13 @@ public class Header extends Fragment implements ILocationReceiver{
 	
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder binder) {
+
+    		getSettings();
+    		Button intervalButton = (Button) view.findViewById(R.id.headerIntervalButton);
+    		intervalButton.setText(getResources().getString(R.string.interval) + " " + data[interval]);
+       	
         	trackRecorderService = ((TrackRecorderService.ManagerBinder) binder).getMe();
-        	trackRecorderService.setInterval(interval);
+        	//trackRecorderService.setInterval(interval);
         }
         public void onServiceDisconnected(ComponentName className) {
         }
@@ -106,14 +103,14 @@ public class Header extends Fragment implements ILocationReceiver{
 	
 	
 	private void getSettings() {
-		SharedPreferences sPref = getActivity().getSharedPreferences(PREFERENCES_NAME, getActivity().MODE_PRIVATE);
-	    interval = sPref.getInt(PREF_INTERVAL, 1);		
+		SharedPreferences sPref = getActivity().getSharedPreferences(Tools.PREFERENCES_NAME, Activity.MODE_PRIVATE);
+	    interval = sPref.getInt(Tools.PREF_INTERVAL, 1);		
 	}
 	
 	private void saveSettings() {
-		SharedPreferences sPref = getActivity().getSharedPreferences(PREFERENCES_NAME, getActivity().MODE_PRIVATE);
+		SharedPreferences sPref = getActivity().getSharedPreferences(Tools.PREFERENCES_NAME, Activity.MODE_PRIVATE);
 	    Editor ed = sPref.edit();
-	    ed.putInt(PREF_INTERVAL, this.interval);
+	    ed.putInt(Tools.PREF_INTERVAL, this.interval);
 	    ed.commit();
 	}
 	
@@ -154,9 +151,14 @@ public class Header extends Fragment implements ILocationReceiver{
 			     public void onClick(View v) {
 			    	 saveSettings();
 
-			 	     Intent intent = new Intent(getActivity().getApplicationContext(), TrackRecorderService.class);
-				     getActivity().bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+			    	 Button intervalButton = (Button) view.findViewById(R.id.headerIntervalButton);
+			    	 intervalButton.setText(getResources().getString(R.string.interval) + " " + data[interval]);
+			 	     //Intent intent = new Intent(getActivity().getApplicationContext(), TrackRecorderService.class);
+			 	     //getActivity().unbindService(mConnection);
+				     //getActivity().bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 				     
+			    	 trackRecorderService.setInterval(interval);
+			    	 
 			    	 popupWindow.dismiss();
 			     }
 		     });
@@ -200,22 +202,6 @@ public class Header extends Fragment implements ILocationReceiver{
 
 	@Override
 	public void askLocation() {
-    	Log.d(Header.class.getName(), "askLocation");
-    	
-    	
-		ImageView antennaIndicator = (ImageView) getActivity().findViewById(R.id.antennaIndicator);
-
-    	
-    	if (trackRecorderService != null) {
-	    	if (trackRecorderService.getLastPointProvider() == LocationUtils.GpsListener.class) {
-	        	Log.d(Header.class.getName(), "gpsFound");
-	        	antennaIndicator.setImageResource(R.drawable.sattelite);
-	    	} else if (trackRecorderService.getLastPointProvider() == LocationUtils.NetworkListener.class) {
-	        	Log.d(Header.class.getName(), "networkFound");
-	        	antennaIndicator.setImageResource(R.drawable.antenna);
-	    	}
-    	}
-    	
-	}
+ 	}
 }
 		

@@ -32,6 +32,25 @@
         android:onClick="onClick"
         android:src="@drawable/button_ok" />
     
+    <TextView
+        android:id="@+id/nameThePoint"
+
+		android:layout_centerHorizontal="true"
+		
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_below="@+id/buttonBack"
+        android:layout_marginTop="45dp"
+
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+
+        android:text="@string/name_the_point" />
+    
     <EditText
         android:id="@+id/editText1"
         
@@ -44,29 +63,15 @@
         android:layout_marginLeft="10dp"
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
-        android:layout_below="@+id/buttonBack"
-        android:layout_marginTop="45dp"
-        
+        android:layout_below="@+id/nameThePoint"
+        android:layout_marginTop="10dp"
         android:background="#ede7e1"
         
         android:ems="10" >
 
-        <requestFocus />
+        <!-- requestFocus /-->
     </EditText>
 
-    <TextView
-        android:id="@+id/nameThePoint"
-
-        android:layout_alignBottom="@+id/editText1"
-        android:layout_marginBottom="33dp"
-        android:layout_alignLeft="@+id/editText1"
-        android:layout_marginLeft="0dp"
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-
-        android:text="@string/name_the_point" />
     
     <ImageView
         android:id="@+id/imageView1"
@@ -74,6 +79,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
+        android:layout_marginRight="10dp"
         android:src="@drawable/new_point_list_bg" />
 
     

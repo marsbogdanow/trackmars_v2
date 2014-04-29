@@ -7,6 +7,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.trackmars.and.tracker.model.TrackPointData;
 
 public class Tools {
+	
+	final public static String PREF_INTERVAL = "interval";
+	final public static String PREFERENCES_NAME = "settings";
 
 	static public List<LatLng> toLatLng(List<TrackPointData> datas) {
 		List<LatLng> locations = new ArrayList<LatLng>();

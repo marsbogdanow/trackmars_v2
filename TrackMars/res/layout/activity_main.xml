@@ -65,7 +65,7 @@
     
     
 
-	<LinearLayout
+	<RelativeLayout
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
 	    android:layout_above="@+id/imageButtonPoint"
@@ -78,7 +78,18 @@
 	    android:layout_height="match_parent"
 	    android:id="@+id/map"
 	    class="com.google.android.gms.maps.SupportMapFragment" />
-	</LinearLayout>
+
+    <ImageView
+        android:id="@+id/antennaIndicatorOnMap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/antenna" />
+		
+	</RelativeLayout>
     
     <ImageButton
         android:id="@+id/imageButtonResume"

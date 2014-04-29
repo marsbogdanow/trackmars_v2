@@ -18,6 +18,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 
 
+
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -56,6 +57,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 import android.util.Log;
 
@@ -287,6 +289,19 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 //	          } 
         }
 		buttonsArrange();
+		ImageView antennaIndicator = (ImageView) this.findViewById(R.id.antennaIndicatorOnMap);
+
+    	
+    	if (trackRecorderService != null) {
+	    	if (trackRecorderService.getLastPointProvider() == LocationUtils.GpsListener.class) {
+	        	Log.d(Header.class.getName(), "gpsFound");
+	        	antennaIndicator.setImageResource(R.drawable.sattelite);
+	    	} else if (trackRecorderService.getLastPointProvider() == LocationUtils.NetworkListener.class) {
+	        	Log.d(Header.class.getName(), "networkFound");
+	        	antennaIndicator.setImageResource(R.drawable.antenna);
+	    	}
+    	}
+		
 		
     }
 	

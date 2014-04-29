@@ -14,6 +14,7 @@ import com.trackmars.and.tracker.model.TrackPoint;
 import com.trackmars.and.tracker.model.TrackPointData;
 import com.trackmars.and.tracker.utils.ILocationReceiver;
 import com.trackmars.and.tracker.utils.LocationUtils;
+import com.trackmars.and.tracker.utils.Tools;
 
 import android.app.Service;
 import android.content.Intent;
@@ -83,8 +84,8 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		interval = intvl;
 		
 		if (intvl == null) {
-			SharedPreferences sPref = getSharedPreferences(Header.PREFERENCES_NAME, MODE_PRIVATE);
-		    interval = sPref.getInt(Header.PREF_INTERVAL, 1);
+			SharedPreferences sPref = getSharedPreferences(Tools.PREFERENCES_NAME, MODE_PRIVATE);
+		    interval = sPref.getInt(Tools.PREF_INTERVAL, 1);
 		}
 		
 		locationUtils.setInterval(interval);
