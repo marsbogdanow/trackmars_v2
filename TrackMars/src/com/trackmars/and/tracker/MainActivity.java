@@ -1,5 +1,6 @@
 package com.trackmars.and.tracker;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.elifantiev.android.roboerrorreporter.Logger;
@@ -13,8 +14,11 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 //import com.google.android.gms.maps.MapFragment;
+
+
 
 
 
@@ -210,42 +214,45 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
     		
     }
 
+    private PolylineOptions polylineOptions;
+    private Polyline polyline;
+	List<LatLng> lngs = new ArrayList<LatLng>();
+    
     private void showTrackOnTheMap (Location location) throws IllegalAccessException, InstantiationException {
     	
-    	Log.d(MainActivity.class.getName(), "call showTrackOnTheMap");
+    	if (this.map != null) {
     	
-    	PolylineOptions polylineOptions = new PolylineOptions();
-    	polylineOptions.geodesic(true);
-    	
-    	
-    	if (lastPoint == null) { // рисуем трек целиком после открытия активити. Т.е. целиком
-        	List<TrackPointData> latLngs =  trackRecorderService.getAllTrackPoint(); 
-	    	for (TrackPointData latLng : latLngs) {
-	    		Log.d(MainActivity.class.getName(), "latLng " + latLng.LAT + " " + latLng.LNG);
-	    		polylineOptions.add(new LatLng(latLng.LAT, latLng.LNG));
-		    	polylineOptions.geodesic(true).color(0x400000ff);
-		    	polylineOptions.width(LocationUtils.DEFAULT_ACCURACY);
-	    		
-	        	if (map != null && latLng.paused) {
-	    	    	this.map.addPolyline(polylineOptions);
-	    	    	polylineOptions = null;
-	    	    	polylineOptions = new PolylineOptions();
-	    	    	polylineOptions.geodesic(true);
-	        	}
-	    	}
-    	} else {
-    		// на момент появления точки активити уже было открыто. Т.е. дополняем уже отрисованный трек
-    		polylineOptions.add(lastPoint);
+	    	polylineOptions = new PolylineOptions();
 	    	polylineOptions.geodesic(true).color(0x400000ff);
 	    	polylineOptions.width(LocationUtils.DEFAULT_ACCURACY);
-    		polylineOptions.add(new LatLng(location.getLatitude(), location.getLongitude()));
+	    	
+	    	if (lastPoint == null) {
+		    	for (TrackPointData data : trackRecorderService.getAllTrackPoint()) {
+		    		lngs.add(new LatLng(data.LAT, data.LNG));
+		    		if (data.paused) {
+		    	    	polyline = this.map.addPolyline(polylineOptions);
+		    	    	polyline.setPoints(lngs);
+		    	    	lngs = new ArrayList<LatLng>();
+		    	    	polyline = this.map.addPolyline(polylineOptions);
+		    		}
+		    	}
+	    	}
+	    	
+	    	if (lastPoint != null) {
+	    		if (trackRecorderService.isPaused()) {
+	    	    	lngs = new ArrayList<LatLng>();
+	    	    	polyline = this.map.addPolyline(polylineOptions);
+	    		}
+	    		
+				lngs.add(new LatLng(location.getLatitude(), location.getLongitude()));
+	    	}
+	    	
+	    	lastPoint = new LatLng(location.getLatitude(), location.getLongitude());
+	    	
+	    	polyline.setPoints(lngs);
+	    	
     	}
     	
-		lastPoint = new LatLng(location.getLatitude(), location.getLongitude());
-
-    	if (map != null && !trackRecorderService.isPaused()) {
-	    	this.map.addPolyline(polylineOptions);
-    	}
     }
     
     @Override
