@@ -20,6 +20,7 @@ import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.test.suitebuilder.annotation.LargeTest;
 
 import com.google.android.gms.maps.SupportMapFragment;
 import com.trackmars.and.tracker.dataUtils.EntityHelper;
@@ -27,6 +28,7 @@ import com.trackmars.and.tracker.dataUtils.IEntity;
 import com.trackmars.and.tracker.model.Point;
 import com.trackmars.and.tracker.model.Track;
 import com.trackmars.and.tracker.model.TrackPointData;
+import com.trackmars.and.tracker.utils.LocationUtils;
 import com.trackmars.and.tracker.utils.Tools;
 
 import android.util.Log;
@@ -47,6 +49,7 @@ public class TrackViewActivity extends FragmentActivity {
 	EntityHelper entityHelper;
 	Track track;
     
+	//final private float DEFAULT_ACCURACY = 30;
     
 	class MyTask extends AsyncTask<Void, Void, Void> {
 
@@ -85,7 +88,6 @@ public class TrackViewActivity extends FragmentActivity {
         try {
 	        map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
 	                .getMap();
-	        
         } finally {}
         
         FrameLayout frameLayout = (FrameLayout) findViewById(R.id.intoFrame);
@@ -181,14 +183,21 @@ public class TrackViewActivity extends FragmentActivity {
 	    	polylineOptions.geodesic(true);
 	    	
 	    	for (TrackPointData latLng : latLngs) {
+	    		
 	    		polylineOptions.add(new LatLng(latLng.LAT, latLng.LNG));
+		    	polylineOptions.geodesic(true).color(0x400000ff);
+	    		
+		    	//if (latLng.accuracy != null) {
+		    	//	polylineOptions.width(latLng.accuracy);
+		    	//} else {
+		    		polylineOptions.width(LocationUtils.DEFAULT_ACCURACY);
+		    	//}
 	    		
 	    		if (latLng.paused) {
 	    	    	if (map != null) {
 	    		    	map.addPolyline(polylineOptions);
 	    		    	polylineOptions = null;
 	    		    	polylineOptions = new PolylineOptions();
-	    		    	polylineOptions.geodesic(true);
 	    	    	}
 	    		}
 	    		
@@ -223,9 +232,9 @@ public class TrackViewActivity extends FragmentActivity {
 			
 	    	if (map != null) {
 	        	LatLng myCurrentPosition = new LatLng((track.TOP + track.BOTTOM) / 2, (track.LEFT + track.RIGHT) / 2); 
-	            map.moveCamera(CameraUpdateFactory.newLatLng(myCurrentPosition));
-		        map.animateCamera(CameraUpdateFactory.zoomTo(12), 2000, null);
-	            //map.moveCamera(CameraUpdateFactory.newLatLng(myCurrentPosition));
+	            //map.moveCamera(CameraUpdateFactory.newLatLng());
+		        //map.animateCamera(CameraUpdateFactory.zoomTo(14), 2000, null);
+	            map.moveCamera(CameraUpdateFactory.newLatLngZoom(myCurrentPosition, 13));
 	    	}
 		}
 	};		

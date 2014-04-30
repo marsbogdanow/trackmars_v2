@@ -103,14 +103,11 @@ public class PointViewActivity extends FragmentActivity {
             	
             	myCurrentPositionMarker = map.addMarker(new MarkerOptions().position(myCurrentPosition)
                 .title(title));
-            	
 	            
-		        map.animateCamera(CameraUpdateFactory.zoomTo(16), 2000, null);
-	            map.moveCamera(CameraUpdateFactory.newLatLng(myCurrentPosition));
+	            map.animateCamera(CameraUpdateFactory.newLatLngZoom(myCurrentPosition, 16), 2000, null);
         
         }    	
     }
-
     
 	public void onClick(View view) {
  	}

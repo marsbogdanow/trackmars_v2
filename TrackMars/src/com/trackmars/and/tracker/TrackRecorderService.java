@@ -31,7 +31,11 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 	
 	private LocationUtils locationUtils;
 	private ManagerBinder binder = new ManagerBinder();
+	
 	private Location location;
+	private Location lastSavedLocation;
+	private Location lastSavedNetworkLocation;
+	
 	private Float accuracy;
 	private Boolean isRecording = false;
 	private Boolean isPaused = false;
@@ -181,15 +185,11 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 
 		if (trackId == null) {
 			
-			return trackPointsToSave;
-			/*
 			for (TrackPointData data : trackPointsToSave) {
 				
-				LatLng location = new LatLng(data.LAT, data.LNG);
-				locations.add(location);
+				locations.add(data);
 				
 			}
-			*/
 			
 		}
 		
@@ -248,7 +248,6 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		return currentRecordingTrackId;
 	}
 
-
 	private void saveTrackPoint(Location location) {
 		
 		Long curDate = new Date().getTime();
@@ -277,6 +276,7 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		trackPointData.LAT = location.getLatitude();
 		trackPointData.LNG = location.getLongitude();
 		trackPointData.paused = this.isPaused;
+		trackPointData.accuracy = location.getAccuracy();
 		
 		
 		this.track.TRAVEL_TIME = (this.track.TRAVEL_TIME != null ? this.track.TRAVEL_TIME
@@ -386,18 +386,16 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 
 	@Override
 	public void newLocation(Location location, Class listenerType, Float accuracy) {
-		// TODO Add Broadcast
-	    Log.d(TrackRecorderService.class.getName(), "newLocation");
 	    
 		this.location = location;
+		
 		Intent intent = new Intent(LocationUtils.LOCATION_RECEIVER_ACTION);
 		sendBroadcast(intent);
 		
-		if (isRecording && !isPaused) {
-			
+		if (isRecording && !isPaused && LocationUtils.isDistantOutOfAccuracy(this.location, this.lastSavedLocation)) {
 			rectangle.shape(location);
-			
 			saveTrackPoint(location);
+			this.lastSavedLocation = location;
 		}
 		
 		this.lastPointProvider = listenerType;
@@ -406,7 +404,6 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 
 	@Override
 	public void askLocation() {
-		// TODO Auto-generated method stub
 		
 	}
 

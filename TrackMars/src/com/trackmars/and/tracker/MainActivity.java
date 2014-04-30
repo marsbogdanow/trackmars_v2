@@ -2,6 +2,8 @@ package com.trackmars.and.tracker;
 
 import java.util.List;
 
+import ru.elifantiev.android.roboerrorreporter.Logger;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -13,6 +15,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 //import com.google.android.gms.maps.MapFragment;
+
 
 
 
@@ -67,6 +70,7 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 	private Boolean mapPositioned = false;
     private Marker myCurrentPositionMarker;
     private Location location;
+    private Location lastSavedLocation;
     private Class listenerType;
     private Float accuracy;
     private TrackRecorderReceiver trackRecorderReceiver = new TrackRecorderReceiver();
@@ -87,7 +91,7 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
     	
-        Log.d(MainActivity.class.getName(), "Main activity onCreate started");
+        Logger.log("Main activity onCreate started");
     	
         lastPoint = null; 
         
@@ -117,6 +121,19 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
             trackRecorderService.setInterval(-1); // real time;
             trackRecorderService.resume();
             
+            if (trackRecorderService.getLocation() != null) {
+                Logger.log( "Main activity onResume this.location != null");
+                
+          	  MainActivity.this.newLocation(trackRecorderService.getLocation(), 
+          			  trackRecorderService.getLastPointProvider(), 
+          			  trackRecorderService.getLocation().getAccuracy());
+          	  //this.lastPoint = null;
+          	  
+            } else {
+                Logger.log( "Main activity onResume this.location == null");
+            }
+
+        
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -129,7 +146,9 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
     protected void onResume() {
       super.onResume();
       
-      Log.d(MainActivity.class.getName(), "Main activity onResume started");
+      lastPoint = null;
+      
+      Logger.log( "Main activity onResume started");
 
       Intent intent = new Intent(this, TrackRecorderService.class);
       bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
@@ -139,9 +158,6 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
       trackRecorderReceiver.setLocationReceiver(this);
       registerReceiver(trackRecorderReceiver, new IntentFilter(LocationUtils.LOCATION_RECEIVER_ACTION));
       
-      
-	  //locationUtils.onResume();
-	    
     }
 
     @Override
@@ -152,7 +168,7 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
     	  unregisterReceiver(trackRecorderReceiver);
       }
       
-      Log.d(MainActivity.class.getName(), "Ready to unbind");
+      Logger.log( "Ready to unbind");
       trackRecorderService.setInterval(null); // real time;
       unbindService(mConnection);
       
@@ -207,6 +223,8 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 	    	for (TrackPointData latLng : latLngs) {
 	    		Log.d(MainActivity.class.getName(), "latLng " + latLng.LAT + " " + latLng.LNG);
 	    		polylineOptions.add(new LatLng(latLng.LAT, latLng.LNG));
+		    	polylineOptions.geodesic(true).color(0x400000ff);
+		    	polylineOptions.width(LocationUtils.DEFAULT_ACCURACY);
 	    		
 	        	if (map != null && latLng.paused) {
 	    	    	this.map.addPolyline(polylineOptions);
@@ -218,6 +236,8 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
     	} else {
     		// на момент появления точки активити уже было открыто. Т.е. дополняем уже отрисованный трек
     		polylineOptions.add(lastPoint);
+	    	polylineOptions.geodesic(true).color(0x400000ff);
+	    	polylineOptions.width(LocationUtils.DEFAULT_ACCURACY);
     		polylineOptions.add(new LatLng(location.getLatitude(), location.getLongitude()));
     	}
     	
@@ -235,15 +255,18 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
         this.accuracy = accuracy;
 
     	if (trackRecorderService.isRecording()) {
-    		try {
-				showTrackOnTheMap(location);
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+    		if (LocationUtils.isDistantOutOfAccuracy(location, lastSavedLocation)) {
+	    		try {
+					showTrackOnTheMap(location);
+					lastSavedLocation = location;
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    		}
     	}
         
         if (map != null && location != null) {
@@ -260,10 +283,10 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 	                .title("You are here"));
 	            	
 		            
-		            map.moveCamera(CameraUpdateFactory.newLatLng(myCurrentPosition));
-		            if (!mapPositioned) {
-			            map.animateCamera(CameraUpdateFactory.zoomTo(16), 2000, null);
-	            	}
+		            //if (!mapPositioned) {
+			            map.animateCamera(CameraUpdateFactory.newLatLngZoom(myCurrentPosition, 16), 2000, null);
+	            	//}
+		            //map.moveCamera(CameraUpdateFactory.newLatLng(myCurrentPosition));
 		            
 		            if (circle != null) {
 		            	circle.remove();
@@ -271,8 +294,8 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 		            
 		            CircleOptions circleOptions = new CircleOptions();
 		            circleOptions.center(new LatLng(location.getLatitude(), location.getLongitude()));
-		            circleOptions.fillColor(Color.BLUE).strokeColor(Color.BLUE).strokeWidth(2).radius(this.accuracy / 2);
-		            circleOptions.fillColor(0x40ff0000);
+		            circleOptions.fillColor(Color.BLUE).strokeColor(0x2000ff00).strokeWidth(2).radius(this.accuracy / 2);
+		            circleOptions.fillColor(0x10ff0000);
 		            circle = map.addCircle(circleOptions);
 		            
 		            
@@ -391,12 +414,17 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 	
 	@Override
 	public void askLocation() {
+		
 		if (trackRecorderService != null ) {
+			
 			this.location = trackRecorderService.getLocation();
 			this.accuracy = trackRecorderService.getAccuracy();
 			this.listenerType = trackRecorderService.getLastPointProvider();
+			
 			this.newLocation(this.location, this.listenerType, this.accuracy);
+			
 		}
+		
 	}
 	
 	

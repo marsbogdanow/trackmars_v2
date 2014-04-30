@@ -16,4 +16,6 @@ public class TrackPointData{
 	
 	public Boolean paused;
 	
+	public Float accuracy;
+	
 }
