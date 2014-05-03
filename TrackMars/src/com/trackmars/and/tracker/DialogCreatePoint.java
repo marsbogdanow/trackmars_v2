@@ -25,6 +25,7 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -168,8 +169,17 @@ public class DialogCreatePoint extends Activity {
 							((EditText) findViewById(R.id.address2)).setVisibility(View.VISIBLE);
 							((ImageButton) findViewById(R.id.check2)).setVisibility(View.VISIBLE);
 						} else {
+							View toRemove = findViewById(R.id.address2);
+							((LinearLayout)toRemove.getParent()).removeView(toRemove);
+							toRemove = findViewById(R.id.check2);
+							((LinearLayout)toRemove.getParent()).removeView(toRemove);
 							((EditText) findViewById(R.id.address2)).setVisibility(View.INVISIBLE);
 							((ImageButton) findViewById(R.id.check2)).setVisibility(View.INVISIBLE);
+							
+							toRemove = findViewById(R.id.addr2);
+							LinearLayout pr = (LinearLayout)toRemove.getParent();
+							pr.removeView(toRemove);
+							pr.invalidate();
 						}
 					}
 				
@@ -183,8 +193,19 @@ public class DialogCreatePoint extends Activity {
 							((EditText) findViewById(R.id.address3)).setVisibility(View.VISIBLE);
 							((ImageButton) findViewById(R.id.check3)).setVisibility(View.VISIBLE);
 						} else {
+
+							View toRemove = findViewById(R.id.address3);
+							((LinearLayout)toRemove.getParent()).removeView(toRemove);
+							toRemove = findViewById(R.id.check3);
+							((LinearLayout)toRemove.getParent()).removeView(toRemove);
 							((EditText) findViewById(R.id.address3)).setVisibility(View.INVISIBLE);
 							((ImageButton) findViewById(R.id.check3)).setVisibility(View.INVISIBLE);
+							
+							toRemove = findViewById(R.id.addr3);
+							LinearLayout pr = (LinearLayout)toRemove.getParent();
+							pr.removeView(toRemove);
+							pr.invalidate();
+							
 						}
 					}
 					
@@ -197,9 +218,20 @@ public class DialogCreatePoint extends Activity {
 							((EditText) findViewById(R.id.address4)).setText(addrLine);
 							((EditText) findViewById(R.id.address4)).setVisibility(View.VISIBLE);
 							((ImageButton) findViewById(R.id.check4)).setVisibility(View.VISIBLE);
+							
 						} else {
+							
+							View toRemove = findViewById(R.id.address4);
+							((LinearLayout)toRemove.getParent()).removeView(toRemove);
+							toRemove = findViewById(R.id.check4);
+							((LinearLayout)toRemove.getParent()).removeView(toRemove);
 							((EditText) findViewById(R.id.address4)).setVisibility(View.INVISIBLE);
 							((ImageButton) findViewById(R.id.check4)).setVisibility(View.INVISIBLE);
+							
+							toRemove = findViewById(R.id.addr4);
+							LinearLayout pr = (LinearLayout)toRemove.getParent();
+							pr.removeView(toRemove);
+							pr.invalidate();
 						}
 					}
 					
@@ -355,5 +387,16 @@ public class DialogCreatePoint extends Activity {
 			
 		}
 	}
+
+	public void onSelectKindOfPoint(View view) {
+		findViewById(R.id.buttonAttactive).setBackgroundColor(0);
+		findViewById(R.id.buttonFood).setBackgroundColor(0);
+		findViewById(R.id.buttonNight).setBackgroundColor(0);
+		findViewById(R.id.buttonNote).setBackgroundColor(0);
+		view.setBackgroundColor(0x5000AA00);
+		
+		
+	}
+	
 	
 }
