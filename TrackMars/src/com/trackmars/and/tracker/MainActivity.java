@@ -249,7 +249,10 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 	    	
 	    	lastPoint = new LatLng(location.getLatitude(), location.getLongitude());
 	    	
-	    	polyline.setPoints(lngs);
+	    	if (lngs != null) {
+    	    	polyline = this.map.addPolyline(polylineOptions);
+	    		polyline.setPoints(lngs);
+	    	}
 	    	
     	}
     	

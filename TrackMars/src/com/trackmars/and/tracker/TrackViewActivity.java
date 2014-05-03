@@ -2,8 +2,11 @@ package com.trackmars.and.tracker;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.internal.IPolylineDelegate;
 
@@ -30,6 +33,7 @@ import com.trackmars.and.tracker.model.Track;
 import com.trackmars.and.tracker.model.TrackPointData;
 import com.trackmars.and.tracker.utils.LocationUtils;
 import com.trackmars.and.tracker.utils.Tools;
+import com.trackmars.and.tracker.utils.RepresentationUtils;
 
 import android.util.Log;
 import android.view.View;
@@ -132,8 +136,8 @@ public class TrackViewActivity extends FragmentActivity {
     		
 			List<TrackPointData> latLngs = trackRecorderService.getAllTrackPoint(id);
 			
-			entityHelper = new EntityHelper(getApplicationContext(), Point.class);
-			List<IEntity> points = entityHelper.getAllRowsWhere("COLUMN_ID_TRACK", track.ID.toString(), 0, null, null);
+			EntityHelper entityHelperPoint = new EntityHelper(getApplicationContext(), Point.class);
+			List<IEntity> points = entityHelperPoint.getAllRowsWhere("COLUMN_ID_TRACK", track.ID.toString(), 0, null, null);
 			
 			TrackWithPoinsToShow trackWithPoinsToShow = new TrackWithPoinsToShow();
 			trackWithPoinsToShow.setPoints(points);
@@ -221,19 +225,12 @@ public class TrackViewActivity extends FragmentActivity {
 	    	
 	    	if (map != null) {
 		    	for(IEntity point: points) {
-		    		Point pnt = (Point) point;
-		    		map.addCircle(new CircleOptions()
-		            .center(new LatLng(pnt.COLUMN_LAT, pnt.COLUMN_LNG))
-		            .radius(30)
-		            .strokeColor(Color.RED)
-		            .fillColor(Color.BLUE));
+		    		RepresentationUtils.showPoint(map, (Point) point);
 		    	}
 	    	}
 			
 	    	if (map != null) {
 	        	LatLng myCurrentPosition = new LatLng((track.TOP + track.BOTTOM) / 2, (track.LEFT + track.RIGHT) / 2); 
-	            //map.moveCamera(CameraUpdateFactory.newLatLng());
-		        //map.animateCamera(CameraUpdateFactory.zoomTo(14), 2000, null);
 	            map.moveCamera(CameraUpdateFactory.newLatLngZoom(myCurrentPosition, 13));
 	    	}
 		}

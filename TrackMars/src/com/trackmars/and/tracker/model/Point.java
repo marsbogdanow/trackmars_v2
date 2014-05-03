@@ -32,4 +32,7 @@ public class Point implements IEntity{
 	@EntityField(type=EntityField.TYPE_INTEGER)
 	public Integer COLUMN_LIKE;
 	
+	@EntityField(type=EntityField.TYPE_INTEGER)
+	public Integer COLUMN_KIND;
+	
 }

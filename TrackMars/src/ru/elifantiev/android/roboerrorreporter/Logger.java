@@ -17,8 +17,17 @@ public class Logger {
     static private final DateFormat fileFormatter = new SimpleDateFormat("dd-MM-yy");
 			
 	static public void log(String text) {
+		
+		final Date dumpDate = new Date(System.currentTimeMillis());
+
+        StringBuilder reportBuilder = new StringBuilder();
+        reportBuilder
+                .append("\n")
+                .append(formatter.format(dumpDate)).append("\n")
+                .append(text);
+		
+		
         final String state = Environment.getExternalStorageState();
-        final Date dumpDate = new Date(System.currentTimeMillis());
         if (Environment.MEDIA_MOUNTED.equals(state)) {
 
         	final String logDir = String.format(logDirTmp, "trackmars");
@@ -38,7 +47,7 @@ public class Logger {
                 FileWriter writer = null;
                 try {
                     writer = new FileWriter(stacktrace, true);
-                    writer.write(text + "\n");
+                    writer.write(reportBuilder.toString() + "\n");
                 } catch (IOException e) {
                     // ignore
                 } finally {

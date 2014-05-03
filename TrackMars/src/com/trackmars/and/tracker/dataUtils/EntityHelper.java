@@ -26,7 +26,7 @@ import com.trackmars.and.tracker.model.TrackPoint;
 public class EntityHelper extends SQLiteOpenHelper {
 	
 	static final private String DATABASE_NAME = "trackmars.db";
-	static final private Integer DATABASE_VERSION = 14;
+	static final private Integer DATABASE_VERSION = 16;
 	
 	private Class entityClass; 
 	private Context context;
@@ -507,6 +507,9 @@ public class EntityHelper extends SQLiteOpenHelper {
 				db.execSQL("ALTER TABLE " + Track.class.getSimpleName() + " ADD COLUMN TRAVEL_TIME INTEGER");
 			}
 			
+			if (n == 16) {
+				db.execSQL("ALTER TABLE " + Point.class.getSimpleName() + " ADD COLUMN COLUMN_KIND INTEGER");
+			}
     	}
 	}
 	

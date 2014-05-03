@@ -6,11 +6,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import com.trackmars.and.tracker.TracksActivity.MyTask;
 import com.trackmars.and.tracker.dataUtils.EntityHelper;
-import com.trackmars.and.tracker.dataUtils.IEntity;
 import com.trackmars.and.tracker.model.Point;
-import com.trackmars.and.tracker.model.Track;
+import com.trackmars.and.tracker.utils.RepresentationUtils.KindOfPoint;
 
 import android.location.Address;
 import android.location.Geocoder;
@@ -18,16 +16,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.FragmentTransaction;
-import android.view.Gravity;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.app.Activity;
@@ -35,13 +27,13 @@ import android.content.Intent;
 
 public class DialogCreatePoint extends Activity {
 
-	double longitude;
+    double longitude;
 	double latitude;
 	Integer trackId;
 	
 	private Handler handler;
-    private TrackRecorderService trackRecorderService;
-	
+    private KindOfPoint kindOfPoint = KindOfPoint.NONE;
+    
 	private class AddressObj {
 		
 		private String line;
@@ -143,8 +135,8 @@ public class DialogCreatePoint extends Activity {
 		
 		
 		
-		EditText description = (EditText) findViewById(R.id.address1);
-		EditText title = (EditText) findViewById(R.id.editText1);
+		findViewById(R.id.address1);
+		findViewById(R.id.editText1);
 
 		
 		
@@ -168,19 +160,19 @@ public class DialogCreatePoint extends Activity {
 							((EditText) findViewById(R.id.address2)).setText(addrLine);
 							((EditText) findViewById(R.id.address2)).setVisibility(View.VISIBLE);
 							((ImageButton) findViewById(R.id.check2)).setVisibility(View.VISIBLE);
-						} else {
-							View toRemove = findViewById(R.id.address2);
-							((LinearLayout)toRemove.getParent()).removeView(toRemove);
-							toRemove = findViewById(R.id.check2);
-							((LinearLayout)toRemove.getParent()).removeView(toRemove);
-							((EditText) findViewById(R.id.address2)).setVisibility(View.INVISIBLE);
-							((ImageButton) findViewById(R.id.check2)).setVisibility(View.INVISIBLE);
-							
-							toRemove = findViewById(R.id.addr2);
-							LinearLayout pr = (LinearLayout)toRemove.getParent();
-							pr.removeView(toRemove);
-							pr.invalidate();
-						}
+						} 
+					} else {
+						View toRemove = findViewById(R.id.address2);
+						((LinearLayout)toRemove.getParent()).removeView(toRemove);
+						toRemove = findViewById(R.id.check2);
+						((LinearLayout)toRemove.getParent()).removeView(toRemove);
+						((EditText) findViewById(R.id.address2)).setVisibility(View.INVISIBLE);
+						((ImageButton) findViewById(R.id.check2)).setVisibility(View.INVISIBLE);
+						
+						toRemove = findViewById(R.id.addr2);
+						LinearLayout pr = (LinearLayout)toRemove.getParent();
+						pr.removeView(toRemove);
+						pr.invalidate();
 					}
 				
 
@@ -192,21 +184,19 @@ public class DialogCreatePoint extends Activity {
 							((EditText) findViewById(R.id.address3)).setText(addrLine);
 							((EditText) findViewById(R.id.address3)).setVisibility(View.VISIBLE);
 							((ImageButton) findViewById(R.id.check3)).setVisibility(View.VISIBLE);
-						} else {
+						} 
+					} else {
 
-							View toRemove = findViewById(R.id.address3);
-							((LinearLayout)toRemove.getParent()).removeView(toRemove);
-							toRemove = findViewById(R.id.check3);
-							((LinearLayout)toRemove.getParent()).removeView(toRemove);
-							((EditText) findViewById(R.id.address3)).setVisibility(View.INVISIBLE);
-							((ImageButton) findViewById(R.id.check3)).setVisibility(View.INVISIBLE);
-							
-							toRemove = findViewById(R.id.addr3);
-							LinearLayout pr = (LinearLayout)toRemove.getParent();
-							pr.removeView(toRemove);
-							pr.invalidate();
-							
-						}
+						View toRemove = findViewById(R.id.address3);
+						((LinearLayout)toRemove.getParent()).removeView(toRemove);
+						toRemove = findViewById(R.id.check3);
+						((LinearLayout)toRemove.getParent()).removeView(toRemove);
+						
+						toRemove = findViewById(R.id.addr3);
+						LinearLayout pr = (LinearLayout)toRemove.getParent();
+						pr.removeView(toRemove);
+						pr.invalidate();
+						
 					}
 					
 
@@ -219,20 +209,21 @@ public class DialogCreatePoint extends Activity {
 							((EditText) findViewById(R.id.address4)).setVisibility(View.VISIBLE);
 							((ImageButton) findViewById(R.id.check4)).setVisibility(View.VISIBLE);
 							
-						} else {
-							
-							View toRemove = findViewById(R.id.address4);
-							((LinearLayout)toRemove.getParent()).removeView(toRemove);
-							toRemove = findViewById(R.id.check4);
-							((LinearLayout)toRemove.getParent()).removeView(toRemove);
-							((EditText) findViewById(R.id.address4)).setVisibility(View.INVISIBLE);
-							((ImageButton) findViewById(R.id.check4)).setVisibility(View.INVISIBLE);
-							
-							toRemove = findViewById(R.id.addr4);
-							LinearLayout pr = (LinearLayout)toRemove.getParent();
-							pr.removeView(toRemove);
-							pr.invalidate();
-						}
+						} 
+					} else {
+						
+						View toRemove = findViewById(R.id.address4);
+						((LinearLayout)toRemove.getParent()).removeView(toRemove);
+						toRemove = findViewById(R.id.check4);
+						((LinearLayout)toRemove.getParent()).removeView(toRemove);
+						//((EditText) findViewById(R.id.address4)).setVisibility(View.INVISIBLE);
+						//((ImageButton) findViewById(R.id.check4)).setVisibility(View.INVISIBLE);
+						
+						toRemove = findViewById(R.id.addr4);
+						LinearLayout pr = (LinearLayout)toRemove.getParent();
+						pr.removeView(toRemove);
+						pr.invalidate();
+						
 					}
 					
 					//title.setText(addressObjs.get(0).getLocality());
@@ -262,8 +253,6 @@ public class DialogCreatePoint extends Activity {
 	    Geocoder geoCoder = new Geocoder(this, Locale.getDefault());    
 	    try {
 	            List<Address> addresses = geoCoder.getFromLocation(latitude, longitude, 5);
-	            String add = "";
-	            
 	            if (addresses.size() > 0) {
 	            	
 	            	
@@ -337,6 +326,7 @@ public class DialogCreatePoint extends Activity {
 					point.COLUMN_LNG = longitude;
 					point.COLUMN_CREATED = (new Date().getTime());
 					point.COLUMN_ID_TRACK = trackId;
+					point.COLUMN_KIND = this.kindOfPoint.val();
 					
 					try {
 						entityHelper.save(point);
@@ -389,11 +379,26 @@ public class DialogCreatePoint extends Activity {
 	}
 
 	public void onSelectKindOfPoint(View view) {
-		findViewById(R.id.buttonAttactive).setBackgroundColor(0);
+		findViewById(R.id.buttonAttractive).setBackgroundColor(0);
 		findViewById(R.id.buttonFood).setBackgroundColor(0);
 		findViewById(R.id.buttonNight).setBackgroundColor(0);
 		findViewById(R.id.buttonNote).setBackgroundColor(0);
 		view.setBackgroundColor(0x5000AA00);
+		
+		switch (view.getId()) {
+		case R.id.buttonAttractive:
+			this.kindOfPoint = KindOfPoint.ATTRACTIVE;
+			break;
+		case R.id.buttonFood:
+			this.kindOfPoint = KindOfPoint.FOOD;
+			break;
+		case R.id.buttonNight:
+			this.kindOfPoint = KindOfPoint.NIGHT;
+			break;
+		case R.id.buttonNote:
+			this.kindOfPoint = KindOfPoint.NOTE;
+			break;
+		}
 		
 		
 	}

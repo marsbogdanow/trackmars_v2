@@ -65,7 +65,9 @@ public class LocationUtils{
 								arg0.getLongitude(), 
 								LocationUtils.this.lastNetworkProviderLocation.getLatitude(), 
 								LocationUtils.this.lastNetworkProviderLocation.getLongitude());
-					
+					Logger.log("distBetweenNetworkPoint " + distBetweenNetworkPoint);
+					Logger.log("LocationUtils.this.lastNetworkProviderLocation.getAccuracy() " + 
+							LocationUtils.this.lastNetworkProviderLocation.getAccuracy());
 					if (distBetweenNetworkPoint > LocationUtils.this.lastNetworkProviderLocation.getAccuracy()) {
 						//arg0.getLatitude() != LocationUtils.this.lastNetworkProviderLocation.getLatitude() ||
 						//arg0.getLongitude() != LocationUtils.this.lastNetworkProviderLocation.getLongitude()) 
