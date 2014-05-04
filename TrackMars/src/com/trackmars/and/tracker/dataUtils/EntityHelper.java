@@ -26,7 +26,7 @@ import com.trackmars.and.tracker.model.TrackPoint;
 public class EntityHelper extends SQLiteOpenHelper {
 	
 	static final private String DATABASE_NAME = "trackmars.db";
-	static final private Integer DATABASE_VERSION = 16;
+	static final private Integer DATABASE_VERSION = 17;
 	
 	private Class entityClass; 
 	private Context context;
@@ -349,6 +349,10 @@ public class EntityHelper extends SQLiteOpenHelper {
 		return row;
 	}
 	
+	private String getStringFieldValue (String val) {
+		if (val == null) return null;
+		return val.replaceAll("'", "''");
+	}
 	
 	public void save(IEntity entity) {
 
@@ -405,7 +409,7 @@ public class EntityHelper extends SQLiteOpenHelper {
 						
 						statement += (firstField + field.getName() + " = " +
 								(field.getAnnotation(EntityField.class).type()==EntityField.TYPE_TEXT?"\'":"") +
-								fieldValue +
+								(field.getAnnotation(EntityField.class).type()==EntityField.TYPE_TEXT?getStringFieldValue((String)fieldValue):fieldValue) +
 								(field.getAnnotation(EntityField.class).type()==EntityField.TYPE_TEXT?"\' ":" ")
 							); 
 						
@@ -417,7 +421,7 @@ public class EntityHelper extends SQLiteOpenHelper {
 							statement += (firstField + " " + field.getName());
 							subStatement += (firstField + " " + 
 									(field.getAnnotation(EntityField.class).type()==EntityField.TYPE_TEXT?"\'":"") +
-									fieldValue +
+									(field.getAnnotation(EntityField.class).type()==EntityField.TYPE_TEXT?getStringFieldValue((String)fieldValue):fieldValue) +
 									(field.getAnnotation(EntityField.class).type()==EntityField.TYPE_TEXT?"\' ":" ")
 								); 
 							
@@ -510,6 +514,11 @@ public class EntityHelper extends SQLiteOpenHelper {
 			if (n == 16) {
 				db.execSQL("ALTER TABLE " + Point.class.getSimpleName() + " ADD COLUMN COLUMN_KIND INTEGER");
 			}
+			
+			if (n == 17) {
+				db.execSQL("ALTER TABLE " + Point.class.getSimpleName() + " ADD COLUMN COLUMN_GEOCODE TEXT");
+			}
+			
     	}
 	}
 	

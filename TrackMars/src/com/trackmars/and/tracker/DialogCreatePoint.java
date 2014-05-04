@@ -166,8 +166,6 @@ public class DialogCreatePoint extends Activity {
 						((LinearLayout)toRemove.getParent()).removeView(toRemove);
 						toRemove = findViewById(R.id.check2);
 						((LinearLayout)toRemove.getParent()).removeView(toRemove);
-						((EditText) findViewById(R.id.address2)).setVisibility(View.INVISIBLE);
-						((ImageButton) findViewById(R.id.check2)).setVisibility(View.INVISIBLE);
 						
 						toRemove = findViewById(R.id.addr2);
 						LinearLayout pr = (LinearLayout)toRemove.getParent();

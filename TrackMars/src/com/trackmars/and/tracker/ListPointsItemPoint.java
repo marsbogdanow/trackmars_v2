@@ -22,6 +22,7 @@ public class ListPointsItemPoint extends Fragment {
 	Long date;
 	Double lng;
 	Double lat;
+	String geocode;
 	
 	
 	@Override
@@ -32,6 +33,7 @@ public class ListPointsItemPoint extends Fragment {
 		        container, false);		
 		
 		title = this.getArguments().getString("title");
+		geocode = this.getArguments().getString("geocode");
 		id = this.getArguments().getInt("id");
 		date = this.getArguments().getLong("created");
 		lat = this.getArguments().getDouble("lat");
@@ -51,6 +53,11 @@ public class ListPointsItemPoint extends Fragment {
 		coord.setTextSize(10);
 		coord.setText(new DecimalFormat("#.######").format(lat) + " " + new DecimalFormat("#.######").format(lng));
 
+		TextView gc = (TextView) view.findViewById(R.id.geocode);
+		if (geocode != null) {
+			gc.setText(geocode);
+		}
+		
 		return view;
 	}
 }

@@ -62,6 +62,7 @@ public class PointViewActivity extends FragmentActivity {
 	//Double longitude;
 	//Double latitude;
 	Integer id;
+	Point point;
 	//Long created;
 	//String title;
 
@@ -85,6 +86,47 @@ public class PointViewActivity extends FragmentActivity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	      return null;
+	    }
+
+	    @Override
+	    protected void onPostExecute(Void result) {
+	      super.onPostExecute(result);
+	      //tvInfo.setText("End");
+	    }
+	  }	
+	
+	class GeocodingTask extends AsyncTask<Void, Void, Void> {
+
+	    @Override
+	    protected void onPreExecute() {
+	      super.onPreExecute();
+	    }
+
+	    @Override
+	    protected Void doInBackground(Void... params) {
+	      LatLng latLng = new LatLng(point.COLUMN_LAT, point.COLUMN_LNG);
+	      
+	      if (point.COLUMN_GEOCODE == null) {
+	    	  String addresses = RepresentationUtils.getGeoCodingInfo(latLng, PointViewActivity.this);
+	    	  point.COLUMN_GEOCODE = addresses;
+	    	  
+	  		  try {
+				EntityHelper entityHelper = new EntityHelper(getApplicationContext(), Point.class);
+				entityHelper.save(point);
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	      }
+	      
+	      Message msg = new Message();
+	      msg.obj = point;
+	      geocodeHandler.sendMessage(msg);
+	      
 	      return null;
 	    }
 
@@ -122,22 +164,11 @@ public class PointViewActivity extends FragmentActivity {
         
     }
   
-    
-	private Handler handler = new Handler() {
+    private Handler geocodeHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
-
-			final Point point = (Point) msg.obj;
 			
-			if (map != null) {
-            	
-				RepresentationUtils.showPoint(map, point);
-	            
-	            map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(point.COLUMN_LAT, point.COLUMN_LNG), 16), 2000, null);
-        
-	        }    	
-	
-	        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.intoFrame);
+	        //FrameLayout frameLayout = (FrameLayout) findViewById(R.id.intoFrame);
 	        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 	
 	        ListPointsItemPoint listPointsItemPoint = new ListPointsItemPoint();
@@ -148,12 +179,37 @@ public class PointViewActivity extends FragmentActivity {
 	        args.putDouble("lng", point.COLUMN_LNG);
 	        args.putDouble("lat", point.COLUMN_LAT);
 	        args.putLong("created", point.COLUMN_CREATED);
+	        args.putString("geocode", point.COLUMN_GEOCODE);
 	        args.putInt("id", id);
 	        
 	        listPointsItemPoint.setArguments(args);
 	     
 	        ft.replace(R.id.intoFrame, listPointsItemPoint);
 	        ft.commit();         
+			
+		}
+    };
+    
+	private Handler handler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+
+			point = (Point) msg.obj;
+			
+			if (map != null) {
+            	
+				RepresentationUtils.showPoint(map, point);
+	            
+	            map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(point.COLUMN_LAT, point.COLUMN_LNG), 16), 2000, null);
+        
+	        }    	
+	
+			
+			//if (point.COLUMN_GEOCODE == null) {
+				// запуск задачи геокодинга
+				GeocodingTask gt = new GeocodingTask();
+				gt.execute();
+			//}
 			
 		}
 	};		
