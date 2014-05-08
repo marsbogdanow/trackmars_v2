@@ -15,7 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class ListPointsItemPoint extends Fragment {
+public class FragmentPointInfo extends Fragment {
 	
 	String title;
 	Integer id;
@@ -24,12 +24,11 @@ public class ListPointsItemPoint extends Fragment {
 	Double lat;
 	String geocode;
 	
-	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 		      Bundle savedInstanceState) {
 		
-		View view = inflater.inflate(R.layout.point_list_item,
+		View view = inflater.inflate(R.layout.point_info,
 		        container, false);		
 		
 		title = this.getArguments().getString("title");
@@ -38,7 +37,6 @@ public class ListPointsItemPoint extends Fragment {
 		date = this.getArguments().getLong("created");
 		lat = this.getArguments().getDouble("lat");
 		lng = this.getArguments().getDouble("lng");
-		
 		
 		TextView textView = (TextView) view.findViewById(R.id.nameOfThePoint);
 		

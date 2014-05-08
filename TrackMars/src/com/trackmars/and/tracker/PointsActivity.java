@@ -2,6 +2,9 @@ package com.trackmars.and.tracker;
 
 import java.util.List;
 
+import com.trackmars.and.tracker.actListItems.ActivitiesListMonth;
+import com.trackmars.and.tracker.actListItems.ActivitiesListPoint;
+import com.trackmars.and.tracker.dataUtils.DateUtils;
 import com.trackmars.and.tracker.dataUtils.EntityHelper;
 import com.trackmars.and.tracker.dataUtils.IEntity;
 import com.trackmars.and.tracker.model.Point;
@@ -34,6 +37,24 @@ public class PointsActivity extends FragmentActivity {
 	      
 	}
 	
+	private TableRow createTableRow(Integer id) {
+		
+		TableRow tR = new TableRow(this);
+        tR.setPadding(0,0,0,0);
+        tR.setClickable(true);
+        
+        TableRow.LayoutParams flp1 = new TableRow.LayoutParams(
+        		TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
+        tR.setLayoutParams(flp1);
+        
+        FrameLayout frameLayout = new FrameLayout(this);
+        frameLayout.setId(id);
+        
+        tR.addView(frameLayout);
+        
+        return tR;
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -51,52 +72,60 @@ public class PointsActivity extends FragmentActivity {
 			try {
 				List<IEntity> points = entityHelper.getAllRows(0, 50, "column_created DESC");
 
+				int month = 0;
+				int year = 0;
+				String monthName;
+				
 				for (final IEntity entityRow : points) {
-					
-					TableRow tR = new TableRow(this);
-			        tR.setPadding(1,2,1,2);
-			        tR.setClickable(true);
 			        
 			        final String title = ((Point)entityRow).COLUMN_TITLE;
 			        final Double lng = ((Point)entityRow).COLUMN_LNG;
 			        final Double lat = ((Point)entityRow).COLUMN_LAT;
 			        final Long created = ((Point)entityRow).COLUMN_CREATED;
 			        final Integer id = ((Point)entityRow).COLUMN_ID;
+			        final Integer kind = ((Point)entityRow).COLUMN_KIND;
 			        
+			        if ((year != DateUtils.getYearByDateLong(created)) || (month != DateUtils.getMonthByDateLong(created))) {
+			        	
+			        	year = DateUtils.getYearByDateLong(created);
+			        	month = DateUtils.getMonthByDateLong(created);
+			        	monthName = DateUtils.getMonthNameByDateLong(created);
+			        	
+				        TableRow tRMonth = createTableRow(year*12 + month);
+
+				        // заталкиваем фрагмент в строку таблицы
+				        FragmentTransaction ftmonth = getSupportFragmentManager().beginTransaction();
+				        ActivitiesListMonth listPointsItemMonth = new ActivitiesListMonth();
+				        Bundle args = new Bundle();
+				        
+				        args.putString("month", monthName);
+				        
+				        listPointsItemMonth.setArguments(args);
+				        ftmonth.replace(year*12 + month, listPointsItemMonth);
+				        ftmonth.commit();         
+
+				        tableLayout.addView(tRMonth);		
+			        
+			        }
+			        
+			        TableRow tR = createTableRow(((Point)entityRow).COLUMN_ID);
 			        tR.setOnClickListener(new OnClickListener() {
-						
 						@Override
 						public void onClick(View v) {
 							selectPoint(v, (Point)entityRow);
 						}
-						
 					});
 			        
-			        TableRow.LayoutParams flp1 = new TableRow.LayoutParams(
-			        		TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL | Gravity.FILL_HORIZONTAL);
-			        tR.setLayoutParams(flp1);
-			        
-			        FrameLayout frameLayout = new FrameLayout(this);
-			        frameLayout.setId(((Point)entityRow).COLUMN_ID);
-			        
-			        tR.addView(frameLayout);
-			        
+			        // заталкиваем фрагмент в строку таблицы
 			        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-			        
-			        ListPointsItemPoint listPointsItemPoint = new ListPointsItemPoint();
-			        
+			        ActivitiesListPoint listPointsItemPoint = new ActivitiesListPoint();
 			        Bundle args = new Bundle();
 			        
 			        args.putString("title", title);
-			        args.putDouble("lng", lng);
-			        args.putDouble("lat", lat);
-			        args.putLong("created", created);
-			        args.putInt("id", id);
+			        args.putInt("kind", kind);
 			        
 			        listPointsItemPoint.setArguments(args);
-			        
 			        ft.replace(((Point)entityRow).COLUMN_ID, listPointsItemPoint);
-			        
 			        ft.commit();         
 
 			        tableLayout.addView(tR);		

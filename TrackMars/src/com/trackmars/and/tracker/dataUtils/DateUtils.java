@@ -14,6 +14,22 @@ public class DateUtils {
 	public static final Integer MILLISECONDS_IN_MINUTE = 1000 * 60;
 	public static final Integer MILLISECONDS_IN_HOUR = 1000 * 60 * 60;
 	
+	public static Integer getYearByDateLong(Long date) {
+		String iDate = new SimpleDateFormat("yyyy").format(new Date(date));
+		return Integer.valueOf(iDate);
+	}
+	
+	public static String getMonthNameByDateLong(Long date) {
+		String iDate = new SimpleDateFormat("MMMMMMMMM").format(new Date(date));
+		return iDate;
+	}
+
+	public static Integer getMonthByDateLong(Long date) {
+		String iDate = new SimpleDateFormat("MM").format(new Date(date));
+		return Integer.valueOf(iDate);
+	}
+
+	
 	public static String getDateVisualRepresentaion(Long dataInt, Activity activity) {
 		
 		Date date = new Date(dataInt);

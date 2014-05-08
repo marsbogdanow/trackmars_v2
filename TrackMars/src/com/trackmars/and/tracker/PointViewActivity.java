@@ -171,7 +171,7 @@ public class PointViewActivity extends FragmentActivity {
 	        //FrameLayout frameLayout = (FrameLayout) findViewById(R.id.intoFrame);
 	        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 	
-	        ListPointsItemPoint listPointsItemPoint = new ListPointsItemPoint();
+	        FragmentPointInfo listPointsItemPoint = new FragmentPointInfo();
 	        
 	        Bundle args = new Bundle();
 	        
