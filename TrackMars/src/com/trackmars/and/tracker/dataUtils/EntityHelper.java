@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.trackmars.and.tracker.MainActivity;
 import com.trackmars.and.tracker.TrackRecorderService;
+import com.trackmars.and.tracker.model.History;
 import com.trackmars.and.tracker.model.Point;
 import com.trackmars.and.tracker.model.Track;
 import com.trackmars.and.tracker.model.TrackPoint;
@@ -26,7 +27,7 @@ import com.trackmars.and.tracker.model.TrackPoint;
 public class EntityHelper extends SQLiteOpenHelper {
 	
 	static final private String DATABASE_NAME = "trackmars.db";
-	static final private Integer DATABASE_VERSION = 17;
+	static final private Integer DATABASE_VERSION = 20;
 	
 	private Class entityClass; 
 	private Context context;
@@ -251,7 +252,28 @@ public class EntityHelper extends SQLiteOpenHelper {
 		return listToReturn;
 	}
 	
+	public void deleteRow(Integer id) {
+		
+		SQLiteDatabase database;
+		database = this.getWritableDatabase();
 
+		String primaryKeyField = new String("ID");
+		
+		// finding field that is primary key
+		for (Field field  : entityClass.getDeclaredFields())	{
+			if (field.isAnnotationPresent(EntityField.class)) {
+				EntityField entityField = field.getAnnotation(EntityField.class);
+				
+				if (entityField.primaryKey() && !field.getName().equals("ID")) {
+					primaryKeyField = field.getName();
+				}
+			} 
+		}
+		
+		database.rawQuery("DELETE FROM " + entityClass.getSimpleName() + "WHERE "  + primaryKeyField +  " = " + id.toString(), null);
+		
+	}
+	
 	public IEntity getRow(Integer id) {
 
 		Log.d(EntityHelper.class.getName(), "getRow start");
@@ -259,6 +281,8 @@ public class EntityHelper extends SQLiteOpenHelper {
 		List<String> fields = new ArrayList<String>();
 		String fielsStrings = new String();
 		Integer counter = 0; 
+		
+		String primaryKeyField = new String("ID");
 		
 		// getting fields list
 		for (Field field  : entityClass.getDeclaredFields())	{
@@ -268,6 +292,10 @@ public class EntityHelper extends SQLiteOpenHelper {
 				EntityField entityField = field.getAnnotation(EntityField.class);
 				
 				fields.add(field.getName());
+				
+				if (entityField.primaryKey() && !field.getName().equals("ID")) {
+					primaryKeyField = field.getName();
+				}
 				
 			} 
 			
@@ -284,9 +312,9 @@ public class EntityHelper extends SQLiteOpenHelper {
 		
 		Cursor cursor;
 		if (id == null) {
-			cursor = database.rawQuery("SELECT " + fielsStrings + " FROM " + entityClass.getSimpleName() + " WHERE ID = (SELECT MAX(ID) FROM  " + entityClass.getSimpleName() + " );", null);
+			cursor = database.rawQuery("SELECT " + fielsStrings + " FROM " + entityClass.getSimpleName() + " WHERE " + primaryKeyField +  " = (SELECT MAX(" + primaryKeyField + ") FROM  " + entityClass.getSimpleName() + " );", null);
 		} else { 
-			cursor = database.rawQuery("SELECT " + fielsStrings + " FROM " + entityClass.getSimpleName() + " WHERE ID = ?;", new String[]{id.toString()});
+			cursor = database.rawQuery("SELECT " + fielsStrings + " FROM " + entityClass.getSimpleName() + " WHERE " + primaryKeyField + " = ?;", new String[]{id.toString()});
 		}
 		
 		
@@ -454,6 +482,8 @@ public class EntityHelper extends SQLiteOpenHelper {
 			statement += ") values (" + subStatement + ");";
 		}
 		
+    	Log.d(EntityHelper.class.getName(), statement);
+		
 		SQLiteDatabase database;
 		database = this.getWritableDatabase();
 		database.execSQL(statement);
@@ -519,6 +549,18 @@ public class EntityHelper extends SQLiteOpenHelper {
 				db.execSQL("ALTER TABLE " + Point.class.getSimpleName() + " ADD COLUMN COLUMN_GEOCODE TEXT");
 			}
 			
+			
+			if (n == 20) {
+				this.tableToUpdate = History.class;
+				db.execSQL("DROP TABLE IF EXISTS " + this.tableToUpdate.getSimpleName());
+				db.execSQL(createStatement(this.tableToUpdate));
+				
+				db.execSQL("INSERT INTO " + this.tableToUpdate.getSimpleName() +
+						" (ID_TRACK, TITLE, CREATED) SELECT ID, TITLE, CREATED FROM TRACK");
+				
+				db.execSQL("INSERT INTO " + this.tableToUpdate.getSimpleName() +
+						" (ID_POINT, TITLE, CREATED, KIND, GEOCODE) SELECT COLUMN_ID, COLUMN_TITLE, COLUMN_CREATED, COLUMN_KIND, COLUMN_GEOCODE FROM POINT");
+			}
     	}
 	}
 	

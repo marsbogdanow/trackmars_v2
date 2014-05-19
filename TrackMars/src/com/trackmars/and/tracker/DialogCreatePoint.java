@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import com.trackmars.and.tracker.dataUtils.DataOperation;
 import com.trackmars.and.tracker.dataUtils.EntityHelper;
 import com.trackmars.and.tracker.model.Point;
 import com.trackmars.and.tracker.utils.RepresentationUtils.KindOfPoint;
@@ -312,26 +313,15 @@ public class DialogCreatePoint extends Activity {
 				
 				if (titleEditText.getText().length() != 0) {
 				
-					EntityHelper entityHelper = new EntityHelper(getApplicationContext(), Point.class);
-					
 					Point point = new Point();
-					
-					//EditText descEditText = (EditText) findViewById(R.id.editText2);
-					
 					point.COLUMN_TITLE = titleEditText.getText().toString();
-					//point.COLUMN_DESC = descEditText.getText().toString();
 					point.COLUMN_LAT = latitude;
 					point.COLUMN_LNG = longitude;
 					point.COLUMN_CREATED = (new Date().getTime());
 					point.COLUMN_ID_TRACK = trackId;
 					point.COLUMN_KIND = this.kindOfPoint.val();
 					
-					try {
-						entityHelper.save(point);
-					} catch (IllegalArgumentException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					DataOperation.savePoint(getApplicationContext(), point);
 					
 				    Intent intent = new Intent(this, MainActivity.class);
 				    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

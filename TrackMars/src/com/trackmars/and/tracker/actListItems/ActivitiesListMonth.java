@@ -13,6 +13,7 @@ import com.trackmars.and.tracker.utils.RepresentationUtils.KindOfPoint;
 public class ActivitiesListMonth extends Fragment{
 
 	String title;
+
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -21,7 +22,7 @@ public class ActivitiesListMonth extends Fragment{
 		View view = inflater.inflate(R.layout.fragment_activities_list_month,
 		        container, false);		
 		
-		title = this.getArguments().getString("month");
+		title = this.getArguments().getString("month").concat(", ").concat(new Integer(this.getArguments().getInt("year")).toString());
 		
 		TextView textView = (TextView) view.findViewById(R.id.nameOfTheMonth);
 		

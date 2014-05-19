@@ -295,7 +295,7 @@ public class TrackRecordActivity extends FragmentActivity implements ILocationRe
 			if (!trackRecorderService.isRecording()) {
 				trackRecorderService.startRecord(true);
 			} else if (trackRecorderService.isRecording() && trackRecorderService.isPaused()) {
-				trackRecorderService.trackStop();
+				trackRecorderService.trackStop(this);
 			}
 			
 		} else if (view.getId() == R.id.buttonDetails) {

@@ -1,13 +1,18 @@
 package com.trackmars.and.tracker;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.trackmars.and.tracker.actListItems.ActivitiesListGeo;
 import com.trackmars.and.tracker.actListItems.ActivitiesListMonth;
 import com.trackmars.and.tracker.actListItems.ActivitiesListPoint;
+import com.trackmars.and.tracker.actListItems.ActivitiesListTrack;
 import com.trackmars.and.tracker.dataUtils.DateUtils;
 import com.trackmars.and.tracker.dataUtils.EntityHelper;
 import com.trackmars.and.tracker.dataUtils.IEntity;
+import com.trackmars.and.tracker.model.History;
 import com.trackmars.and.tracker.model.Point;
+import com.trackmars.and.tracker.model.Track;
 
 import android.os.Bundle;
 import android.content.Intent;
@@ -22,22 +27,35 @@ import android.widget.TableRow;
 
 public class PointsActivity extends FragmentActivity {
 
-	public void selectPoint(View v, Point point) {
+	private int rowId = 0;
+	
+	public void selectPoint(View v, History point) {
 		
 	      Intent intent = new Intent(this, PointViewActivity.class);
 	      intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 	      
-	      intent.putExtra("lng", point.COLUMN_LNG);
-	      intent.putExtra("lat", point.COLUMN_LAT);
-	      intent.putExtra("title", point.COLUMN_TITLE);
-	      intent.putExtra("created", point.COLUMN_CREATED);
-	      intent.putExtra("id", point.COLUMN_ID);
+	      intent.putExtra("geocode", point.GEOCODE);
+	      intent.putExtra("id", point.ID_POINT);
+	      
+	      startActivity(intent);
+	      
+	}
+
+	public void selectTrack(View v, History track) {
+		
+	      Intent intent = new Intent(this, TrackViewActivity.class);
+	      intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	      
+	      intent.putExtra("title", track.TITLE);
+	      intent.putExtra("created", track.CREATED);
+	      intent.putExtra("id", track.ID_TRACK);
 	      
 	      startActivity(intent);
 	      
 	}
 	
-	private TableRow createTableRow(Integer id) {
+	
+	private TableRow createTableRow() {
 		
 		TableRow tR = new TableRow(this);
         tR.setPadding(0,0,0,0);
@@ -48,7 +66,7 @@ public class PointsActivity extends FragmentActivity {
         tR.setLayoutParams(flp1);
         
         FrameLayout frameLayout = new FrameLayout(this);
-        frameLayout.setId(id);
+        frameLayout.setId(++rowId);
         
         tR.addView(frameLayout);
         
@@ -66,69 +84,172 @@ public class PointsActivity extends FragmentActivity {
 		
 		EntityHelper entityHelper;
 		try {
-			entityHelper = new EntityHelper(getApplicationContext(), Point.class);
+			entityHelper = new EntityHelper(getApplicationContext(), History.class);
 
+			
+			List<History> histories = new ArrayList<History>();
 		
 			try {
-				List<IEntity> points = entityHelper.getAllRows(0, 50, "column_created DESC");
+				List<IEntity> historyRecords = entityHelper.getAllRows(0, null, "created DESC");
 
 				int month = 0;
 				int year = 0;
 				String monthName;
+				String geo = new String("");
 				
-				for (final IEntity entityRow : points) {
-			        
-			        final String title = ((Point)entityRow).COLUMN_TITLE;
-			        final Double lng = ((Point)entityRow).COLUMN_LNG;
-			        final Double lat = ((Point)entityRow).COLUMN_LAT;
-			        final Long created = ((Point)entityRow).COLUMN_CREATED;
-			        final Integer id = ((Point)entityRow).COLUMN_ID;
-			        final Integer kind = ((Point)entityRow).COLUMN_KIND;
+				for (final IEntity entityRow : historyRecords) {
+					
+			        final String title = ((History)entityRow).TITLE;
+			        final Long created = ((History)entityRow).CREATED;
+			        final Integer kind = ((History)entityRow).KIND;
+			        final String geoCode = ((History)entityRow).GEOCODE;
+			        final boolean isTrack = ((History)entityRow).ID_TRACK != null && !((History)entityRow).ID_TRACK.equals(0);
+			        final boolean isPoint = ((History)entityRow).ID_POINT != null && !((History)entityRow).ID_POINT.equals(0);
+			        final Integer id = ((History)entityRow).ID;
+			        final Integer id_track = ((History)entityRow).ID_TRACK;
+			        final Integer id_point = ((History)entityRow).ID_POINT;
 			        
 			        if ((year != DateUtils.getYearByDateLong(created)) || (month != DateUtils.getMonthByDateLong(created))) {
+			        	
+				        TableRow tRMonth = createTableRow();
+
+				        // заталкиваем фрагмент в строку таблицы
+				        FragmentTransaction ftmonth = getSupportFragmentManager().beginTransaction();
+				        ActivitiesListGeo listPointsItemGeo = new ActivitiesListGeo();
+				        Bundle args = new Bundle();
+				        
+				        args.putString("geo", "----");
+				        
+				        listPointsItemGeo.setArguments(args);
+				        ftmonth.replace(rowId, listPointsItemGeo);
+				        ftmonth.commit();         
+
+				        tableLayout.addView(tRMonth);
+				        
+			        	for (final History historyItem : histories) {
+				        	TableRow tR = createTableRow();
+					        tR.setOnClickListener(new OnClickListener() {
+								@Override
+								public void onClick(View v) {
+									selectPoint(v, historyItem);
+								}
+							});
+					        
+					        // заталкиваем фрагмент в строку таблицы
+					        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+					        ActivitiesListPoint listPointsItemPoint = new ActivitiesListPoint();
+					        args = new Bundle();
+					        
+					        args.putString("title", historyItem.ID.toString() + " id_point-" + historyItem.ID_POINT.toString() + " " +  historyItem.TITLE);
+					        args.putLong("created", historyItem.CREATED);
+					        args.putInt("kind", historyItem.KIND);
+					        
+					        listPointsItemPoint.setArguments(args);
+					        ft.replace(rowId, listPointsItemPoint);
+					        ft.commit();         
+		
+					        tableLayout.addView(tR);
+			        		
+			        	}
+			        	
+			        	histories.clear();
 			        	
 			        	year = DateUtils.getYearByDateLong(created);
 			        	month = DateUtils.getMonthByDateLong(created);
 			        	monthName = DateUtils.getMonthNameByDateLong(created);
 			        	
-				        TableRow tRMonth = createTableRow(year*12 + month);
+				        tRMonth = createTableRow();
 
 				        // заталкиваем фрагмент в строку таблицы
-				        FragmentTransaction ftmonth = getSupportFragmentManager().beginTransaction();
+				        ftmonth = getSupportFragmentManager().beginTransaction();
 				        ActivitiesListMonth listPointsItemMonth = new ActivitiesListMonth();
-				        Bundle args = new Bundle();
+				        args = new Bundle();
 				        
 				        args.putString("month", monthName);
+				        args.putInt("year", year);
 				        
 				        listPointsItemMonth.setArguments(args);
-				        ftmonth.replace(year*12 + month, listPointsItemMonth);
+				        ftmonth.replace(rowId, listPointsItemMonth);
 				        ftmonth.commit();         
 
 				        tableLayout.addView(tRMonth);		
 			        
 			        }
 			        
-			        TableRow tR = createTableRow(((Point)entityRow).COLUMN_ID);
-			        tR.setOnClickListener(new OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							selectPoint(v, (Point)entityRow);
-						}
-					});
-			        
-			        // заталкиваем фрагмент в строку таблицы
-			        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-			        ActivitiesListPoint listPointsItemPoint = new ActivitiesListPoint();
-			        Bundle args = new Bundle();
-			        
-			        args.putString("title", title);
-			        args.putInt("kind", kind);
-			        
-			        listPointsItemPoint.setArguments(args);
-			        ft.replace(((Point)entityRow).COLUMN_ID, listPointsItemPoint);
-			        ft.commit();         
+			        if (!isTrack && geoCode != null && !geo.equals(geoCode)) {
+			        	geo = new String(geoCode);
+				        TableRow tRMonth = createTableRow();
 
-			        tableLayout.addView(tR);		
+				        // заталкиваем фрагмент в строку таблицы
+				        FragmentTransaction ftmonth = getSupportFragmentManager().beginTransaction();
+				        ActivitiesListGeo listPointsItemGeo = new ActivitiesListGeo();
+				        Bundle args = new Bundle();
+				        
+				        args.putString("geo", geo);
+				        
+				        listPointsItemGeo.setArguments(args);
+				        ftmonth.replace(rowId, listPointsItemGeo);
+				        ftmonth.commit();         
+
+				        tableLayout.addView(tRMonth);		
+			        }
+			        
+			        if (isPoint) { // point
+			        
+				        if (geo != null && !geo.equals("")) {
+				        	TableRow tR = createTableRow();
+					        tR.setOnClickListener(new OnClickListener() {
+								@Override
+								public void onClick(View v) {
+									selectPoint(v, (History)entityRow);
+								}
+							});
+					        
+					        // заталкиваем фрагмент в строку таблицы
+					        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+					        ActivitiesListPoint listPointsItemPoint = new ActivitiesListPoint();
+					        Bundle args = new Bundle();
+					        
+					        args.putString("title", id.toString() + " id_point-" + id_point.toString() + " " +  title);
+					        args.putLong("created", created);
+					        args.putInt("kind", kind);
+					        
+					        listPointsItemPoint.setArguments(args);
+					        ft.replace(rowId, listPointsItemPoint);
+					        ft.commit();         
+		
+					        tableLayout.addView(tR);
+				        } else {
+				        	histories.add((History) entityRow);
+				        }
+				        
+			        }
+			        
+			        if (isTrack) {
+				        
+				        TableRow tR = createTableRow();
+				        tR.setOnClickListener(new OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								selectTrack(v, (History)entityRow);
+							}
+						});
+				        
+				        // заталкиваем фрагмент в строку таблицы
+				        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+				        ActivitiesListTrack listPointsItemTrack = new ActivitiesListTrack();
+				        Bundle args = new Bundle();
+				        
+				        args.putString("title", id.toString() + " id_track-" + id_track.toString() + " " +  title);
+				        args.putLong("created", kind);
+				        
+				        listPointsItemTrack.setArguments(args);
+				        ft.replace(rowId, listPointsItemTrack);
+				        ft.commit();         
+	
+				        tableLayout.addView(tR);
+				        
+			        }
 				}
 			
 			

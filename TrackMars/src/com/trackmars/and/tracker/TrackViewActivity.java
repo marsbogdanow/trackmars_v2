@@ -197,7 +197,7 @@ public class TrackViewActivity extends FragmentActivity {
 		    		polylineOptions.width(LocationUtils.DEFAULT_ACCURACY);
 		    	//}
 	    		
-	    		if (latLng.paused) {
+	    		if (latLng.paused != null && latLng.paused) {
 	    	    	if (map != null) {
 	    		    	map.addPolyline(polylineOptions);
 	    		    	polylineOptions = null;
@@ -229,7 +229,7 @@ public class TrackViewActivity extends FragmentActivity {
 		    	}
 	    	}
 			
-	    	if (map != null) {
+	    	if (map != null && track != null && track.TOP != null && track.BOTTOM != null && track.LEFT != null && track.RIGHT != null) {
 	        	LatLng myCurrentPosition = new LatLng((track.TOP + track.BOTTOM) / 2, (track.LEFT + track.RIGHT) / 2); 
 	            map.moveCamera(CameraUpdateFactory.newLatLngZoom(myCurrentPosition, 13));
 	    	}

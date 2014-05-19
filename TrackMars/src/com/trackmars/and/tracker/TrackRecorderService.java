@@ -1,5 +1,6 @@
 package com.trackmars.and.tracker;
 
+import java.net.DatagramPacket;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.List;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.trackmars.and.tracker.dataUtils.DataOperation;
 import com.trackmars.and.tracker.dataUtils.EntityHelper;
 import com.trackmars.and.tracker.dataUtils.IEntity;
 import com.trackmars.and.tracker.model.Track;
@@ -16,13 +18,17 @@ import com.trackmars.and.tracker.utils.ILocationReceiver;
 import com.trackmars.and.tracker.utils.LocationUtils;
 import com.trackmars.and.tracker.utils.Tools;
 
+import android.app.AlertDialog;
 import android.app.Service;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.EditText;
 
 public class TrackRecorderService extends Service implements ILocationReceiver{
 
@@ -122,21 +128,62 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		
 	}
 	
-	public void trackStop() throws IllegalAccessException, InstantiationException {
+	public void trackStop(Context winContext) throws IllegalAccessException, InstantiationException {
 		
-		this.isPaused = false;
-		this.isRecording = false;
 
-		saveTrackPoint(location);
+////////////////////////////////////////////////////////////
+		AlertDialog.Builder alert = new AlertDialog.Builder(winContext);
+
+		alert.setTitle(winContext.getResources().getString(R.string.end_of_trip));
+		alert.setMessage(winContext.getResources().getString(R.string.name_the_trip));
+
+		// Set an EditText view to get user input 
+		final EditText input = new EditText(this);
+		alert.setView(input);
+
+		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		public void onClick(DialogInterface dialog, int whichButton) {
+
+			TrackRecorderService.this.isPaused = false;
+			TrackRecorderService.this.isRecording = false;
+
+			saveTrackPoint(location);
+			
+			try {
+				EntityHelper trackHelper = new EntityHelper(getApplicationContext(), Track.class);
+				trackHelper.getRow(track.ID);
+				track.TITLE = input.getText().toString();
+				
+				DataOperation.saveTrack(getApplicationContext(), track);
+				
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			TrackRecorderService.this.track = null;
+			TrackRecorderService.this.rectangle = null;
+			
+			TrackRecorderService.this.lastSavePointTime = null;
+			TrackRecorderService.this.lastSavePointLatLng = null;
+			
+		    currentTravelTime = 0l;
+		    currentDistance = 0d;
+		    
+		  }
+		});
+
+		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		  public void onClick(DialogInterface dialog, int whichButton) {
+		    // Canceled.
+		  }
+		});
+
+		alert.show();////////////////////////////////////////////////////////////		
 		
-		this.track = null;
-		this.rectangle = null;
-		
-		this.lastSavePointTime = null;
-		this.lastSavePointLatLng = null;
-		
-	    currentTravelTime = 0l;
-	    currentDistance = 0d;
 	}
 	
 	public void resume() {
@@ -203,11 +250,14 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		
 		this.rectangle = new Rectangle();
 		
-		EntityHelper entityHelper = new EntityHelper(getApplicationContext(), Track.class);
 		
 		if (resumeLastTrack) {
 			
-			track = (Track)entityHelper.getRow(null); 
+			EntityHelper entityHelper = new EntityHelper(getApplicationContext(), Track.class);
+			track = (Track)entityHelper.getRow(null);
+			
+			entityHelper = null;
+			
 			this.currentRecordingTrackId = track.ID;
 			
 			this.rectangle.create(track.LEFT, track.RIGHT, track.TOP, track.BOTTOM); 
@@ -218,18 +268,12 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 			track.CREATED = new Date().getTime();
 			
 			
+			
 			try {
-				entityHelper.save(track);
-	
-				try {
-					track = (Track)entityHelper.getRow(null);
+				
+				track = DataOperation.saveTrack(getApplicationContext(), track);
 					
-					this.currentRecordingTrackId = track.ID;
-					
-				} catch (IllegalArgumentException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				this.currentRecordingTrackId = track.ID;
 			
 			} catch (IllegalArgumentException e) {
 				// TODO Auto-generated catch block
@@ -326,11 +370,8 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 				e.printStackTrace();
 			}
 			
-			EntityHelper entityHelperTrack;
 			
 			try {
-				entityHelperTrack = new EntityHelper(getApplicationContext(),
-						Track.class);
 
 				if (this.rectangle.isAltered()) {
 					this.track.BOTTOM = rectangle.getBottom();
@@ -340,7 +381,7 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 				}
 
 
-				entityHelperTrack.save(this.track);
+				this.track = DataOperation.saveTrack(getApplicationContext(), this.track);
 
 				// текущие заначения
 				this.lastSavePointTime = curDate;

@@ -36,7 +36,7 @@ public class LocationUtils{
 	private Service trackRecorderService;
 	
 	final public static String LOCATION_RECEIVER_ACTION = "com.trackmars.and.tracker.locationMessage";
-	final public static float DEFAULT_ACCURACY = 30;
+	final public static float DEFAULT_ACCURACY = 15;
 	
 	public class NetworkListener implements LocationListener {
 

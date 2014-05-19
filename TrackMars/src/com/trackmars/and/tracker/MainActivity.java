@@ -220,6 +220,7 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
     
     private void showTrackOnTheMap (Location location) throws IllegalAccessException, InstantiationException {
     	
+    	
     	if (this.map != null) {
     	
 	    	polylineOptions = new PolylineOptions();
@@ -236,6 +237,8 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 		    	    	polyline = this.map.addPolyline(polylineOptions);
 		    		}
 		    	}
+		    	polyline = this.map.addPolyline(polylineOptions);
+		    	polyline.setPoints(lngs);
 	    	}
 	    	
 	    	if (lastPoint != null) {
@@ -249,10 +252,14 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 	    	
 	    	lastPoint = new LatLng(location.getLatitude(), location.getLongitude());
 	    	
-	    	if (lngs != null) {
-    	    	polyline = this.map.addPolyline(polylineOptions);
+	    	//if (polylineOptions != null) {
+	    		//polylineOptions.addAll(lngs);
+	    	//}
+	    	//if (lngs != null) {
+    	    //	polyline = this.map.addPolyline(polylineOptions);
+    	    //	
 	    		polyline.setPoints(lngs);
-	    	}
+	    	//}
 	    	
     	}
     	
@@ -403,7 +410,7 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 			    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			    startActivity(intent);
 			} else if (trackRecorderService.isRecording() && trackRecorderService.isPaused()) {
-				trackRecorderService.trackStop();
+				trackRecorderService.trackStop(this);
 			}
 			
 		} else if (view.getId() == R.id.buttonDetails) {

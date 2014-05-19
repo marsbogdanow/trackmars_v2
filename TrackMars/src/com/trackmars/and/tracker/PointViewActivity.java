@@ -41,6 +41,7 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.google.android.gms.maps.SupportMapFragment;
 import com.trackmars.and.tracker.TrackViewActivity.MyTask;
+import com.trackmars.and.tracker.dataUtils.DataOperation;
 import com.trackmars.and.tracker.dataUtils.EntityHelper;
 import com.trackmars.and.tracker.dataUtils.IEntity;
 import com.trackmars.and.tracker.model.Point;
@@ -63,6 +64,7 @@ public class PointViewActivity extends FragmentActivity {
 	//Double latitude;
 	Integer id;
 	Point point;
+	String historyGeocode;
 	//Long created;
 	//String title;
 
@@ -107,13 +109,14 @@ public class PointViewActivity extends FragmentActivity {
 	    protected Void doInBackground(Void... params) {
 	      LatLng latLng = new LatLng(point.COLUMN_LAT, point.COLUMN_LNG);
 	      
-	      if (point.COLUMN_GEOCODE == null) {
+	      if (point.COLUMN_GEOCODE == null || point.COLUMN_GEOCODE.length() == 0 || historyGeocode == null || historyGeocode.length() == 0) {
 	    	  String addresses = RepresentationUtils.getGeoCodingInfo(latLng, PointViewActivity.this);
 	    	  point.COLUMN_GEOCODE = addresses;
 	    	  
 	  		  try {
-				EntityHelper entityHelper = new EntityHelper(getApplicationContext(), Point.class);
-				entityHelper.save(point);
+				//EntityHelper entityHelper = new EntityHelper(getApplicationContext(), Point.class);
+				//entityHelper.save(point);
+	  			DataOperation.savePoint(getApplicationContext(), point);
 			} catch (IllegalAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -149,6 +152,7 @@ public class PointViewActivity extends FragmentActivity {
 		//longitude = extras.getDouble("lng");
 		//latitude = extras.getDouble("lat");
 		id = extras.getInt("id");
+		historyGeocode = extras.getString("geocode");
 		//created = extras.getLong("created");
 		//title = extras.getString("title");
 
