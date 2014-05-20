@@ -6,9 +6,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.trackmars.and.tracker.dataUtils.DataOperation;
 import com.trackmars.and.tracker.dataUtils.EntityHelper;
 import com.trackmars.and.tracker.model.Point;
+import com.trackmars.and.tracker.utils.RepresentationUtils;
 import com.trackmars.and.tracker.utils.RepresentationUtils.KindOfPoint;
 
 import android.location.Address;
@@ -123,23 +125,21 @@ public class DialogCreatePoint extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.dialog_create_point);
 		
+        findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
+		
+		
 		Bundle extras = getIntent().getExtras();
 		longitude = extras.getDouble("long");
 		latitude = extras.getDouble("lat");
 		trackId = extras.getInt("track_id");
-		
 
 		((TextView) findViewById(R.id.nameThePoint)).setTextSize(20);
 		((TextView) findViewById(R.id.chooseTheAddress)).setTextSize(20);
 		//String nameThePointText = textView.getText().toString();
 		//nameThePointText = "<font size=13>" + nameThePointText + "</font>";
 		
-		
-		
 		findViewById(R.id.address1);
 		findViewById(R.id.editText1);
-
-		
 		
 		handler = new Handler() {
 			@Override
@@ -231,6 +231,8 @@ public class DialogCreatePoint extends Activity {
 					
 				}
 				
+		        findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+				
 			}
 		};		
 		
@@ -320,6 +322,10 @@ public class DialogCreatePoint extends Activity {
 					point.COLUMN_CREATED = (new Date().getTime());
 					point.COLUMN_ID_TRACK = trackId;
 					point.COLUMN_KIND = this.kindOfPoint.val();
+
+			    	String addresses = RepresentationUtils.getGeoCodingInfo(new LatLng(latitude, longitude), this);
+			    	point.COLUMN_GEOCODE = addresses;
+					
 					
 					DataOperation.savePoint(getApplicationContext(), point);
 					

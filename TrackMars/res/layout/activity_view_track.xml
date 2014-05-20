@@ -32,4 +32,11 @@
 	    android:layout_alignParentBottom="true"
         >
     </FrameLayout>
+    
+	<RelativeLayout
+	    style="@style/GenericProgressBackground"
+	    android:id="@+id/loadingPanel">
+    		<ProgressBar style="@style/GenericProgressIndicator"/>
+	</RelativeLayout>    
+    
 </RelativeLayout>

@@ -31,11 +31,16 @@
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:stretchColumns="1"
-			android:background="#002222"
+			android:background="#fafafa"
 	        >
 	    </TableLayout>
 	</ScrollView>    
 
-    	
+	<RelativeLayout
+	    style="@style/GenericProgressBackground"
+	    android:id="@+id/loadingPanel">
+    		<ProgressBar style="@style/GenericProgressIndicator"/>
+	</RelativeLayout>    
+		
     
 </RelativeLayout>

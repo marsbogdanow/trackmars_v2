@@ -84,6 +84,10 @@ public class TrackViewActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_track);
 
+        
+        findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
+        
+        
 		Bundle extras = getIntent().getExtras();
 		id = extras.getInt("id");
 		created = extras.getLong("created");
@@ -233,6 +237,11 @@ public class TrackViewActivity extends FragmentActivity {
 	        	LatLng myCurrentPosition = new LatLng((track.TOP + track.BOTTOM) / 2, (track.LEFT + track.RIGHT) / 2); 
 	            map.moveCamera(CameraUpdateFactory.newLatLngZoom(myCurrentPosition, 13));
 	    	}
+	    	
+	    	
+	        findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+	    	
+	    	
 		}
 	};		
     

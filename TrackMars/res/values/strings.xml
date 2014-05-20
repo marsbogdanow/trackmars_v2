@@ -43,6 +43,8 @@
     <string name="track_record_settings">Track record settings</string>
     <string name="interval">interval</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="end_of_trip">End of trip</string>
+    <string name="name_the_trip">Name the trip</string>
     
     <color name="white">#FFFFFF</color>
     <color name="middle_gray">#848484</color>
