@@ -4,25 +4,11 @@
     android:layout_height="match_parent"
     android:background="@color/white" >
     
-    <ImageButton
-        android:id="@+id/buttonBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:background="@null"
-        android:onClick="onClick"
-        android:src="@drawable/button_back" />
-    
-    
 	<ScrollView 
-        android:layout_below="@+id/buttonBack"
+        android:layout_alignParentTop="true"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="0dp"
         android:layout_marginRight="0dp"
-
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
 	    >

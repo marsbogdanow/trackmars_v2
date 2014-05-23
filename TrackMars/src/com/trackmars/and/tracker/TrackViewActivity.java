@@ -190,22 +190,45 @@ public class TrackViewActivity extends FragmentActivity {
 	    	PolylineOptions polylineOptions = new PolylineOptions();
 	    	polylineOptions.geodesic(true);
 	    	
+	    	boolean startOfTrck = true;
+	    	boolean startOfSeg = false;
+	    	
 	    	for (TrackPointData latLng : latLngs) {
+	    		
+	    		if (startOfTrck) {
+	    			map.addMarker(new MarkerOptions().anchor(0.5f, 0.5f).
+	    					position(new LatLng(latLng.LAT, latLng.LNG)).
+	    					icon(BitmapDescriptorFactory.fromResource(R.drawable.segment_end)));
+	    			
+	    			startOfTrck = false;
+	    			
+	    		}
+
+	    		if (startOfSeg) {
+	    			map.addMarker(new MarkerOptions().anchor(0.5f, 0.5f).
+	    					position(new LatLng(latLng.LAT, latLng.LNG)).
+	    					icon(BitmapDescriptorFactory.fromResource(R.drawable.segment_sub_start)));
+	    			
+	    			startOfSeg = false;
+	    			
+	    		}
+	    		
 	    		
 	    		polylineOptions.add(new LatLng(latLng.LAT, latLng.LNG));
 		    	polylineOptions.geodesic(true).color(0x400000ff);
 	    		
-		    	//if (latLng.accuracy != null) {
-		    	//	polylineOptions.width(latLng.accuracy);
-		    	//} else {
-		    		polylineOptions.width(LocationUtils.DEFAULT_ACCURACY);
-		    	//}
+		    	polylineOptions.width(LocationUtils.DEFAULT_ACCURACY);
 	    		
 	    		if (latLng.paused != null && latLng.paused) {
 	    	    	if (map != null) {
 	    		    	map.addPolyline(polylineOptions);
 	    		    	polylineOptions = null;
 	    		    	polylineOptions = new PolylineOptions();
+	    		    	
+		    			map.addMarker(new MarkerOptions().anchor(0.5f, 0.5f).
+		    					position(new LatLng(latLng.LAT, latLng.LNG)).
+		    					icon(BitmapDescriptorFactory.fromResource(R.drawable.segment_pause)));
+		    			startOfSeg = true;
 	    	    	}
 	    		}
 	    		
@@ -233,9 +256,20 @@ public class TrackViewActivity extends FragmentActivity {
 		    	}
 	    	}
 			
+	    	int zoom;
+	    	if (track.BOTTOM != null && track.LEFT != null) {
+		    	double distHorisontal = LocationUtils.distFrom(track.BOTTOM, track.LEFT, track.BOTTOM, track.RIGHT);
+		    	double distVertical = LocationUtils.distFrom(track.TOP , 0, track.BOTTOM, 0);
+		    	zoom = RepresentationUtils.getZoom(distHorisontal>distVertical?distHorisontal:distVertical);
+	    	} else {
+	    		zoom = 16;
+	    	}
+	    	
+	    	
+	    	
 	    	if (map != null && track != null && track.TOP != null && track.BOTTOM != null && track.LEFT != null && track.RIGHT != null) {
 	        	LatLng myCurrentPosition = new LatLng((track.TOP + track.BOTTOM) / 2, (track.LEFT + track.RIGHT) / 2); 
-	            map.moveCamera(CameraUpdateFactory.newLatLngZoom(myCurrentPosition, 13));
+	            map.moveCamera(CameraUpdateFactory.newLatLngZoom(myCurrentPosition, zoom));
 	    	}
 	    	
 	    	

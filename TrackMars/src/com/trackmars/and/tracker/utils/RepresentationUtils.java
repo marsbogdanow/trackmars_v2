@@ -44,6 +44,32 @@ public class RepresentationUtils {
 		public abstract Integer val();
 	}
 
+	
+	public static int getZoom (double distance) {
+		if (distance > 1000000d) {
+			return 3;
+		} else if (distance > 500000d) {
+			return 4;
+		} else if (distance > 200000d) {
+			return 6;
+		} else if (distance > 100000d) {
+			return 7;
+		}  else if (distance > 50000d) {
+			return 8;
+		}  else if (distance > 20000d) {
+			return 9;
+		}  else if (distance > 10000d) {
+			return 10;
+		}  else if (distance > 5000d) {
+			return 11;
+		}  else if (distance > 1000d) {
+			return 13;
+		}  else if (distance > 500d) {
+			return 15;
+		}
+		return 16;
+	}
+	
 	// показывает на карте отмеченную точку
 	public static void showPoint(GoogleMap map, Point pnt) {
 		map.addCircle(new CircleOptions()

@@ -107,6 +107,7 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
         try {
 	        map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
 	                .getMap();
+	        
         } finally {}
         
         Intent intent = new Intent(this, TrackRecorderService.class);
@@ -220,15 +221,21 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
     
     private void showTrackOnTheMap (Location location) throws IllegalAccessException, InstantiationException {
     	
-    	
     	if (this.map != null) {
-    	
+    		
+    		boolean segmentsBegining = true;
+    		
 	    	polylineOptions = new PolylineOptions();
 	    	polylineOptions.geodesic(true).color(0x400000ff);
 	    	polylineOptions.width(LocationUtils.DEFAULT_ACCURACY);
 	    	
 	    	if (lastPoint == null) {
 		    	for (TrackPointData data : trackRecorderService.getAllTrackPoint()) {
+		    		
+		    		if (segmentsBegining) {
+		    			
+		    		}
+		    		
 		    		lngs.add(new LatLng(data.LAT, data.LNG));
 		    		if (data.paused) {
 		    	    	polyline = this.map.addPolyline(polylineOptions);
