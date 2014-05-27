@@ -1,0 +1,29 @@
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="20dp"
+    android:paddingBottom="20dp"
+    android:background="#ffffff"
+>
+
+    <TextView
+        android:id="@+id/nameOfTheGeo"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+    	android:layout_marginTop="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="5dp"
+    	android:text="@null"    
+        android:textColor="#1E2C93"
+        android:textSize="18sp"
+         />
+
+    
+</TableRow>
