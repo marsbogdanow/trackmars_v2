@@ -177,101 +177,110 @@ public class TrackViewActivity extends FragmentActivity {
 		@Override
 		public void handleMessage(Message msg) {
 			
-			final TrackWithPoinsToShow trackWithPoinsToShow = (TrackWithPoinsToShow) msg.obj;
-			final List<TrackPointData> latLngs = trackWithPoinsToShow.getTrackPoints();
-			final List<IEntity> points = trackWithPoinsToShow.getPoints();
+		    try {
+		    	unbindService(mConnection);
+		    } catch (Exception e) {
+		    	
+		    }
 			
-			Boolean updateShape = TrackViewActivity.this.shapeRectangle == null;
+			if (map != null) {
 			
-			if (updateShape) {
-				TrackViewActivity.this.shapeRectangle = new Rectangle();
-			}
-
-	    	PolylineOptions polylineOptions = new PolylineOptions();
-	    	polylineOptions.geodesic(true);
-	    	
-	    	boolean startOfTrck = true;
-	    	boolean startOfSeg = false;
-	    	
-	    	for (TrackPointData latLng : latLngs) {
-	    		
-	    		if (startOfTrck) {
-	    			map.addMarker(new MarkerOptions().anchor(0.5f, 0.5f).
-	    					position(new LatLng(latLng.LAT, latLng.LNG)).
-	    					icon(BitmapDescriptorFactory.fromResource(R.drawable.segment_end)));
-	    			
-	    			startOfTrck = false;
-	    			
-	    		}
-
-	    		if (startOfSeg) {
-	    			map.addMarker(new MarkerOptions().anchor(0.5f, 0.5f).
-	    					position(new LatLng(latLng.LAT, latLng.LNG)).
-	    					icon(BitmapDescriptorFactory.fromResource(R.drawable.segment_sub_start)));
-	    			
-	    			startOfSeg = false;
-	    			
-	    		}
-	    		
-	    		
-	    		polylineOptions.add(new LatLng(latLng.LAT, latLng.LNG));
-		    	polylineOptions.geodesic(true).color(0x400000ff);
-	    		
-		    	polylineOptions.width(LocationUtils.DEFAULT_ACCURACY);
-	    		
-	    		if (latLng.paused != null && latLng.paused) {
-	    	    	if (map != null) {
-	    		    	map.addPolyline(polylineOptions);
-	    		    	polylineOptions = null;
-	    		    	polylineOptions = new PolylineOptions();
-	    		    	
+				final TrackWithPoinsToShow trackWithPoinsToShow = (TrackWithPoinsToShow) msg.obj;
+				final List<TrackPointData> latLngs = trackWithPoinsToShow.getTrackPoints();
+				final List<IEntity> points = trackWithPoinsToShow.getPoints();
+				
+				Boolean updateShape = TrackViewActivity.this.shapeRectangle == null;
+				
+				if (updateShape) {
+					TrackViewActivity.this.shapeRectangle = new Rectangle();
+				}
+	
+		    	PolylineOptions polylineOptions = new PolylineOptions();
+		    	polylineOptions.geodesic(true);
+		    	
+		    	boolean startOfTrck = true;
+		    	boolean startOfSeg = false;
+		    	
+		    	for (TrackPointData latLng : latLngs) {
+		    		
+		    		if (startOfTrck) {
 		    			map.addMarker(new MarkerOptions().anchor(0.5f, 0.5f).
 		    					position(new LatLng(latLng.LAT, latLng.LNG)).
-		    					icon(BitmapDescriptorFactory.fromResource(R.drawable.segment_pause)));
-		    			startOfSeg = true;
-	    	    	}
-	    		}
-	    		
-	    		if (updateShape) {
-	    			TrackViewActivity.this.shapeRectangle.shape(new LatLng(latLng.LAT, latLng.LNG));
-	    		}
-	    		
-	    	}
-
-	    	if (map != null) {
-		    	map.addPolyline(polylineOptions);
-	    	}
-			
-	    	if (updateShape) {
-	    		track.TOP = shapeRectangle.getTop();
-	    		track.BOTTOM = shapeRectangle.getBottom();
-	    		track.LEFT = shapeRectangle.getLeft();
-	    		track.RIGHT = shapeRectangle.getRight();
-	    		entityHelper.save(track);
-	    	}
-	    	
-	    	if (map != null) {
-		    	for(IEntity point: points) {
-		    		RepresentationUtils.showPoint(map, (Point) point);
+		    					icon(BitmapDescriptorFactory.fromResource(R.drawable.segment_end)));
+		    			
+		    			startOfTrck = false;
+		    			
+		    		}
+	
+		    		if (startOfSeg) {
+		    			map.addMarker(new MarkerOptions().anchor(0.5f, 0.5f).
+		    					position(new LatLng(latLng.LAT, latLng.LNG)).
+		    					icon(BitmapDescriptorFactory.fromResource(R.drawable.segment_sub_start)));
+		    			
+		    			startOfSeg = false;
+		    			
+		    		}
+		    		
+		    		
+		    		polylineOptions.add(new LatLng(latLng.LAT, latLng.LNG));
+			    	polylineOptions.geodesic(true).color(0x400000ff);
+		    		
+			    	polylineOptions.width(LocationUtils.DEFAULT_ACCURACY);
+		    		
+		    		if (latLng.paused != null && latLng.paused) {
+		    	    	if (map != null) {
+		    		    	map.addPolyline(polylineOptions);
+		    		    	polylineOptions = null;
+		    		    	polylineOptions = new PolylineOptions();
+		    		    	
+			    			map.addMarker(new MarkerOptions().anchor(0.5f, 0.5f).
+			    					position(new LatLng(latLng.LAT, latLng.LNG)).
+			    					icon(BitmapDescriptorFactory.fromResource(R.drawable.segment_pause)));
+			    			startOfSeg = true;
+		    	    	}
+		    		}
+		    		
+		    		if (updateShape) {
+		    			TrackViewActivity.this.shapeRectangle.shape(new LatLng(latLng.LAT, latLng.LNG));
+		    		}
+		    		
 		    	}
-	    	}
-			
-	    	int zoom;
-	    	if (track.BOTTOM != null && track.LEFT != null) {
-		    	double distHorisontal = LocationUtils.distFrom(track.BOTTOM, track.LEFT, track.BOTTOM, track.RIGHT);
-		    	double distVertical = LocationUtils.distFrom(track.TOP , 0, track.BOTTOM, 0);
-		    	zoom = RepresentationUtils.getZoom(distHorisontal>distVertical?distHorisontal:distVertical);
-	    	} else {
-	    		zoom = 16;
-	    	}
+	
+		    	if (map != null) {
+			    	map.addPolyline(polylineOptions);
+		    	}
+				
+		    	if (updateShape) {
+		    		track.TOP = shapeRectangle.getTop();
+		    		track.BOTTOM = shapeRectangle.getBottom();
+		    		track.LEFT = shapeRectangle.getLeft();
+		    		track.RIGHT = shapeRectangle.getRight();
+		    		entityHelper.save(track);
+		    	}
+		    	
+		    	if (map != null) {
+			    	for(IEntity point: points) {
+			    		RepresentationUtils.showPoint(map, (Point) point);
+			    	}
+		    	}
+				
+		    	int zoom;
+		    	if (track.BOTTOM != null && track.LEFT != null) {
+			    	double distHorisontal = LocationUtils.distFrom(track.BOTTOM, track.LEFT, track.BOTTOM, track.RIGHT);
+			    	double distVertical = LocationUtils.distFrom(track.TOP , 0, track.BOTTOM, 0);
+			    	zoom = RepresentationUtils.getZoom(distHorisontal>distVertical?distHorisontal:distVertical);
+		    	} else {
+		    		zoom = 16;
+		    	}
+		    	
+		    	
+		    	
+		    	if (map != null && track != null && track.TOP != null && track.BOTTOM != null && track.LEFT != null && track.RIGHT != null) {
+		        	LatLng myCurrentPosition = new LatLng((track.TOP + track.BOTTOM) / 2, (track.LEFT + track.RIGHT) / 2); 
+		            map.moveCamera(CameraUpdateFactory.newLatLngZoom(myCurrentPosition, zoom));
+		    	}
 	    	
-	    	
-	    	
-	    	if (map != null && track != null && track.TOP != null && track.BOTTOM != null && track.LEFT != null && track.RIGHT != null) {
-	        	LatLng myCurrentPosition = new LatLng((track.TOP + track.BOTTOM) / 2, (track.LEFT + track.RIGHT) / 2); 
-	            map.moveCamera(CameraUpdateFactory.newLatLngZoom(myCurrentPosition, zoom));
-	    	}
-	    	
+			}
 	    	
 	        findViewById(R.id.loadingPanel).setVisibility(View.GONE);
 	    	

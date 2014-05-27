@@ -31,7 +31,9 @@
         android:theme="@android:style/Theme.Light.NoTitleBar" >
         <activity
             android:name="com.trackmars.and.tracker.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name" 
+            android:screenOrientation="portrait"
+         >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -49,27 +51,33 @@
         <activity
             android:name="com.trackmars.and.tracker.DialogCreatePoint"
             android:label="@string/app_name" 	
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden"
+			android:configChanges="keyboardHidden|orientation">
         </activity>
         <activity
             android:name="com.trackmars.and.tracker.PointsActivity"
-            android:label="@string/title_activity_points" >
+            android:label="@string/title_activity_points" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name="com.trackmars.and.tracker.TracksActivity"
-            android:label="@string/title_activity_tracks" >
+            android:label="@string/title_activity_tracks" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name="com.trackmars.and.tracker.PointViewActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name="com.trackmars.and.tracker.TrackViewActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name="com.trackmars.and.tracker.TrackRecordActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name" 
+            android:screenOrientation="portrait">
         </activity>
 
         <service android:name="com.trackmars.and.tracker.TrackRecorderService" >

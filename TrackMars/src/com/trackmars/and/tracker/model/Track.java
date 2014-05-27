@@ -31,4 +31,7 @@ public class Track implements IEntity {
 	
 	@EntityField(type=EntityField.TYPE_INTEGER)
 	public Long TRAVEL_TIME;
+	
+	@EntityField(type=EntityField.TYPE_INTEGER)
+	public Long FINISHED;
 }

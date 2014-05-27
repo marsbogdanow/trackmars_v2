@@ -28,5 +28,31 @@
     		<ProgressBar style="@style/GenericProgressIndicator"/>
 	</RelativeLayout>    
 		
-    
+	<RelativeLayout
+	    style="@style/GenericFullScreenWindow"
+	    android:visibility="invisible"
+	    android:id="@+id/no_points">
+		<TextView android:id="@+id/text"
+		              android:layout_width="wrap_content"
+		              android:layout_height="wrap_content"
+				      android:layout_marginTop="-30dp"
+				      android:layout_marginLeft="15dp"
+				      android:layout_marginRight="15dp"
+		              android:text="@string/no_places" 
+					  android:textColor="#ffffff"
+		              />	
+		              
+		<ImageView 
+			android:id="@+id/startIcon"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/text"
+	        android:layout_marginTop="40dp"
+	        android:layout_centerHorizontal="true"
+	        android:background="@null"
+	        android:src="@drawable/button_record"		    
+        />
+		
+	</RelativeLayout>    
+	
 </RelativeLayout>

@@ -170,7 +170,7 @@ public class LocationUtils{
 		
 		
 		if (interval == 0) {
-			intervatTime = 5 * DateUtils.MILLISECONDS_IN_SECOND;
+			intervatTime = 0; // realTime
 		} else if (interval == 1 || interval == 2) {
 			intervatTime = interval * DateUtils.MILLISECONDS_IN_MINUTE;
 		}  else if (interval == 3) {
@@ -217,17 +217,6 @@ public class LocationUtils{
 	    public void onGpsStatusChanged(int event) {
 	    	if (event == GpsStatus.GPS_EVENT_FIRST_FIX) {
 	    		Logger.log("GpsStatus.GPS_EVENT_FIRST_FIX");
-	    	} else
-	    	if (event == GpsStatus.GPS_EVENT_SATELLITE_STATUS) {
-	    		Logger.log("GpsStatus.GPS_EVENT_SATELLITE_STATUS");
-	    	} else
-	    	if (event == GpsStatus.GPS_EVENT_STARTED) {
-	    		Logger.log("GpsStatus.GPS_EVENT_STARTED");
-	    	} else 
-	    	if (event == GpsStatus.GPS_EVENT_STOPPED) {
-	    		Logger.log("GpsStatus.GPS_EVENT_STOPPED");
-	    	} else {
-	    		Logger.log("GpsStatus UNKNOWN " + event);
 	    	}
 	    }
 	};	

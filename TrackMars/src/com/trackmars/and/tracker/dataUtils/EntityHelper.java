@@ -2,6 +2,7 @@ package com.trackmars.and.tracker.dataUtils;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -27,7 +28,7 @@ import com.trackmars.and.tracker.model.TrackPoint;
 public class EntityHelper extends SQLiteOpenHelper {
 	
 	static final private String DATABASE_NAME = "trackmars.db";
-	static final private Integer DATABASE_VERSION = 20;
+	static final private Integer DATABASE_VERSION = 24;
 	
 	private Class entityClass; 
 	private Context context;
@@ -308,7 +309,7 @@ public class EntityHelper extends SQLiteOpenHelper {
 		}
 		
 		SQLiteDatabase database;
-		database = this.getWritableDatabase();
+		database = this.getReadableDatabase();
 		
 		Cursor cursor;
 		if (id == null) {
@@ -520,33 +521,54 @@ public class EntityHelper extends SQLiteOpenHelper {
 				this.tableToUpdate = TrackPoint.class;
 				db.execSQL("DROP TABLE IF EXISTS " + this.tableToUpdate.getSimpleName());
 				db.execSQL(createStatement(this.tableToUpdate));
+			
 			}
 			
 			if (n == 12) {
-				db.execSQL("ALTER TABLE " + Track.class.getSimpleName() + " ADD COLUMN LEFT REAL");
-				db.execSQL("ALTER TABLE " + Track.class.getSimpleName() + " ADD COLUMN RIGHT REAL");
-				db.execSQL("ALTER TABLE " + Track.class.getSimpleName() + " ADD COLUMN TOP REAL");
-				db.execSQL("ALTER TABLE " + Track.class.getSimpleName() + " ADD COLUMN BOTTOM REAL");
+				try {
+					db.execSQL("ALTER TABLE " + Track.class.getSimpleName() + " ADD COLUMN LEFT REAL");
+					db.execSQL("ALTER TABLE " + Track.class.getSimpleName() + " ADD COLUMN RIGHT REAL");
+					db.execSQL("ALTER TABLE " + Track.class.getSimpleName() + " ADD COLUMN TOP REAL");
+					db.execSQL("ALTER TABLE " + Track.class.getSimpleName() + " ADD COLUMN BOTTOM REAL");
+				} catch (SQLException e) {
+					
+				}
 			}
 			
 			if (n == 13) {
-				String sqlS = "CREATE INDEX IF NOT EXISTS IDXTrackPoint_Created ON TrackPoint (created DESC)";
-				db.execSQL(sqlS);
-				sqlS = "CREATE INDEX IF NOT EXISTS IDXTrackPoint_id_track ON TrackPoint (id_track DESC)";
-				db.execSQL(sqlS);
+				try {
+					String sqlS = "CREATE INDEX IF NOT EXISTS IDXTrackPoint_Created ON TrackPoint (created DESC)";
+					db.execSQL(sqlS);
+					sqlS = "CREATE INDEX IF NOT EXISTS IDXTrackPoint_id_track ON TrackPoint (id_track DESC)";
+					db.execSQL(sqlS);
+				} catch (SQLException e) {
+					
+				}
 			}
 			
 			if (n == 14) {
-				db.execSQL("ALTER TABLE " + Track.class.getSimpleName() + " ADD COLUMN DISTANCE REAL");
-				db.execSQL("ALTER TABLE " + Track.class.getSimpleName() + " ADD COLUMN TRAVEL_TIME INTEGER");
+				try {
+					db.execSQL("ALTER TABLE " + Track.class.getSimpleName() + " ADD COLUMN DISTANCE REAL");
+					db.execSQL("ALTER TABLE " + Track.class.getSimpleName() + " ADD COLUMN TRAVEL_TIME INTEGER");
+				} catch (SQLException e) {
+					
+				}
 			}
 			
 			if (n == 16) {
-				db.execSQL("ALTER TABLE " + Point.class.getSimpleName() + " ADD COLUMN COLUMN_KIND INTEGER");
+				try {
+					db.execSQL("ALTER TABLE " + Point.class.getSimpleName() + " ADD COLUMN COLUMN_KIND INTEGER");
+				} catch (SQLException e) {
+					
+				}
 			}
 			
 			if (n == 17) {
-				db.execSQL("ALTER TABLE " + Point.class.getSimpleName() + " ADD COLUMN COLUMN_GEOCODE TEXT");
+				try {
+					db.execSQL("ALTER TABLE " + Point.class.getSimpleName() + " ADD COLUMN COLUMN_GEOCODE TEXT");
+				} catch (SQLException e) {
+					
+				}
 			}
 			
 			
@@ -560,6 +582,14 @@ public class EntityHelper extends SQLiteOpenHelper {
 				
 				db.execSQL("INSERT INTO " + this.tableToUpdate.getSimpleName() +
 						" (ID_POINT, TITLE, CREATED, KIND, GEOCODE) SELECT COLUMN_ID, COLUMN_TITLE, COLUMN_CREATED, COLUMN_KIND, COLUMN_GEOCODE FROM POINT");
+			}
+			
+			if (n == 21) {
+				try {
+					db.execSQL("ALTER TABLE " + Track.class.getSimpleName() + " ADD COLUMN FINISHED INTEGER");
+				} catch (SQLException e) {
+					
+				}
 			}
     	}
 	}

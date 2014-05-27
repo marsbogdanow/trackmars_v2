@@ -52,6 +52,7 @@
     
 	<string name="gps">gps</string>
 	<string name="network">network</string>
-	<string name="unknown_place">Unsorted place</string>
-
+	<string name="unknown_place">Unsorted places</string>
+	<string name="no_places">There are saved neither locations nor travels yet. Start you trip!</string>
+	
 </resources>

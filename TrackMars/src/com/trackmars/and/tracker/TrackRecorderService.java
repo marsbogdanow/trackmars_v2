@@ -34,12 +34,37 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 
 	private final long MAX_SERIA_TIME = 1000 * 60 * 1;
 	private final Integer MAX_SERIA_QUANTITY = 50;
+	private final long MIN_INTERNAL_BETWEEN_POINTS = 10;
 	
 	private LocationUtils locationUtils;
 	private ManagerBinder binder = new ManagerBinder();
 	
 	private Location location;
-	private Location lastSavedLocation;
+	
+	
+	private class LocationWithTime {
+		private Location location;
+		private Long time;
+		
+		public LocationWithTime(Location location, Long time) {
+			this.location = location;
+			this.time = time;
+		}
+
+		public Location getLocation() {
+			return location;
+		}
+
+		public Long getTime() {
+			return time;
+		}
+		
+		
+	}
+	
+	
+	
+	private LocationWithTime lastSavedLocation;
 	private Location lastSavedNetworkLocation;
 	
 	private Float accuracy;
@@ -139,6 +164,9 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 
 		// Set an EditText view to get user input 
 		final EditText input = new EditText(this);
+		if (this.track.TITLE != null && !this.track.TITLE.equals("")) {
+			input.setText(this.track.TITLE);
+		}
 		alert.setView(input);
 
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -153,7 +181,7 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 				EntityHelper trackHelper = new EntityHelper(getApplicationContext(), Track.class);
 				trackHelper.getRow(track.ID);
 				track.TITLE = input.getText().toString();
-				
+				track.FINISHED = new Date().getTime();
 				DataOperation.saveTrack(getApplicationContext(), track);
 				
 			} catch (IllegalAccessException e) {
@@ -258,11 +286,15 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 			
 			entityHelper = null;
 			
-			this.currentRecordingTrackId = track.ID;
+			if (track.ID == null) {
+				resumeLastTrack = false;
+			} else {
+				this.currentRecordingTrackId = track.ID;
+				this.rectangle.create(track.LEFT, track.RIGHT, track.TOP, track.BOTTOM);
+			}
 			
-			this.rectangle.create(track.LEFT, track.RIGHT, track.TOP, track.BOTTOM); 
-			
-		} else {
+		} 
+		if (!resumeLastTrack) {
 		
 			track = new Track();
 			track.CREATED = new Date().getTime();
@@ -293,7 +325,7 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 	}
 
 	private void saveTrackPoint(Location location) {
-		
+				
 		Long curDate = new Date().getTime();
 		
 		// время в пути
@@ -433,10 +465,15 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		Intent intent = new Intent(LocationUtils.LOCATION_RECEIVER_ACTION);
 		sendBroadcast(intent);
 		
-		if (isRecording && !isPaused && LocationUtils.isDistantOutOfAccuracy(this.location, this.lastSavedLocation)) {
+		if (isRecording && 
+				!isPaused && 
+				(this.lastSavedLocation == null || LocationUtils.isDistantOutOfAccuracy(this.location, this.lastSavedLocation.getLocation()) &&
+				(new Date().getTime() - this.lastSavedLocation.getTime()) > (MIN_INTERNAL_BETWEEN_POINTS * 1000))
+			) {
 			rectangle.shape(location);
 			saveTrackPoint(location);
-			this.lastSavedLocation = location;
+			
+			this.lastSavedLocation = new LocationWithTime(location, new Date().getTime()); 
 		}
 		
 		this.lastPointProvider = listenerType;

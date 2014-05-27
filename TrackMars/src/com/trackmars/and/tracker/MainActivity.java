@@ -26,6 +26,12 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 
 
+
+
+
+
+
+
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -34,6 +40,7 @@ import android.location.LocationProvider;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.opengl.Visibility;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.annotation.SuppressLint;
@@ -56,6 +63,10 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.Fragment;
 
 import com.google.android.gms.maps.SupportMapFragment;
+import com.trackmars.and.tracker.PointsActivity.MyTask;
+import com.trackmars.and.tracker.dataUtils.EntityHelper;
+import com.trackmars.and.tracker.model.History;
+import com.trackmars.and.tracker.model.Track;
 import com.trackmars.and.tracker.model.TrackPointData;
 import com.trackmars.and.tracker.utils.ILocationReceiver;
 import com.trackmars.and.tracker.utils.LocationUtils;
@@ -95,6 +106,9 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
     	
+    	
+    	//this.deleteDatabase("trackmars.db");
+    	
         Logger.log("Main activity onCreate started");
     	
         lastPoint = null; 
@@ -112,10 +126,58 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
         
         Intent intent = new Intent(this, TrackRecorderService.class);
         startService(intent);
-        //bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+
         
     }
 
+
+	class MyTask extends AsyncTask<Void, Void, Void> {
+
+	    @Override
+	    protected void onPreExecute() {
+	      super.onPreExecute();
+	      //tvInfo.setText("Begin");
+	    }
+
+	    @Override
+	    protected Void doInBackground(Void... params) {
+	      try {
+
+	    	EntityHelper histEntityHelper = new EntityHelper(getApplicationContext(), History.class);
+			History hist = (History) histEntityHelper.getRow(null);
+			hist = null;
+			histEntityHelper = null;
+	    	  
+	    	  
+	    	EntityHelper trackEntityHelper = new EntityHelper(getApplicationContext(), Track.class);
+			Track track = (Track) trackEntityHelper.getRow(null);
+			if (track.ID != null && (track.FINISHED == null || track.FINISHED == 0)) {
+				if (!trackRecorderService.isRecording()) {
+					trackRecorderService.startRecord(true);
+					
+				    //Intent intent = new Intent(MainActivity.this, TrackRecordActivity.class);
+				    //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				    //startActivity(intent);
+				}
+			}
+			
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	      return null;
+	    }
+
+	    @Override
+	    protected void onPostExecute(Void result) {
+	      super.onPostExecute(result);
+	      //tvInfo.setText("End");
+	    }
+	  }	
+    
     
     private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -138,6 +200,8 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
                 Logger.log( "Main activity onResume this.location == null");
             }
 
+    		MyTask mt = new MyTask();
+    	    mt.execute();		
         
         }
 
@@ -151,7 +215,7 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
     protected void onResume() {
       super.onResume();
       
-      lastPoint = null;
+      //lastPoint = null;
       
       Logger.log( "Main activity onResume started");
 
@@ -173,19 +237,21 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
     	  unregisterReceiver(trackRecorderReceiver);
       }
       
-      Logger.log( "Ready to unbind");
-      trackRecorderService.setInterval(null); // real time;
-      unbindService(mConnection);
-      
-      try {
-		trackRecorderService.pause();
-	  } catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-	  } catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-	  }
+      if (trackRecorderService != null) {
+	      Logger.log( "Ready to unbind");
+	      trackRecorderService.setInterval(null); // real time;
+	      unbindService(mConnection);
+	      
+	      try {
+			trackRecorderService.pause();
+		  } catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+		  } catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+		  }
+      }
 	      //locationUtils.onPause();
     }
     
@@ -308,7 +374,7 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 	            	
 		            
 		            //if (!mapPositioned) {
-			            map.animateCamera(CameraUpdateFactory.newLatLngZoom(myCurrentPosition, 16), 2000, null);
+			            map.animateCamera(CameraUpdateFactory.newLatLngZoom(myCurrentPosition, 16), 100, null);
 	            	//}
 		            //map.moveCamera(CameraUpdateFactory.newLatLng(myCurrentPosition));
 		            
