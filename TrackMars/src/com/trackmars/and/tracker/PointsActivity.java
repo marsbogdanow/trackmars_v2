@@ -318,7 +318,11 @@ public class PointsActivity extends FragmentActivity {
 						textView.setText(titleToShow);
 					}
 
+					//textView.invalidate();
+					//tR.invalidate();
 			        tableLayout.addView(tR);
+			        tableLayout.invalidate();
+			        textView.invalidate();
 					
 				} else {
 					histories.add((History) entityRow);

@@ -2,8 +2,6 @@ package com.trackmars.and.tracker.utils;
 
 import ru.elifantiev.android.roboerrorreporter.Logger;
 
-import com.google.android.gms.internal.ar;
-import com.trackmars.and.tracker.TrackRecorderService;
 import com.trackmars.and.tracker.dataUtils.DateUtils;
 
 import android.app.Service;
@@ -165,7 +163,7 @@ public class LocationUtils{
 		Integer intervatTime = 0;
 		
 		
-		SharedPreferences sPref = trackRecorderService.getSharedPreferences(Tools.PREFERENCES_NAME, trackRecorderService.MODE_PRIVATE);
+		SharedPreferences sPref = trackRecorderService.getSharedPreferences(Tools.PREFERENCES_NAME, Service.MODE_PRIVATE);
 	    interval = sPref.getInt(Tools.PREF_INTERVAL, 1);		
 		
 		
@@ -256,7 +254,7 @@ public class LocationUtils{
 	        }
     	}
 		
-	    provider = locationManager.getProvider(locationManager.GPS_PROVIDER);
+	    provider = locationManager.getProvider(LocationManager.GPS_PROVIDER);
 	    	
 	    if (provider != null) {
 		        if (locationManager != null) {

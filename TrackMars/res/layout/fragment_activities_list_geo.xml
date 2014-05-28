@@ -23,6 +23,8 @@
     	android:text="@null"    
         android:textColor="#1E2C93"
         android:textSize="18sp"
+		android:singleLine="false"
+        android:layout_gravity="fill"
          />
 
     

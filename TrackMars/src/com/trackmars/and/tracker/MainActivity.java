@@ -7,8 +7,6 @@ import ru.elifantiev.android.roboerrorreporter.Logger;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -16,37 +14,14 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-//import com.google.android.gms.maps.MapFragment;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationProvider;
-//import com.google.android.gms.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
-import android.opengl.Visibility;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -56,24 +31,16 @@ import android.content.ServiceConnection;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-//import android.app.Activity;
-//import android.app.Activity;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.Fragment;
-
 import com.google.android.gms.maps.SupportMapFragment;
-import com.trackmars.and.tracker.PointsActivity.MyTask;
 import com.trackmars.and.tracker.dataUtils.EntityHelper;
 import com.trackmars.and.tracker.model.History;
 import com.trackmars.and.tracker.model.Track;
 import com.trackmars.and.tracker.model.TrackPointData;
 import com.trackmars.and.tracker.utils.ILocationReceiver;
 import com.trackmars.and.tracker.utils.LocationUtils;
-
 import android.view.Menu;
 import android.view.View;
-import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -82,7 +49,7 @@ import android.util.Log;
 public class MainActivity extends FragmentActivity implements ILocationReceiver {
 	
 	private GoogleMap map;	
-	private Boolean mapPositioned = false;
+	//private Boolean mapPositioned = false;
     private Marker myCurrentPositionMarker;
     private Location location;
     private Location lastSavedLocation;
@@ -143,11 +110,10 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 	    protected Void doInBackground(Void... params) {
 	      try {
 
-	    	EntityHelper histEntityHelper = new EntityHelper(getApplicationContext(), History.class);
-			History hist = (History) histEntityHelper.getRow(null);
-			hist = null;
-			histEntityHelper = null;
-	    	  
+	    	//EntityHelper histEntityHelper = new EntityHelper(getApplicationContext(), History.class);
+			//History hist = (History) histEntityHelper.getRow(null);
+			//hist = null;
+			//histEntityHelper = null;
 	    	  
 	    	EntityHelper trackEntityHelper = new EntityHelper(getApplicationContext(), Track.class);
 			Track track = (Track) trackEntityHelper.getRow(null);
@@ -222,7 +188,7 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
       Intent intent = new Intent(this, TrackRecorderService.class);
       bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 
-      mapPositioned = false;
+      //mapPositioned = false;
       
       trackRecorderReceiver.setLocationReceiver(this);
       registerReceiver(trackRecorderReceiver, new IntentFilter(LocationUtils.LOCATION_RECEIVER_ACTION));
@@ -389,7 +355,7 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 		            circle = map.addCircle(circleOptions);
 		            
 		            
-		            mapPositioned = true;
+		            //mapPositioned = true;
             	}
             	
             

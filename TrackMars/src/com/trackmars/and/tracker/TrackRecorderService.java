@@ -1,6 +1,5 @@
 package com.trackmars.and.tracker;
 
-import java.net.DatagramPacket;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -65,7 +64,6 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 	
 	
 	private LocationWithTime lastSavedLocation;
-	private Location lastSavedNetworkLocation;
 	
 	private Float accuracy;
 	private Boolean isRecording = false;

@@ -18,6 +18,7 @@
 	        android:layout_height="wrap_content"
 	        android:stretchColumns="1"
 			android:background="#fafafa"
+			android:shrinkColumns="*" 
 	        >
 	    </TableLayout>
 	</ScrollView>    
