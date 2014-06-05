@@ -68,7 +68,7 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 	private Float accuracy;
 	private Boolean isRecording = false;
 	private Boolean isPaused = false;
-	private int currentRecordingTrackId;
+	private Integer currentRecordingTrackId;
 	private Class lastPointProvider;
 	
 	
@@ -247,12 +247,6 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 			datas = gson.fromJson(pointData, new TypeToken<ArrayList<TrackPointData>>(){}.getType());
 			
 			locations.addAll(datas);
-			
-			//for (TrackPointData data : datas) {
-			//	
-			//	LatLng location = new LatLng(data.LAT, data.LNG);
-			//	locations.add(location);
-			//}
 			
 		}
 

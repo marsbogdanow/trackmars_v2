@@ -8,26 +8,71 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
-	<fragment
-        android:id="@+id/headerFragment"
+<RelativeLayout 
+    android:id="@+id/header"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <ImageButton
+        android:id="@+id/imageButtonSettings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
-        class="com.trackmars.and.tracker.Header" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="5dp"
+        android:background="@null"
+        android:src="@drawable/button_menu" />
 
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/ic_launcher" />
+    
+    
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/imageView1"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/horisontal_line" />
+
+    <Button
+        android:id="@+id/headerIntervalButton"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/imageView1"
+        android:layout_marginLeft="34dp"
+        android:layout_toRightOf="@+id/imageView1"
+        android:background="@null"
+        android:onClick="onClick"
+        android:text="@string/interval"
+        android:textColor="@color/middle_gray"
+        android:textSize="16dp" />
+
+
+</RelativeLayout>
     
     <Button
         android:id="@+id/buttonPoints"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/headerFragment"
+        android:layout_below="@+id/header"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="35dp"
         android:layout_alignParentLeft="true"
         android:background="@null"
         android:onClick="onClick"
-	    android:textSize="21dp" 
+	    android:textSize="21sp" 
 	    android:textColor="@color/middle_gray"
         android:text="@string/points" />
 
@@ -37,33 +82,14 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/headerFragment"
+        android:layout_below="@+id/header"
         android:layout_marginTop="10dp"
-        
-        android:layout_centerHorizontal="true"
-        
-        android:background="@null"
-        android:onClick="onClick"
-	    android:textSize="21dp" 
-        android:text="@string/map" />
-    
-    
-    <Button
-        android:id="@+id/buttonTracks"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/headerFragment"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="35dp"
         android:layout_alignParentRight="true"
+        android:layout_marginRight="35dp"
         android:background="@null"
         android:onClick="onClick"
-	    android:textSize="21dp" 
-	    android:textColor="@color/middle_gray"
-        android:text="@string/tracks" />
-    
-    
+	    android:textSize="21sp" 
+        android:text="@string/map" />
     
     <ImageButton
         android:id="@+id/imageButtonResume"
@@ -82,7 +108,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/imageButtonResume"
-        android:layout_centerHorizontal="true"
+        android:layout_toRightOf="@+id/imageButtonResume"
+        android:layout_marginLeft="10dp"
         android:background="@null"
         android:src="@drawable/button_point"
         android:onClick="onClick" />
@@ -91,14 +118,134 @@
         android:id="@+id/imageButtonRecord"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="16dp"
+        android:layout_toRightOf="@+id/imageButtonPoint"
         android:layout_alignTop="@+id/imageButtonPoint"
+        android:layout_marginLeft="10dp"
         android:background="@null"
         android:onClick="onClick"
         android:src="@drawable/button_record" />
 
-	<RelativeLayout
+    
+	<ScrollView 
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buttonPoints"
+        android:layout_above="@+id/imageButtonPoint"
+	    >
+	    
+	    <TableLayout
+	        android:id="@+id/listTable"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:stretchColumns="1"
+			android:background="#ffffff"
+			android:shrinkColumns="*"
+			android:paddingLeft="20dp" 
+			android:paddingRight="20dp" 
+	        >
+	        
+	        <TableRow style="@style/GenericTableRow">
+	            <RelativeLayout 
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content">
+						                
+	                <TextView 
+	                	android:id="@+id/startDate"
+	                    style="@style/GenericTextHeader"
+    					android:text="111"    
+	                    />
+	                
+	                <TextView 
+	                	android:id="@+id/time"
+	                    style="@style/GenericTextHeader"
+	                    android:layout_below="@+id/startDate"
+    					android:text="111"    
+	                    />
+	            </RelativeLayout>
+	        </TableRow>
+	        
+	        <TableRow style="@style/GenericTableRow">
+	            <RelativeLayout 
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content">
+	                >
+	                
+	                <TextView 
+	                    android:id="@+id/distTitle"
+	                    style="@style/GenericAttributeName"
+	                    android:text="@string/distance"
+	                    />
+	                
+	                <TextView 
+	    	    		android:id="@+id/distance"
+	                    style="@style/GenericAttributeVal"
+	                    android:layout_below="@+id/distTitle"
+	                    android:text="@string/distance"
+	                    />
+	                	                
+	                
+	            </RelativeLayout>
+	        </TableRow>
+	        
+
+	        <TableRow style="@style/GenericTableRow">
+	            <RelativeLayout 
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content">
+	                >
+	                
+	                <TextView 
+	                    android:id="@+id/inMotionTitle"
+	                    style="@style/GenericAttributeName"
+	                    android:text="@string/in_motion"
+	                    />
+	                
+	                <TextView 
+	                    style="@style/GenericAttributeVal"
+	                    android:id="@+id/in_motion"
+	                    android:layout_below="@+id/inMotionTitle"
+	                    android:text="@string/in_motion"
+	                    />
+	                
+	            </RelativeLayout>
+	        </TableRow>
+	        	        
+
+	        <TableRow style="@style/GenericTableRow">
+	            <RelativeLayout 
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content">
+	                >
+	                
+	                <TextView 
+	                    android:id="@+id/avgSpeedTitle"
+	                    style="@style/GenericAttributeName"
+	                    android:text="@string/avg_speed"
+	                    />
+	                
+	                <TextView 
+	                    style="@style/GenericAttributeVal"
+	                    android:id="@+id/avg_speed"
+	                    android:layout_below="@+id/avgSpeedTitle"
+	                    android:text="@string/avg_speed"
+	                    />
+	                
+	            </RelativeLayout>
+	        </TableRow>
+	        	        
+	        	        	        
+	        	        
+	    </TableLayout>
+	    
+	    
+	    	    
+	    
+	</ScrollView>    
+    
+	<!-- RelativeLayout
 	        android:id="@+id/timeBG"
 	        android:layout_width="145dp"
 	        android:layout_height="60dp"
@@ -219,7 +366,7 @@
 	        	android:layout_marginBottom="-5dp"
 	    	    android:textSize="21dp" 
 	    	    android:text="@string/avg_speed"
-	    />
+	    /> -->
 		
 		
 </RelativeLayout>

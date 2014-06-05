@@ -14,12 +14,14 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -28,23 +30,34 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager.LayoutParams;
+
 import com.google.android.gms.maps.SupportMapFragment;
 import com.trackmars.and.tracker.dataUtils.EntityHelper;
-import com.trackmars.and.tracker.model.History;
 import com.trackmars.and.tracker.model.Track;
 import com.trackmars.and.tracker.model.TrackPointData;
 import com.trackmars.and.tracker.utils.ILocationReceiver;
 import com.trackmars.and.tracker.utils.LocationUtils;
+import com.trackmars.and.tracker.utils.Tools;
+
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
+import android.widget.Spinner;
 import android.widget.Toast;
-import android.util.Log;
+import android.widget.AdapterView.OnItemSelectedListener;
 
 public class MainActivity extends FragmentActivity implements ILocationReceiver {
 	
@@ -94,6 +107,31 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
         Intent intent = new Intent(this, TrackRecorderService.class);
         startService(intent);
 
+        
+		ImageButton menuBtn = (ImageButton)findViewById(R.id.imageButtonSettings);
+		
+		menuBtn.setOnClickListener(new ImageButton.OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				showSettings(v);
+			}
+			
+		});
+		
+	    data = new String[]{"0.1", "1", "2", "5", "10", "30", "1" + getResources().getString(R.string.hour1)};		    
+
+		Button intervalButton = (Button) findViewById(R.id.headerIntervalButton);
+		intervalButton.setOnClickListener(new Button.OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				showSettings(v);
+			}
+			
+		});
+        
+        
         
     }
 
@@ -168,7 +206,12 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 
     		MyTask mt = new MyTask();
     	    mt.execute();		
-        
+
+    		getSettings();
+    		Button intervalButton = (Button) findViewById(R.id.headerIntervalButton);
+    		intervalButton.setText(getResources().getString(R.string.interval) + " " + data[interval]);
+    	    
+    	    
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -199,9 +242,9 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
     protected void onPause() {
       super.onPause();
       
-      if (trackRecorderService == null || !trackRecorderService.isRecording()) {
+      //if (trackRecorderService == null || !trackRecorderService.isRecording()) {
     	  unregisterReceiver(trackRecorderReceiver);
-      }
+      //}
       
       if (trackRecorderService != null) {
 	      Logger.log( "Ready to unbind");
@@ -373,10 +416,8 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
     	
     	if (trackRecorderService != null) {
 	    	if (trackRecorderService.getLastPointProvider() == LocationUtils.GpsListener.class) {
-	        	Log.d(Header.class.getName(), "gpsFound");
 	        	antennaIndicator.setImageResource(R.drawable.sattelite);
 	    	} else if (trackRecorderService.getLastPointProvider() == LocationUtils.NetworkListener.class) {
-	        	Log.d(Header.class.getName(), "networkFound");
 	        	antennaIndicator.setImageResource(R.drawable.antenna);
 	    	}
     	}
@@ -413,13 +454,6 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 		} else if (view.getId() == R.id.buttonPoints) {
 			
 		      Intent intent = new Intent(this, PointsActivity.class);
-		      intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		      
-		      startActivity(intent);
-		      
-		} else if (view.getId() == R.id.buttonTracks) {
-			
-		      Intent intent = new Intent(this, TracksActivity.class);
 		      intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		      
 		      startActivity(intent);
@@ -555,5 +589,103 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
     	}    	
     	
     }
+
+    
+	//////////////////////////////////////////////////////////////////////////////
+	////// Interval settings
+	//////////////////////////////////////////////////////////////////////////////
+
+	private String[] data;
+	private Integer interval = 1 ; // default 1=1min
 	
+	
+	private void getSettings() {
+		SharedPreferences sPref = getSharedPreferences(Tools.PREFERENCES_NAME, Activity.MODE_PRIVATE);
+	    interval = sPref.getInt(Tools.PREF_INTERVAL, 1);		
+	}
+	
+	private void saveSettings() {
+		SharedPreferences sPref = getSharedPreferences(Tools.PREFERENCES_NAME, Activity.MODE_PRIVATE);
+	    Editor ed = sPref.edit();
+	    ed.putInt(Tools.PREF_INTERVAL, this.interval);
+	    ed.commit();
+	}
+	
+	public void showSettings(View v) {
+
+		getSettings();
+		
+		if (v.getId() == R.id.imageButtonSettings || v.getId() == R.id.headerIntervalButton) {
+			
+			// creating popup window from XML layout
+			LayoutInflater layoutInflater = (LayoutInflater)getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		    View popupView = layoutInflater.inflate(R.layout.settings, null);
+		    
+		    final PopupWindow popupWindow = new PopupWindow(
+		               popupView, 
+		               LayoutParams.MATCH_PARENT,  
+		               LayoutParams.WRAP_CONTENT);  
+
+		    
+		    
+		    // adding popup window views processors
+		    //////////////////////////////////////////////////////////////////////////////////
+		     
+		    // button "back"
+		    ImageButton btnDismiss = (ImageButton)popupView.findViewById(R.id.buttonBack);
+		    btnDismiss.setOnClickListener(new Button.OnClickListener(){
+			     @Override
+			     public void onClick(View v) {
+			    	 // TODO Auto-generated method stub
+			    	 popupWindow.dismiss();
+			     }
+		     });
+		    
+		    // button "ok"
+		    ImageButton btnOk = (ImageButton) popupView.findViewById(R.id.buttonOk);
+		    btnOk.setOnClickListener(new Button.OnClickListener(){
+			     @Override
+			     public void onClick(View v) {
+			    	 saveSettings();
+
+			    	 Button intervalButton = (Button) findViewById(R.id.headerIntervalButton);
+			    	 intervalButton.setText(getResources().getString(R.string.interval) + " " + data[interval]);
+			 	     //Intent intent = new Intent(getActivity().getApplicationContext(), TrackRecorderService.class);
+			 	     //getActivity().unbindService(mConnection);
+				     //getActivity().bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+				     
+			    	 trackRecorderService.setInterval(interval);
+			    	 
+			    	 popupWindow.dismiss();
+			     }
+		     });
+
+		    
+		    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, data);
+	        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+	        
+	        Spinner spinner = (Spinner) popupView.findViewById(R.id.SpinnerInterval);
+	        spinner.setAdapter(adapter);
+	        // заголовок
+	        spinner.setPrompt("Title");
+	        spinner.setSelection(interval);
+	        
+	        spinner.setOnItemSelectedListener(new OnItemSelectedListener(){
+	            @Override
+	            public void onItemSelected(AdapterView<?> parent, View view,
+	                int position, long id) {
+	              interval = position;
+	            }
+	            @Override
+	            public void onNothingSelected(AdapterView<?> arg0) {
+	            }
+	          });
+	        
+		    //////////////////////////////////////////////////////////////////////////////////
+	        
+		    /// show popup window
+		    popupWindow.showAsDropDown(v, 50, 0);
+		}
+	}
+    
 }
