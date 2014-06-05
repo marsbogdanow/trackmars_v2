@@ -7,19 +7,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.widget.Toast;
 
-import java.io.IOException;
-import java.lang.Package;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
-import com.trackmars.and.tracker.MainActivity;
-import com.trackmars.and.tracker.TrackRecorderService;
 import com.trackmars.and.tracker.model.History;
 import com.trackmars.and.tracker.model.Point;
 import com.trackmars.and.tracker.model.Track;
@@ -31,19 +23,19 @@ public class EntityHelper extends SQLiteOpenHelper {
 	static final private Integer DATABASE_VERSION = 24;
 	
 	private Class entityClass; 
-	private Context context;
+	//private Context context;
 	
 	public EntityHelper(Context context, Class entity) throws IllegalAccessException, InstantiationException {
 		
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
-		this.context = context;
+		//this.context = context;
 		entityClass = entity;
 	}
 	
 	private String createStatement(Class entityToCreate) {
 		
 		String statement = new String("");
-		String tableName = new String("");
+		//String tableName = new String("");
 		
 		for (Field field  : entityToCreate.getDeclaredFields())	{
 			
@@ -92,7 +84,7 @@ public class EntityHelper extends SQLiteOpenHelper {
 			
 			if (tabfield.isAnnotationPresent(EntityField.class)) {
 				
-				EntityField entityField = tabfield.getAnnotation(EntityField.class);
+				//EntityField entityField = tabfield.getAnnotation(EntityField.class);
 				
 				fields.add(tabfield.getName());
 				
@@ -598,7 +590,7 @@ public class EntityHelper extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-    	Log.d(EntityHelper.class.getName(), "Update database from " + new Integer(oldVersion) + " " + new Integer(newVersion));
+    	Log.d(EntityHelper.class.getName(), "Update database from " + Integer.valueOf(oldVersion) + " " + Integer.valueOf(newVersion));
 		this.modifyData(db, oldVersion, newVersion);
 		
 	}

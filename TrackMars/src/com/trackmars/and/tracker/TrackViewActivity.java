@@ -98,7 +98,7 @@ public class TrackViewActivity extends FragmentActivity {
 	                .getMap();
         } finally {}
         
-        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.intoFrame);
+        //FrameLayout frameLayout = (FrameLayout) findViewById(R.id.intoFrame);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
         ListTracksItemTrack listTracksItemTrack = new ListTracksItemTrack();

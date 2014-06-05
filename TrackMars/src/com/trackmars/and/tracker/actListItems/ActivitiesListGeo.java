@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.trackmars.and.tracker.R;
-import com.trackmars.and.tracker.utils.RepresentationUtils.KindOfPoint;
 
 public class ActivitiesListGeo extends Fragment{
 

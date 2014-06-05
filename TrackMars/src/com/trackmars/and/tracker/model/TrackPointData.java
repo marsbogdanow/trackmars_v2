@@ -1,7 +1,6 @@
 package com.trackmars.and.tracker.model;
 
 import com.trackmars.and.tracker.dataUtils.EntityField;
-import com.trackmars.and.tracker.dataUtils.IEntity;
 
 public class TrackPointData{
 	

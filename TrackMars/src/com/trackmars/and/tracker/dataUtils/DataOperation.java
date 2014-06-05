@@ -1,6 +1,5 @@
 package com.trackmars.and.tracker.dataUtils;
 
-import java.util.Date;
 import java.util.List;
 
 import android.content.Context;

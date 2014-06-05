@@ -2,14 +2,13 @@ package com.trackmars.and.tracker.actListItems;
 
 import com.trackmars.and.tracker.R;
 import com.trackmars.and.tracker.dataUtils.DateUtils;
-import com.trackmars.and.tracker.utils.RepresentationUtils;
+//import com.trackmars.and.tracker.utils.RepresentationUtils;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class ActivitiesListTrack extends Fragment{

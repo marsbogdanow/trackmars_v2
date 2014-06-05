@@ -3,48 +3,29 @@ package com.trackmars.and.tracker;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.elifantiev.android.roboerrorreporter.Logger;
-
-import com.trackmars.and.tracker.TracksActivity.MyTask;
-import com.trackmars.and.tracker.actListItems.ActivitiesListGeo;
-import com.trackmars.and.tracker.actListItems.ActivitiesListMonth;
-import com.trackmars.and.tracker.actListItems.ActivitiesListPoint;
-import com.trackmars.and.tracker.actListItems.ActivitiesListTrack;
 import com.trackmars.and.tracker.dataUtils.DateUtils;
 import com.trackmars.and.tracker.dataUtils.EntityHelper;
 import com.trackmars.and.tracker.dataUtils.IEntity;
 import com.trackmars.and.tracker.model.History;
-import com.trackmars.and.tracker.model.Point;
-import com.trackmars.and.tracker.model.Track;
-import com.trackmars.and.tracker.utils.LocationUtils;
 import com.trackmars.and.tracker.utils.RepresentationUtils;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager.LayoutParams;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 public class PointsActivity extends FragmentActivity {
 
-	private int rowId = 0;
+	//private int rowId = 0;
 	private boolean anyItemFound = false;
 	
 	class MyTask extends AsyncTask<Void, Void, Void> {
@@ -147,9 +128,7 @@ public class PointsActivity extends FragmentActivity {
 		
 		private void showUnknownPlaces (TableLayout tableLayout) {
 			
-			Bundle args;
 			TableRow tRMonth;
-			FragmentTransaction ftmonth;
 			
 			tRMonth = (TableRow)LayoutInflater.from(tableLayout.getContext()).inflate(R.layout.fragment_activities_list_geo, null);
 
@@ -236,8 +215,6 @@ public class PointsActivity extends FragmentActivity {
 			final Integer id_point = ((History) entityRow).ID_POINT;
 
 			TableRow tRMonth;
-			Bundle args;
-			FragmentTransaction ftmonth;
 
 			if ((year != DateUtils.getYearByDateLong(created))
 					|| (month != DateUtils.getMonthByDateLong(created))) {
@@ -254,7 +231,7 @@ public class PointsActivity extends FragmentActivity {
 
 				tRMonth = (TableRow)LayoutInflater.from(tableLayout.getContext()).inflate(R.layout.fragment_activities_list_month, null);
 
-				String mnTitle = monthName.concat(", ").concat(new Integer(year).toString());
+				String mnTitle = monthName.concat(", ").concat(Integer.valueOf(year).toString());
 				((TextView)tRMonth.findViewById(R.id.nameOfTheMonth)).setText(mnTitle);
 				
 				// заталкиваем фрагмент в строку таблицы

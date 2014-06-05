@@ -8,7 +8,6 @@ import java.util.Locale;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.trackmars.and.tracker.dataUtils.DataOperation;
-import com.trackmars.and.tracker.dataUtils.EntityHelper;
 import com.trackmars.and.tracker.model.Point;
 import com.trackmars.and.tracker.utils.RepresentationUtils;
 import com.trackmars.and.tracker.utils.RepresentationUtils.KindOfPoint;

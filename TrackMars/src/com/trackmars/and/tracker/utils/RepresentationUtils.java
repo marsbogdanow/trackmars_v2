@@ -1,7 +1,6 @@
 package com.trackmars.and.tracker.utils;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -15,9 +14,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.trackmars.and.tracker.DialogCreatePoint;
 import com.trackmars.and.tracker.R;
 import com.trackmars.and.tracker.model.Point;
 
@@ -116,7 +113,7 @@ public class RepresentationUtils {
 	            	
 	            	for (Address address : addresses) {
 	            		
-	                	String addressLine = new String("");
+	                	//String addressLine = new String("");
 	                	String addressLineFull = new String("");
 	                	//AddressObj addressObj = new DialogCreatePoint.AddressObj();
 	            		

@@ -2,14 +2,14 @@ package com.trackmars.and.tracker;
 
 import java.text.DecimalFormat;
 
-import org.w3c.dom.Text;
+//import org.w3c.dom.Text;
 
 import com.trackmars.and.tracker.dataUtils.DateUtils;
 
 import android.os.Bundle;
-import android.os.Parcelable.Creator;
+//import android.os.Parcelable.Creator;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
+//import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

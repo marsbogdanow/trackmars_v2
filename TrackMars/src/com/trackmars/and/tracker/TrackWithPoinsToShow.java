@@ -2,7 +2,6 @@ package com.trackmars.and.tracker;
 
 import java.util.List;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.trackmars.and.tracker.dataUtils.IEntity;
 import com.trackmars.and.tracker.model.TrackPointData;
 

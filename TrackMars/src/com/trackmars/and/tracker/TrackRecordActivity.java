@@ -34,7 +34,6 @@ import com.trackmars.and.tracker.utils.LocationUtils;
 import com.trackmars.and.tracker.utils.RepresentationUtils;
 import com.trackmars.and.tracker.utils.Tools;
 
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -48,7 +47,6 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.util.Log;
 
