@@ -62,9 +62,6 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 	}
 	
 	
-	
-	private LocationWithTime lastSavedLocation;
-	
 	private Float accuracy;
 	private Boolean isRecording = false;
 	private Boolean isPaused = false;
@@ -148,6 +145,23 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		
 		this.lastSavePointTime = null;
 		this.lastSavePointLatLng = null;
+		
+	}
+	
+	private List<TrackPointData> collectedLocations = new ArrayList<TrackPointData>();
+	private boolean collect = false;
+	
+	public void collectLocations(boolean on) {
+		collectedLocations.clear();
+		collect = on;
+	}
+	
+	public boolean collected () {
+		return this.collect && this.collectedLocations.size() > 0;
+	}
+	public List<TrackPointData> getCollectedLocations() {
+		
+		return collectedLocations;
 		
 	}
 	
@@ -237,29 +251,31 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		
 		List<TrackPointData> locations = new ArrayList<TrackPointData>();
 		
-		for (IEntity trackPoint : entityHelper.getAllRowsWhere("id_track", trackId!=null?trackId.toString():track.ID.toString(), 0, null, "created")) {
-			String pointData = ((TrackPoint)trackPoint).POINTS_DATA;
-			
-			List<TrackPointData> datas = new ArrayList<TrackPointData>();
-			
-			Gson gson = new Gson();
-			
-			datas = gson.fromJson(pointData, new TypeToken<ArrayList<TrackPointData>>(){}.getType());
-			
-			locations.addAll(datas);
-			
-		}
-
-		if (trackId == null) {
-			
-			for (TrackPointData data : trackPointsToSave) {
+		if (trackId != null || track != null) {
+			for (IEntity trackPoint : entityHelper.getAllRowsWhere("id_track", trackId!=null?trackId.toString():track.ID.toString(), 0, null, "created")) {
+				String pointData = ((TrackPoint)trackPoint).POINTS_DATA;
 				
-				locations.add(data);
+				List<TrackPointData> datas = new ArrayList<TrackPointData>();
+				
+				Gson gson = new Gson();
+				
+				datas = gson.fromJson(pointData, new TypeToken<ArrayList<TrackPointData>>(){}.getType());
+				
+				locations.addAll(datas);
 				
 			}
 			
+			if (trackId == null) {
+				
+				for (TrackPointData data : trackPointsToSave) {
+					
+					locations.add(data);
+					
+				}
+				
+			}
 		}
-		
+
 		return locations;
 	}
 	
@@ -346,6 +362,11 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		trackPointData.paused = this.isPaused;
 		trackPointData.accuracy = location.getAccuracy();
 		
+		
+		if (this.collect) {
+			this.collectedLocations.add(trackPointData);
+		}
+	
 		
 		this.track.TRAVEL_TIME = (this.track.TRAVEL_TIME != null ? this.track.TRAVEL_TIME
 				: 0l)
@@ -449,6 +470,8 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		}
 	}
 
+	private LocationWithTime lastSavedLocation;
+	
 	@Override
 	public void newLocation(Location location, Class listenerType, Float accuracy) {
 	    
@@ -465,7 +488,9 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 			rectangle.shape(location);
 			saveTrackPoint(location);
 			
-			this.lastSavedLocation = new LocationWithTime(location, new Date().getTime()); 
+			this.lastSavedLocation = new LocationWithTime(location, new Date().getTime());
+			
+			
 		}
 		
 		this.lastPointProvider = listenerType;

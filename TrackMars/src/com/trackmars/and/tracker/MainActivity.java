@@ -242,6 +242,10 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
     protected void onPause() {
       super.onPause();
       
+      if (trackRecorderService != null || trackRecorderService.isRecording()) {
+    	  trackRecorderService.collectLocations(true);
+      }
+      
       //if (trackRecorderService == null || !trackRecorderService.isRecording()) {
     	  unregisterReceiver(trackRecorderReceiver);
       //}
@@ -324,24 +328,48 @@ public class MainActivity extends FragmentActivity implements ILocationReceiver 
 	    	}
 	    	
 	    	if (lastPoint != null) {
+	    		
+				//
+	    		
+	    		// если вернулись по кнопке бек, то в сервисе должны буть сохранены точки
+	    		// которые не отрисовывались
+	    		if (trackRecorderService.collected()) {
+	    			
+	    			List<LatLng> collectedLngs = new ArrayList<LatLng>();
+	    			
+			    	for (TrackPointData data : trackRecorderService.getCollectedLocations()) {
+			    		
+			    		if (segmentsBegining) {
+			    			
+			    		}
+			    		
+			    		collectedLngs.add(new LatLng(data.LAT, data.LNG));
+			    		if (data.paused) {
+			    	    	polyline = this.map.addPolyline(polylineOptions);
+			    	    	polyline.setPoints(collectedLngs);
+			    	    	collectedLngs = new ArrayList<LatLng>();
+			    	    	polyline = this.map.addPolyline(polylineOptions);
+			    		}
+			    	}
+			    	
+			    	trackRecorderService.collectLocations(false);
+			    	
+			    	lngs.addAll(collectedLngs);
+	    		} else {
+	    			lngs.add(new LatLng(location.getLatitude(), location.getLongitude()));	    			
+	    		}
+	    		
+	    		
 	    		if (trackRecorderService.isPaused()) {
 	    	    	lngs = new ArrayList<LatLng>();
 	    	    	polyline = this.map.addPolyline(polylineOptions);
 	    		}
 	    		
-				lngs.add(new LatLng(location.getLatitude(), location.getLongitude()));
 	    	}
 	    	
 	    	lastPoint = new LatLng(location.getLatitude(), location.getLongitude());
 	    	
-	    	//if (polylineOptions != null) {
-	    		//polylineOptions.addAll(lngs);
-	    	//}
-	    	//if (lngs != null) {
-    	    //	polyline = this.map.addPolyline(polylineOptions);
-    	    //	
-	    		polyline.setPoints(lngs);
-	    	//}
+	    	polyline.setPoints(lngs);
 	    	
     	}
     	
