@@ -15,6 +15,8 @@
     <string name="dateFormatWOTime">dd/MM/yyyy</string>
     <string name="timeFormat">HH:mm:ss</string>
     <string name="day1">day</string>
+    <string name="day2_4">days</string>
+    <string name="day5_0">days</string>
     <string name="day_more_then1">days</string>
     <string name="hour">h</string>
     <string name="minute">m</string>

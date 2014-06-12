@@ -146,6 +146,8 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		this.lastSavePointTime = null;
 		this.lastSavePointLatLng = null;
 		
+		this.lastMatterLocationWithTime = null;
+		
 	}
 	
 	private List<TrackPointData> collectedLocations = new ArrayList<TrackPointData>();
@@ -299,6 +301,10 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 			} else {
 				this.currentRecordingTrackId = track.ID;
 				this.rectangle.create(track.LEFT, track.RIGHT, track.TOP, track.BOTTOM);
+				
+				this.currentDistance = track.DISTANCE;
+				this.currentTravelTime = track.TRAVEL_TIME;
+				
 			}
 			
 		} 
@@ -332,6 +338,10 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		return currentRecordingTrackId;
 	}
 
+	
+	private LocationWithTime lastMatterLocationWithTime;
+	
+	
 	private void saveTrackPoint(Location location) {
 				
 		Long curDate = new Date().getTime();
@@ -343,7 +353,7 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		}
 
 		// общее расстояние
-		if (this.lastSavePointLatLng == null) {// если например поставили паузу в время записи трека или начали писать новый трек
+		if (this.lastSavePointLatLng == null && location != null) {// если например поставили паузу в время записи трека или начали писать новый трек
 			 // отметим координаты самой первой точки, чтобы потом от него продолжить считать
 			this.lastSavePointLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 		}
@@ -368,20 +378,14 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		}
 	
 		
-		this.track.TRAVEL_TIME = (this.track.TRAVEL_TIME != null ? this.track.TRAVEL_TIME
-				: 0l)
-				+ curDate - lastSavePointTime;
-
-		this.currentTravelTime = this.track.TRAVEL_TIME;
-
-		this.track.DISTANCE = (this.track.DISTANCE != null ? this.track.DISTANCE
-				: 0)
-				+ LocationUtils.distFrom(location.getLatitude(),
-						location.getLongitude(),
-						lastSavePointLatLng.latitude,
-						lastSavePointLatLng.longitude);
-
-		this.currentDistance = this.track.DISTANCE;
+		//////
+		if (lastMatterLocationWithTime != null && this.currentTravelTime != null && this.currentDistance !=null) {
+			
+			this.track.TRAVEL_TIME = this.currentTravelTime;
+			this.track.DISTANCE = this.currentDistance;
+			
+		}
+		///////
 		
 	    if (this.MAX_SERIA_QUANTITY <= trackPointsToSave.size() || (trackPointsToSave.size() > 0 && (curDate >= this.MAX_SERIA_TIME + trackPointsToSave.get(0).CREATED))
 	    		|| this.isPaused || !this.isRecording) {
@@ -485,6 +489,30 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 				(this.lastSavedLocation == null || LocationUtils.isDistantOutOfAccuracy(this.location, this.lastSavedLocation.getLocation()) &&
 				(new Date().getTime() - this.lastSavedLocation.getTime()) > (MIN_INTERNAL_BETWEEN_POINTS * 1000))
 			) {
+
+			Long curDate = new Date().getTime();
+			
+			//////
+			if (lastMatterLocationWithTime != null) {
+				
+				this.currentTravelTime = (this.track.TRAVEL_TIME != null ? this.track.TRAVEL_TIME
+						: 0l)
+						+ curDate - lastMatterLocationWithTime.getTime();
+		
+		
+				this.currentDistance = (this.track.DISTANCE != null ? this.track.DISTANCE
+						: 0)
+						+ LocationUtils.distFrom(location.getLatitude(),
+								location.getLongitude(),
+								lastMatterLocationWithTime.location.getLatitude(),
+								lastMatterLocationWithTime.location.getLongitude());
+		
+				
+			}
+			///////
+			
+			lastMatterLocationWithTime = new LocationWithTime(location, curDate);
+			
 			rectangle.shape(location);
 			saveTrackPoint(location);
 			

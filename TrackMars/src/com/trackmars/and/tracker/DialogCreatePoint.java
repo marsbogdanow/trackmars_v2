@@ -323,7 +323,8 @@ public class DialogCreatePoint extends Activity {
 					point.COLUMN_KIND = this.kindOfPoint.val();
 
 			    	String addresses = RepresentationUtils.getGeoCodingInfo(new LatLng(latitude, longitude), this);
-			    	point.COLUMN_GEOCODE = addresses;
+			    	// TODO раскоментить!!!!!!!
+			    	//point.COLUMN_GEOCODE = addresses;
 					
 					
 					DataOperation.savePoint(getApplicationContext(), point);

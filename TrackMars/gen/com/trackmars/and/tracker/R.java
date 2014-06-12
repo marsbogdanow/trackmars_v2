@@ -315,7 +315,7 @@ containing a value of this type.
     }
     public static final class string {
         public static final int action_settings=0x7f060016;
-        public static final int ago=0x7f06002f;
+        public static final int ago=0x7f060031;
         public static final int app_name=0x7f060015;
         /**   Title for notification shown when GooglePlayServices is unavailable [CHAR LIMIT=70] 
          */
@@ -326,7 +326,7 @@ containing a value of this type.
         /**   Requested by string saying which app requested the notification. [CHAR LIMIT=42] 
          */
         public static final int auth_client_requested_by_msg=0x7f060011;
-        public static final int avg_speed=0x7f060036;
+        public static final int avg_speed=0x7f060038;
         public static final int choose_address=0x7f060019;
         /**  Button in confirmation dialog to enable Google Play services.  Clicking it
         will direct user to application settings of Google Play services where they
@@ -385,21 +385,23 @@ containing a value of this type.
         public static final int common_signin_button_text_long=0x7f06000e;
         public static final int dateFormatWOTime=0x7f060020;
         public static final int day1=0x7f060022;
-        public static final int day_more_then1=0x7f060023;
+        public static final int day2_4=0x7f060023;
+        public static final int day5_0=0x7f060024;
+        public static final int day_more_then1=0x7f060025;
         public static final int details=0x7f06001d;
-        public static final int distance=0x7f060034;
-        public static final int end_of_trip=0x7f06003f;
-        public static final int gps=0x7f060041;
-        public static final int hello_world=0x7f06003b;
-        public static final int hour=0x7f060024;
-        public static final int hour1=0x7f060029;
-        public static final int hour2_4=0x7f06002a;
-        public static final int hour5_0=0x7f06002b;
-        public static final int in_motion=0x7f060035;
-        public static final int interval=0x7f06003d;
-        public static final int kilometer=0x7f060027;
-        public static final int kmph=0x7f060037;
-        public static final int locale=0x7f060032;
+        public static final int distance=0x7f060036;
+        public static final int end_of_trip=0x7f060041;
+        public static final int gps=0x7f060043;
+        public static final int hello_world=0x7f06003d;
+        public static final int hour=0x7f060026;
+        public static final int hour1=0x7f06002b;
+        public static final int hour2_4=0x7f06002c;
+        public static final int hour5_0=0x7f06002d;
+        public static final int in_motion=0x7f060037;
+        public static final int interval=0x7f06003f;
+        public static final int kilometer=0x7f060029;
+        public static final int kmph=0x7f060039;
+        public static final int locale=0x7f060034;
         /**  Location client code resources (prefix with location_client) 
 
         Begin strings for location.reporting
@@ -412,31 +414,31 @@ containing a value of this type.
         public static final int location_client_ulr_inactive_age_unknown=0x7f060013;
         public static final int location_client_ulr_inactive_unknown_restriction=0x7f060014;
         public static final int map=0x7f06001c;
-        public static final int meter=0x7f060028;
-        public static final int min1=0x7f06002c;
-        public static final int min2_4=0x7f06002d;
-        public static final int min5_0=0x7f06002e;
-        public static final int minute=0x7f060025;
-        public static final int mph=0x7f060038;
+        public static final int meter=0x7f06002a;
+        public static final int min1=0x7f06002e;
+        public static final int min2_4=0x7f06002f;
+        public static final int min5_0=0x7f060030;
+        public static final int minute=0x7f060027;
+        public static final int mph=0x7f06003a;
         public static final int name_the_point=0x7f060018;
-        public static final int name_the_trip=0x7f060040;
-        public static final int network=0x7f060042;
+        public static final int name_the_trip=0x7f060042;
+        public static final int network=0x7f060044;
         public static final int no_conn_no_address=0x7f06001b;
         public static final int no_name=0x7f06001a;
-        public static final int no_places=0x7f060044;
+        public static final int no_places=0x7f060046;
         public static final int points=0x7f06001e;
-        public static final int second=0x7f060026;
-        public static final int time=0x7f060033;
+        public static final int second=0x7f060028;
+        public static final int time=0x7f060035;
         public static final int timeFormat=0x7f060021;
         public static final int title_activity_dialog_create_point=0x7f060017;
-        public static final int title_activity_points=0x7f060039;
-        public static final int title_activity_settings=0x7f06003e;
-        public static final int title_activity_tracks=0x7f06003a;
-        public static final int today=0x7f060030;
-        public static final int track_record_settings=0x7f06003c;
+        public static final int title_activity_points=0x7f06003b;
+        public static final int title_activity_settings=0x7f060040;
+        public static final int title_activity_tracks=0x7f06003c;
+        public static final int today=0x7f060032;
+        public static final int track_record_settings=0x7f06003e;
         public static final int tracks=0x7f06001f;
-        public static final int unknown_place=0x7f060043;
-        public static final int yesterday=0x7f060031;
+        public static final int unknown_place=0x7f060045;
+        public static final int yesterday=0x7f060033;
     }
     public static final class style {
         /** 

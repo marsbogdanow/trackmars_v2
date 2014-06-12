@@ -207,14 +207,43 @@ public class TrackRecordActivity extends FragmentActivity implements ILocationRe
         
         if (this.trackRecorderService.getTrackCreatedTime() != null) {
         	
-	        final Integer hours = (int) (totalTime / DateUtils.MILLISECONDS_IN_HOUR);
+	        Integer hours = (int) (totalTime / DateUtils.MILLISECONDS_IN_HOUR);
 	        final Integer minutes = (int)((totalTime - hours * DateUtils.MILLISECONDS_IN_HOUR) / DateUtils.MILLISECONDS_IN_MINUTE);
 	        
+	        String fieldText = new String();
 	        
-	        String fieldText = "<big><big><b>" + hours.toString() + "</b></big></big>";
-	        fieldText += "<small>" + res.getString(R.string.hour) + ":</small>";
-	        fieldText += "  <big><big><b>" + minutes.toString() + "</b></big></big>";
-	        fieldText += "<small>" + res.getString(R.string.minute) + "</small>";
+	        if (hours > 23) {
+	        	int dayCount = (int) Math.floor(hours / 24);
+	        	int dayCountType = dayCount;
+	        	String dayWord = new String();
+	        	
+	        	if (dayCount > 10) {
+	        		dayCountType = dayCount % 10;
+	        	}
+	        	
+	        	if (dayCountType == 1) {
+	        		dayWord = res.getString(R.string.day1);
+	        	} else if (dayCountType > 1 && dayCountType < 5) {
+	        		dayWord = res.getString(R.string.day2_4);
+	        	} else {
+	        		dayWord = res.getString(R.string.day5_0);
+	        	}
+	        	
+	        	hours = hours % 24;
+	        	
+	        	
+	        	fieldText = "<big><big><b>" + String.valueOf(dayCount) + "</b></big></big>";
+	        	fieldText += "<small>" + dayWord + ":</small>";
+	        	fieldText += "<big><big><b>" + hours.toString() + "</b></big></big>";
+	        	fieldText += "<small>" + res.getString(R.string.hour) + ":</small>";
+	        	fieldText += "  <big><big><b>" + minutes.toString() + "</b></big></big>";
+	        	fieldText += "<small>" + res.getString(R.string.minute) + "</small>";
+	        } else {
+	        	fieldText = "<big><big><b>" + hours.toString() + "</b></big></big>";
+	        	fieldText += "<small>" + res.getString(R.string.hour) + ":</small>";
+	        	fieldText += "  <big><big><b>" + minutes.toString() + "</b></big></big>";
+	        	fieldText += "<small>" + res.getString(R.string.minute) + "</small>";
+	        }
 	        
 	        ((TextView)findViewById(R.id.startDate)).setText(DateUtils.getDateVisualRepresentaion(this.trackRecorderService.getTrackCreatedTime(), this));
 	        ((TextView)findViewById(R.id.time)).setText(Html.fromHtml(fieldText));
@@ -276,7 +305,6 @@ public class TrackRecordActivity extends FragmentActivity implements ILocationRe
         }
 		
     }
-	
     
 	public void onClick(View view) throws IllegalAccessException, InstantiationException {
 		if (view.getId() == R.id.imageButtonPoint) {
@@ -331,36 +359,6 @@ public class TrackRecordActivity extends FragmentActivity implements ILocationRe
 		buttonsArrange();
 		
  	}
-
-	
-	/*
-	public void showSettings(View view) {
-		
-		   //LayoutInflater layoutInflater  = (LayoutInflater)getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-		   
-		   View popupView = getLayoutInflater().inflate(R.layout.popup_settings, null);
-		   
-		   final PopupWindow popupWindow = new PopupWindow(
-		               popupView, 
-		               LayoutParams.WRAP_CONTENT,  
-		                     LayoutParams.WRAP_CONTENT, true);  
-		   
-		   popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
-		   //popupWindow.showAsDropDown(findViewById(R.id.imageButton1));
-		   
-		   ImageButton btnDismiss = (ImageButton)popupView.findViewById(R.id.buttonBack);
-		   
-		   btnDismiss.setOnClickListener(new ImageButton.OnClickListener() {
-			   public void onClick(View v) {    
-				   popupWindow.dismiss();
-				  }
-		   }
-		 );
-		               
-		   
-		         
-		   }
-		   */
 	
 	@Override
 	public void askLocation() {
@@ -369,8 +367,6 @@ public class TrackRecordActivity extends FragmentActivity implements ILocationRe
 			this.newLocation(this.location, this.listenerType, this.accuracy);
 		}
 	}
-	
-	
 	
 	///////////////////////////////////////////////////////////////////////////////////
 	/// 	дальше методы дла рисования точек в списке ////////////////////////////////
@@ -398,6 +394,8 @@ public class TrackRecordActivity extends FragmentActivity implements ILocationRe
 	    }
 	  }	
 	
+	private boolean anyItemFound = false;
+	
 	private void createList() {
 		
 		EntityHelper entityHelper;
@@ -424,11 +422,12 @@ public class TrackRecordActivity extends FragmentActivity implements ILocationRe
 			        
 			        handler.sendMessage(msg);
 			        
+			        anyItemFound = true;
 				}
 				
-		        //Message msg = new Message();
-		        //msg.obj = Integer.valueOf(0);
-		        //handler.sendMessage(msg);
+		        Message msg = new Message();
+		        msg.obj = Integer.valueOf(0);
+		        handler.sendMessage(msg);
 				
 			} catch (IllegalArgumentException e) {
 				// TODO Auto-generated catch block
@@ -453,10 +452,10 @@ public class TrackRecordActivity extends FragmentActivity implements ILocationRe
 	      
 	      intent.putExtra("geocode", point.COLUMN_GEOCODE);
 	      intent.putExtra("id", point.COLUMN_ID);
-	      
 	      startActivity(intent);
 	      
 	}
+	
 
 	Handler handler = new Handler() {
 		
@@ -467,7 +466,7 @@ public class TrackRecordActivity extends FragmentActivity implements ILocationRe
 		
 		List<Point> histories = new ArrayList<Point>();
 		
-		private void showUnknownPlaces (TableLayout tableLayout) {
+		public void showUnknownPlaces (TableLayout tableLayout) {
 			
 			TableRow tRMonth;
 			
@@ -526,6 +525,14 @@ public class TrackRecordActivity extends FragmentActivity implements ILocationRe
 			
 			TableLayout tableLayout = (TableLayout) findViewById(R.id.listTable);
 			
+			if ((msg.obj).equals(Integer.valueOf(0))) {
+		        
+		        if (histories != null && histories.size() > 0) {
+		        		showUnknownPlaces(tableLayout);
+		        }
+		        
+		        return;
+			}
     
 			final Object entityRow = msg.obj;
 			
