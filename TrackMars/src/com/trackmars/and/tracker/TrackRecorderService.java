@@ -143,6 +143,7 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		
 		}
 		
+		
 		this.lastSavePointTime = null;
 		this.lastSavePointLatLng = null;
 		
@@ -288,6 +289,7 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		
 		this.rectangle = new Rectangle();
 		
+		pauseMonitor.start();
 		
 		if (resumeLastTrack) {
 			
@@ -379,7 +381,7 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 	
 		
 		//////
-		if (lastMatterLocationWithTime != null && this.currentTravelTime != null && this.currentDistance !=null) {
+		if (lastMatterLocationWithTime != null && this.currentTravelTime != null && this.currentDistance !=null && this.track != null) {
 			
 			this.track.TRAVEL_TIME = this.currentTravelTime;
 			this.track.DISTANCE = this.currentDistance;
@@ -481,6 +483,14 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 	    
 		this.location = location;
 		
+		if (isRecording() && !isPaused()) {
+			pauseMonitor.add(new LocationWithTime(location, new Date().getTime()));
+			
+			if (pauseMonitor.getIsStaying()) {
+				return ;
+			}
+		}
+		
 		Intent intent = new Intent(LocationUtils.LOCATION_RECEIVER_ACTION);
 		sendBroadcast(intent);
 		
@@ -525,6 +535,146 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		this.accuracy = accuracy;
 	}
 
+	
+	class PauseMonitor{
+		
+		List<LocationWithTime> locationsWithTime = new ArrayList<TrackRecorderService.LocationWithTime>();
+		boolean isStaying = false;
+		
+		final private double SPEED_THRESHOLD = 2d;
+		final private double DISTANCE_THRESOLD = 150d;
+
+		int follow = 0;
+		LocationWithTime firsFollowedLocation;
+		LocationWithTime lastFollowedLocation;
+		
+		public void start() {
+			follow = 0;
+			firsFollowedLocation = null;
+			lastFollowedLocation = null;
+			isStaying = false;
+			locationsWithTime.clear();
+		}
+		
+		public void add(LocationWithTime location) {
+			if (locationsWithTime.size() > 2) {
+				List<LocationWithTime> withTimes = new ArrayList<LocationWithTime>();
+				withTimes.add(locationsWithTime.get(1));
+				withTimes.add(locationsWithTime.get(2));
+				withTimes.add(location);
+				
+				locationsWithTime.clear();
+				locationsWithTime.addAll(withTimes);
+			} else {
+				locationsWithTime.add(location);
+			}
+			determinate(location);
+		}
+		
+		public boolean getIsStaying() {
+			return isStaying;
+		}
+		
+		private boolean toFollow(LocationWithTime locationWithTime) {
+
+			
+			if (locationsWithTime.size() < 3) {
+				return false;
+			}
+			
+			LocationWithTime prevLocationWithTime;
+			
+			prevLocationWithTime = locationsWithTime
+					.get(locationsWithTime.size() - 2);
+			
+			if (LocationUtils.distFrom(
+					prevLocationWithTime.location,
+					locationWithTime.location) < locationWithTime.location
+					.getAccuracy() * 2) {
+
+				if (firsFollowedLocation == null) {
+					firsFollowedLocation = locationWithTime;
+				}
+				
+				lastFollowedLocation = locationWithTime;
+				
+				return true;
+
+			} else if (locationsWithTime.size() > 2) {
+				
+				double dist = LocationUtils.distFrom(locationWithTime.location, 
+						locationsWithTime.get(locationsWithTime.size() - 1).location);
+				
+				for (int n=locationsWithTime.size() - 2; 
+							n > locationsWithTime.size() - 3; 
+							n--) {
+						
+						dist += LocationUtils.distFrom(locationsWithTime.get(n + 1).location,
+								locationsWithTime.get(n).location); 
+						
+				}
+				
+				long time = locationWithTime.time - locationsWithTime.get(locationsWithTime.size() - 2).getTime();
+				double speed = (dist / time) / 1000 * 3600 * 1000;
+				
+				if (speed <= SPEED_THRESHOLD) {
+					if (firsFollowedLocation == null) {
+						firsFollowedLocation = locationWithTime;
+					}
+					
+					lastFollowedLocation = locationWithTime;
+					
+					return true;
+				}
+					
+			}
+			
+			return false;
+			
+		}
+		
+		private void determinate(LocationWithTime locationWithTime) {
+			
+			
+			if (locationsWithTime.size() > 2) {
+					
+				if (toFollow(locationWithTime)) {
+					if (follow < 3) {
+						follow++;
+					}
+				} else {
+					//if (follow > 1) {
+					//	follow--;
+					//} else {
+						if (this.isStaying) {
+							if (LocationUtils.distFrom(
+									locationWithTime.getLocation(),
+									firsFollowedLocation.getLocation()) > DISTANCE_THRESOLD) {
+								follow = 0;
+								isStaying = false;
+								firsFollowedLocation = null;
+								lastFollowedLocation = null;
+							}
+						}
+					//}
+
+				}
+
+				if (follow > 1) {
+					
+					if (LocationUtils.distFrom(lastFollowedLocation.getLocation(), firsFollowedLocation.getLocation()) < 
+							LocationUtils.distFrom(locationsWithTime.get(locationsWithTime.size() - 2).getLocation(), firsFollowedLocation.getLocation())) {
+						
+						this.isStaying = true;
+						
+					}					
+				}
+			}
+		}
+	}
+	
+	PauseMonitor pauseMonitor = new PauseMonitor();
+	
 	@Override
 	public void askLocation() {
 		

@@ -154,15 +154,20 @@ public class TrackRecordActivity extends FragmentActivity implements ILocationRe
       
       Log.d(TrackRecordActivity.class.getName(), "Ready to unbind");
       unbindService(mConnection);
-      try {
-		trackRecorderService.pause();
-	} catch (IllegalAccessException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} catch (InstantiationException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
+      
+		if (trackRecorderService != null) {
+
+			try {
+				trackRecorderService.pause();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
       //locationUtils.onPause();
     }
     

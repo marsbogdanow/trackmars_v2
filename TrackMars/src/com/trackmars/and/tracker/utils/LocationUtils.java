@@ -201,6 +201,18 @@ public class LocationUtils{
 	    return dist * meterConversion;
 	    }
 	
+	public static double distFrom(Location location1, Location location2) {
+		
+		return LocationUtils.distFrom(
+				location1.getLatitude(),  
+				location1.getLongitude(), 
+				location2.getLatitude(), 
+				location2.getLongitude()
+			);
+		
+	}
+
+	
 	public void setInterval (Integer interval) {
 		this.interval = interval;
 	}
