@@ -478,15 +478,23 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 
 	private LocationWithTime lastSavedLocation;
 	
+	private boolean dontCheckAutoPause = false;
+	
 	@Override
 	public void newLocation(Location location, Class listenerType, Float accuracy) {
 	    
 		this.location = location;
 		
-		if (isRecording() && !isPaused()) {
+		if (isRecording && 
+				!isPaused &&
+				!dontCheckAutoPause &&
+				this.lastSavedLocation != null && 
+				(new Date().getTime() - this.lastSavedLocation.getTime()) > (MIN_INTERNAL_BETWEEN_POINTS * 1000)
+			) {
 			pauseMonitor.add(new LocationWithTime(location, new Date().getTime()));
 			
 			if (pauseMonitor.getIsStaying()) {
+				this.lastSavedLocation = new LocationWithTime(location, new Date().getTime());
 				return ;
 			}
 		}
@@ -542,7 +550,7 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		boolean isStaying = false;
 		
 		final private double SPEED_THRESHOLD = 2d;
-		final private double DISTANCE_THRESOLD = 150d;
+		final private double DISTANCE_THRESOLD = 100d;
 
 		int follow = 0;
 		LocationWithTime firsFollowedLocation;
@@ -590,7 +598,7 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 			if (LocationUtils.distFrom(
 					prevLocationWithTime.location,
 					locationWithTime.location) < locationWithTime.location
-					.getAccuracy() * 2) {
+					.getAccuracy() * 1.5) {
 
 				if (firsFollowedLocation == null) {
 					firsFollowedLocation = locationWithTime;
@@ -603,18 +611,10 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 			} else if (locationsWithTime.size() > 2) {
 				
 				double dist = LocationUtils.distFrom(locationWithTime.location, 
-						locationsWithTime.get(locationsWithTime.size() - 1).location);
+						locationsWithTime.get(0).location);
+
+				long time = locationWithTime.time - locationsWithTime.get(0).getTime();
 				
-				for (int n=locationsWithTime.size() - 2; 
-							n > locationsWithTime.size() - 3; 
-							n--) {
-						
-						dist += LocationUtils.distFrom(locationsWithTime.get(n + 1).location,
-								locationsWithTime.get(n).location); 
-						
-				}
-				
-				long time = locationWithTime.time - locationsWithTime.get(locationsWithTime.size() - 2).getTime();
 				double speed = (dist / time) / 1000 * 3600 * 1000;
 				
 				if (speed <= SPEED_THRESHOLD) {
@@ -638,18 +638,20 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 			
 			if (locationsWithTime.size() > 2) {
 					
-				if (toFollow(locationWithTime)) {
-					if (follow < 3) {
-						follow++;
-					}
-				} else {
-					//if (follow > 1) {
-					//	follow--;
-					//} else {
 						if (this.isStaying) {
 							if (LocationUtils.distFrom(
 									locationWithTime.getLocation(),
 									firsFollowedLocation.getLocation()) > DISTANCE_THRESOLD) {
+								
+								
+								for (int n = 1; n < locationsWithTime.size(); n++) {
+									dontCheckAutoPause = true;
+									newLocation(locationsWithTime.get(n).location,
+											lastPointProvider,
+											locationsWithTime.get(n).location.getAccuracy());
+									dontCheckAutoPause = false;
+								}
+								
 								follow = 0;
 								isStaying = false;
 								firsFollowedLocation = null;
@@ -658,18 +660,23 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 						}
 					//}
 
-				}
 
 				if (follow > 1) {
 					
-					if (LocationUtils.distFrom(lastFollowedLocation.getLocation(), firsFollowedLocation.getLocation()) < 
-							LocationUtils.distFrom(locationsWithTime.get(locationsWithTime.size() - 2).getLocation(), firsFollowedLocation.getLocation())) {
+					if (LocationUtils.distFrom(locationWithTime.getLocation(), firsFollowedLocation.getLocation()) < 
+							LocationUtils.distFrom(lastFollowedLocation.getLocation(), firsFollowedLocation.getLocation())) {
 						
 						this.isStaying = true;
 						
 					}					
 				}
-			}
+				
+				if (toFollow(locationWithTime)) {
+					if (follow < 3) {
+						follow++;
+					}
+				}			
+				}
 		}
 	}
 	
