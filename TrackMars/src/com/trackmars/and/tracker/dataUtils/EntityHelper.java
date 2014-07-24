@@ -20,7 +20,7 @@ import com.trackmars.and.tracker.model.TrackPoint;
 public class EntityHelper extends SQLiteOpenHelper {
 	
 	static final private String DATABASE_NAME = "trackmars.db";
-	static final private Integer DATABASE_VERSION = 24;
+	static final private Integer DATABASE_VERSION = 25;
 	
 	private Class entityClass; 
 	//private Context context;
@@ -583,6 +583,19 @@ public class EntityHelper extends SQLiteOpenHelper {
 					
 				}
 			}
+
+			if (n == 25) {
+				this.tableToUpdate = History.class;
+				db.execSQL("DROP TABLE IF EXISTS " + this.tableToUpdate.getSimpleName());
+				db.execSQL(createStatement(this.tableToUpdate));
+				
+				db.execSQL("INSERT INTO " + this.tableToUpdate.getSimpleName() +
+						" (ID_TRACK, TITLE, CREATED) SELECT ID, TITLE, CREATED FROM TRACK");
+				
+				db.execSQL("INSERT INTO " + this.tableToUpdate.getSimpleName() +
+						" (ID_POINT, ID_TRACK_FOR_POINT, TITLE, CREATED, KIND, GEOCODE) SELECT COLUMN_ID, COLUMN_ID_TRACK, COLUMN_TITLE, COLUMN_CREATED, COLUMN_KIND, COLUMN_GEOCODE FROM POINT");
+			}
+    	
     	}
 	}
 	

@@ -1,0 +1,35 @@
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+	style="@style/CustomListViewRow"
+    android:background="#fffff0"
+>
+
+    <RelativeLayout style="@style/CustomListViewRow" >
+    
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="0dp"
+            android:layout_marginLeft="0dp"
+            android:padding="10dp"
+            android:background="#D8D8D8" >
+
+            
+        <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="0dp"
+	        android:layout_marginLeft="1dp"
+	        android:layout_marginRight="1dp"
+	        android:text="-"
+	        android:textColor="#D8D8D8"
+	        android:textSize="1sp" 
+			android:singleLine="false"
+	        android:layout_gravity="fill"/>
+        
+        </RelativeLayout>
+	    
+</RelativeLayout>
+</TableRow>

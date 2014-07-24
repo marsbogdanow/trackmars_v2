@@ -5,9 +5,10 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:layout_marginTop="20dp"
-    android:paddingBottom="20dp"
+    android:paddingBottom="0dp"
     android:background="#ffffff"
 >
+
     <RelativeLayout style="@style/TrackPoint" >
     
     <TextView
@@ -17,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="45dp"
     	android:layout_marginTop="20dp"
         android:layout_alignParentRight="true"
         android:layout_marginRight="5dp"
@@ -28,6 +29,45 @@
         android:layout_gravity="fill"
          />
 
+        <ImageView
+            android:id="@+id/pointOfTheTrackBd1"
+            
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="0dp"
+            android:src="@drawable/hist_track_body" />
+	    	    
+        <ImageView
+            android:id="@+id/pointOfTheTrackBd2"
+            
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="0dp"
+            android:src="@drawable/hist_track_body" />
+        
+        <ImageView
+            android:id="@+id/pointOfTheTrackBd3"
+            
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="25dp"
+            android:src="@drawable/hist_track_body" />
+        
         <RelativeLayout
             android:id="@+id/removableTerm"
             android:layout_width="wrap_content"
@@ -35,7 +75,6 @@
             android:layout_alignLeft="@+id/nameOfTheGeo"
             android:layout_below="@+id/nameOfTheGeo"
             android:layout_marginTop="15dp"
-            android:layout_marginLeft="0dp"
             android:padding="1dp"
             android:background="#555555" >
 
@@ -59,6 +98,7 @@
         
         </RelativeLayout>
         </RelativeLayout>
-    </RelativeLayout>
-    
+        
+        </RelativeLayout>
+        
 </TableRow>

@@ -22,6 +22,7 @@ public class DataOperation {
 		history.ID_POINT = point.COLUMN_ID;
 		history.KIND = point.COLUMN_KIND;
 		history.TITLE = point.COLUMN_TITLE;
+		history.ID_TRACK_FOR_POINT = point.COLUMN_ID_TRACK;
 		
 		entityHelper = new EntityHelper(context, History.class);
 		

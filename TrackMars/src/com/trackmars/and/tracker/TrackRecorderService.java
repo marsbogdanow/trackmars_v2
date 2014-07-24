@@ -345,7 +345,11 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 	
 	
 	private void saveTrackPoint(Location location) {
-				
+		
+		if (location == null) {
+			return;
+		}
+		
 		Long curDate = new Date().getTime();
 		
 		// время в пути

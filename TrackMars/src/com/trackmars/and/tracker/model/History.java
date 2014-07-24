@@ -14,6 +14,9 @@ public class History implements IEntity{
 	@EntityField(type=EntityField.TYPE_INTEGER)
 	public Integer ID_POINT;
 
+	@EntityField(type=EntityField.TYPE_INTEGER)
+	public Integer ID_TRACK_FOR_POINT;
+
 	@EntityField
 	public String TITLE;
 	
