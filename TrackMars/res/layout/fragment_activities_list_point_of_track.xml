@@ -20,7 +20,7 @@
 			android:singleLine="false"
 	        android:layout_gravity="fill"/>
 		
-        <ImageButton
+        <ImageView
 	        android:id="@+id/buttonTrack"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
@@ -35,10 +35,10 @@
         <TextView
             android:id="@+id/datesOfTheTrack"
             style="@style/DateText"
-	        android:layout_below="@+id/nameOfThePoint"
+	        android:layout_alignBottom="@+id/buttonTrack"
 	        android:layout_alignLeft="@+id/nameOfThePoint"
 	        android:layout_marginLeft="50dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginBottom="0dp"
             android:singleLine="false"
             android:text="12.13.2014" />
 

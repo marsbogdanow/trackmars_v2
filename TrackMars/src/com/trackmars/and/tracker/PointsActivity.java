@@ -9,7 +9,6 @@ import com.trackmars.and.tracker.dataUtils.IEntity;
 import com.trackmars.and.tracker.model.History;
 import com.trackmars.and.tracker.utils.RepresentationUtils;
 
-import android.opengl.Visibility;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,7 +18,6 @@ import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
@@ -176,13 +174,13 @@ public class PointsActivity extends FragmentActivity {
 					//((ImageButton)tR.findViewById(R.id.buttonTrack)).setImageBitmap(null);
 				} else {
 					if (kind.equals(RepresentationUtils.KindOfPoint.ATTRACTIVE.val())) {
-						((ImageButton)tR.findViewById(R.id.buttonTrack)).setImageResource(R.drawable.sm_attractive);
+						((ImageView)tR.findViewById(R.id.buttonTrack)).setImageResource(R.drawable.sm_attractive);
 					} else if (kind.equals(RepresentationUtils.KindOfPoint.FOOD.val())) {
-						((ImageButton)tR.findViewById(R.id.buttonTrack)).setImageResource(R.drawable.sm_food);
+						((ImageView)tR.findViewById(R.id.buttonTrack)).setImageResource(R.drawable.sm_food);
 					} else if (kind.equals(RepresentationUtils.KindOfPoint.NIGHT.val())) {
-						((ImageButton)tR.findViewById(R.id.buttonTrack)).setImageResource(R.drawable.sm_night);
+						((ImageView)tR.findViewById(R.id.buttonTrack)).setImageResource(R.drawable.sm_night);
 					} else if (kind.equals(RepresentationUtils.KindOfPoint.NOTE.val())) {
-						((ImageButton)tR.findViewById(R.id.buttonTrack)).setImageResource(R.drawable.sm_note);
+						((ImageView)tR.findViewById(R.id.buttonTrack)).setImageResource(R.drawable.sm_note);
 					}
 				}
 				
@@ -364,13 +362,13 @@ public class PointsActivity extends FragmentActivity {
 						//((ImageButton)tR.findViewById(R.id.buttonTrack)).setImageBitmap(null);
 					} else {
 						if (kind.equals(RepresentationUtils.KindOfPoint.ATTRACTIVE.val())) {
-							((ImageButton)tR.findViewById(R.id.buttonTrack)).setImageResource(R.drawable.sm_attractive);
+							((ImageView)tR.findViewById(R.id.buttonTrack)).setImageResource(R.drawable.sm_attractive);
 						} else if (kind.equals(RepresentationUtils.KindOfPoint.FOOD.val())) {
-							((ImageButton)tR.findViewById(R.id.buttonTrack)).setImageResource(R.drawable.sm_food);
+							((ImageView)tR.findViewById(R.id.buttonTrack)).setImageResource(R.drawable.sm_food);
 						} else if (kind.equals(RepresentationUtils.KindOfPoint.NIGHT.val())) {
-							((ImageButton)tR.findViewById(R.id.buttonTrack)).setImageResource(R.drawable.sm_night);
+							((ImageView)tR.findViewById(R.id.buttonTrack)).setImageResource(R.drawable.sm_night);
 						} else if (kind.equals(RepresentationUtils.KindOfPoint.NOTE.val())) {
-							((ImageButton)tR.findViewById(R.id.buttonTrack)).setImageResource(R.drawable.sm_note);
+							((ImageView)tR.findViewById(R.id.buttonTrack)).setImageResource(R.drawable.sm_note);
 						}
 					}
 					

@@ -486,9 +486,10 @@ containing a value of this type.
          */
         public static final int AppTheme=0x7f080001;
         public static final int CustomListViewRow=0x7f080007;
-        public static final int DateText=0x7f08000c;
-        public static final int GenericAttributeName=0x7f08000e;
-        public static final int GenericAttributeVal=0x7f08000f;
+        public static final int CustomListViewRowHeader=0x7f080008;
+        public static final int DateText=0x7f08000d;
+        public static final int GenericAttributeName=0x7f08000f;
+        public static final int GenericAttributeVal=0x7f080010;
         public static final int GenericFullScreenWindow=0x7f080004;
         /**   Стили для рисования окна ожидания 
          */
@@ -497,11 +498,11 @@ containing a value of this type.
         /**  елемент списка 
          */
         public static final int GenericTableRow=0x7f080005;
-        public static final int GenericTextHeader=0x7f08000d;
-        public static final int ListViewHeader=0x7f080008;
-        public static final int TrackHeader=0x7f08000a;
-        public static final int TrackNameText=0x7f08000b;
-        public static final int TrackPoint=0x7f080009;
+        public static final int GenericTextHeader=0x7f08000e;
+        public static final int ListViewHeader=0x7f080009;
+        public static final int TrackHeader=0x7f08000b;
+        public static final int TrackNameText=0x7f08000c;
+        public static final int TrackPoint=0x7f08000a;
         public static final int myText=0x7f080006;
     }
     public static final class styleable {

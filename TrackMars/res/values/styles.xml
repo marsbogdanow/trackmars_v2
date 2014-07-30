@@ -59,7 +59,6 @@
     </style>
 	
 	<style name="CustomListViewRow" parent="android:Theme">
-
     	<item name="android:layout_width">fill_parent</item>
     	<item name="android:layout_height">wrap_content</item>
     	<item name="android:background">@null</item>
@@ -70,9 +69,14 @@
         <item name="android:layout_alignParentLeft">true</item>
         <item name="android:layout_alignParentTop">true</item>
         <item name="android:layout_alignParentRight">true</item>
-        
     </style>
 
+	<style name="CustomListViewRowHeader" parent="@style/CustomListViewRow">
+    	<item name="android:paddingTop">10dp</item>
+    	<item name="android:paddingBottom">15dp</item>
+    	</style>
+	
+	
 	<style  name="ListViewHeader" parent="@style/myText">
     	<item name="android:layout_width">fill_parent</item>
 	   	<item name="android:background">#F89614</item>    
