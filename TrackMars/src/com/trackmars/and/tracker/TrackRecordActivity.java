@@ -321,6 +321,13 @@ public class TrackRecordActivity extends FragmentActivity implements ILocationRe
 			      
 			      intent.putExtra("long", location.getLongitude());
 			      intent.putExtra("lat", location.getLatitude());
+
+			      if (trackRecorderService.isRecording()) {
+			    	  intent.putExtra("track_id", trackRecorderService.getCurrentRecordingTrackId());
+			      } else {
+			    	  intent.putExtra("track_id", (Integer)null);
+			      }
+			      
 			      startActivity(intent);
 		      
 			  } else {

@@ -39,7 +39,7 @@
             
             android:layout_marginLeft="10dp"
             android:layout_marginBottom="0dp"
-            android:src="@drawable/hist_track_body" />
+            android:src="@drawable/hist_track_body_mini" />
         
         <ImageView
             android:id="@+id/removableTrackBd2"
@@ -51,8 +51,8 @@
             android:layout_alignParentTop="true"
             
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="53dp"
-            android:src="@drawable/hist_track_body" />
+            android:layout_marginTop="33dp"
+            android:src="@drawable/hist_track_body_mini" />
         
         <ImageView
             android:id="@+id/pointOfTheTrack"
@@ -64,7 +64,7 @@
             android:layout_alignParentTop="true"
             
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="15dp"
             android:src="@drawable/hist_track_point" />
         
     </RelativeLayout>

@@ -173,7 +173,7 @@ public class PointsActivity extends FragmentActivity {
 				Integer kind = historyItem.KIND;
 			
 				if (kind == null || kind.equals(0)) {
-					((ImageButton)tR.findViewById(R.id.buttonTrack)).setImageBitmap(null);
+					//((ImageButton)tR.findViewById(R.id.buttonTrack)).setImageBitmap(null);
 				} else {
 					if (kind.equals(RepresentationUtils.KindOfPoint.ATTRACTIVE.val())) {
 						((ImageButton)tR.findViewById(R.id.buttonTrack)).setImageResource(R.drawable.sm_attractive);
@@ -243,6 +243,11 @@ public class PointsActivity extends FragmentActivity {
 			final Integer id_track_for_point = ((History) entityRow).ID_TRACK_FOR_POINT;
 			final Integer id_point = ((History) entityRow).ID_POINT;
 
+			if (isTrack) {
+				int i = 1;
+			}
+			
+			
 			TableRow tRMonth;
 
 			if ((year != DateUtils.getYearByDateLong(created))
@@ -264,23 +269,19 @@ public class PointsActivity extends FragmentActivity {
 			if (isPoint) { // point
 				
 					if (id_track_for_point != null && !id_track_for_point.equals(0)) {
+						// если у точки есть ссылка на трек, то создаим этот самы трек, поскольку имЯ трека как замыслено
+						// должно быть перед именами точек, которые были созданы в рамках данного трека (путешествиЯ)
 						
 						if (findViewById(id_track_for_point) == null) {
 							
 				        	TableRow tR = (TableRow)LayoutInflater.from(tableLayout.getContext()).inflate(R.layout.fragment_activities_list_track, null);
 				        	tR.setId(id_track_for_point);
-				        	
-							tR.setOnClickListener(new OnClickListener() {
-								@Override
-								public void onClick(View v) {
-									selectTrack(v, (History) entityRow);
-								}
-							});
 					        tableLayout.addView(tR);
 							
 						}
 					} else {
 						
+						// если предыдущаЯ точка была точкой трека, то надо убрать у нее хвос картинки трека
 						if (prevItemIsPointOfTrack) {
 							if (trackBodyToRemove != null) {
 								trackBodyToRemove.setVisibility(View.INVISIBLE);
@@ -302,7 +303,7 @@ public class PointsActivity extends FragmentActivity {
 						
 					}
 
-					if (!geo.equals(geoCode)) {
+					if (!geo.equals(geoCode!=null?geoCode:new String(""))) {
 						
 						geo = geoCode!=null?new String(geoCode):new String("");
 						
@@ -332,13 +333,14 @@ public class PointsActivity extends FragmentActivity {
 			        
 
 					if (id_track_for_point != null && !id_track_for_point.equals(0)) {
-						
+						// эти переменные длЯ следующей этерации цикла по точкам
 						prevItemIsPointOfTrack = true;
 						trackBodyToRemove = (ImageView) tR.findViewById(R.id.removableTrackBody);
 						boxToRemove = (RelativeLayout) tR.findViewById(R.id.removableTerm);
 						
 					} else {
 						
+						// предыдущий айтем был треком без точек. “берет хвост.
 						if (prevItemIstrack) {
 							if (trackBodyToRemove != null) {
 								trackBodyToRemove.setVisibility(View.INVISIBLE);
@@ -353,10 +355,13 @@ public class PointsActivity extends FragmentActivity {
 						
 					}
 			        
-					String titleToShow = id.toString() + " id_point-" + id_point.toString() + " " +  title;
-				
+					String titleToShow = /*id.toString() + " id_point-" + id_point.toString() + " " +  */title;
+					// отладочный if Ќадо убрать
+					//if (id_track_for_point != null && !id_track_for_point.equals(0)) {
+					//	titleToShow += " id_track_for_point " + id_track_for_point.toString();
+					//}				
 					if (kind == null || kind.equals(0)) {
-						((ImageButton)tR.findViewById(R.id.buttonTrack)).setImageBitmap(null);
+						//((ImageButton)tR.findViewById(R.id.buttonTrack)).setImageBitmap(null);
 					} else {
 						if (kind.equals(RepresentationUtils.KindOfPoint.ATTRACTIVE.val())) {
 							((ImageButton)tR.findViewById(R.id.buttonTrack)).setImageResource(R.drawable.sm_attractive);
@@ -372,8 +377,15 @@ public class PointsActivity extends FragmentActivity {
 					TextView textView = (TextView) tR.findViewById(R.id.nameOfThePoint);
 					
 					if (titleToShow != null) {
+						if (titleToShow.length() > 60) {
+							titleToShow = titleToShow.substring(0, 59) + "...";
+						}
 						textView.setText(titleToShow);
 					}
+					
+					textView = (TextView) tR.findViewById(R.id.datesOfTheTrack);
+					textView.setText(DateUtils.getDateVisualRepresentaion(created, PointsActivity.this));
+					
 
 					//textView.invalidate();
 					//tR.invalidate();
@@ -407,7 +419,7 @@ public class PointsActivity extends FragmentActivity {
 					boxToRemove = null;
 
 		        	TableRow tR = (TableRow)LayoutInflater.from(tableLayout.getContext()).inflate(R.layout.fragment_activities_list_end_of_track, null);
-		        	tR.setId(id_track_for_point);
+		        	//tR.setId(id_track_for_point);
 		        	
 			        tableLayout.addView(tR);
 				
@@ -451,12 +463,34 @@ public class PointsActivity extends FragmentActivity {
 					tR = (TableRow)findViewById(id_track);
 					toAdd = false;
 				}
+
+				tR.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						selectTrack(v, (History) entityRow);
+					}
+				});
 				
 
 				TextView textView = (TextView) tR.findViewById(R.id.nameOfTheTrack);
 				
-				textView.setText(id.toString() + " id_track-" + id_track.toString()
-							+ " " + title);
+				if (title != null && !title.equals("null")) {
+					String titleToShow = new String(title);
+					if (titleToShow.length() > 60) {
+						titleToShow = titleToShow.substring(0, 59) + "...";
+					}
+					
+					textView.setText(/*id.toString() + " id_track-" + id_track.toString()
+							+ " " + */titleToShow);
+				} else {
+					
+					//textView.setText(id.toString() + " id_track-" + id_track.toString());
+					textView.setText(getResources().getString(R.string.new_trip));
+					
+				}
+				
+				textView = (TextView) tR.findViewById(R.id.datesOfTheTrack);
+				textView.setText(DateUtils.getDateVisualRepresentaion(created, PointsActivity.this));
 				
 				if (toAdd) {
 					tableLayout.addView(tR);
