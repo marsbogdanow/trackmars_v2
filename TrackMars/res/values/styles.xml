@@ -58,6 +58,15 @@
         <item name="android:layout_marginTop">6dp</item>
     </style>
 	
+	<!--
+		/////////////////////////////////////////////
+		Стили разных типов строк в кастомном ListView 
+	 -->
+	<style name="CustomListViewRowHeader" parent="@style/CustomListViewRow">
+    	<item name="android:paddingTop">10dp</item>
+    	<item name="android:paddingBottom">15dp</item>
+    </style>
+    
 	<style name="CustomListViewRow" parent="android:Theme">
     	<item name="android:layout_width">fill_parent</item>
     	<item name="android:layout_height">wrap_content</item>
@@ -71,17 +80,56 @@
         <item name="android:layout_alignParentRight">true</item>
     </style>
 
-	<style name="CustomListViewRowHeader" parent="@style/CustomListViewRow">
-    	<item name="android:paddingTop">10dp</item>
-    	<item name="android:paddingBottom">15dp</item>
-    	</style>
-	
-	
+	<!--
+		/////////////////////////////////////////////
+	 -->
+
+	<!--
+		/////////////////////////////////////////////
+		Стили линии разделителя 
+	 -->
+	<style name="TerminatingLineOutBound" parent="android:Theme">
+    	<item name="android:layout_width">fill_parent</item>
+    	<item name="android:layout_height">4dp</item>
+    	<item name="android:background">#CCCCCC</item>
+    	
+    	<item name="android:paddingLeft">1dp</item>
+    	<item name="android:paddingRight">1dp</item>
+    	<item name="android:paddingTop">1dp</item>
+    	<item name="android:paddingBottom">1dp</item>
+
+        <item name="android:layout_marginTop">15dp</item>
+    </style>
+	<style name="TerminatingLineInnerBound" parent="android:Theme">
+    	<item name="android:layout_width">fill_parent</item>
+    	<item name="android:layout_height">fill_parent</item>
+    	<item name="android:background">#D9D9D9</item>
+    </style>
+		<!--
+		/////////////////////////////////////////////
+	 -->
+
+	<!--
+	//////////////////////////////////////////////////
+	Стиль картинки трека сбоку 
+	 -->	
+	<style  name="TrackRepresentation" parent="android:Theme">
+    	<item name="android:layout_width">wrap_content</item>
+	   	<item name="android:background">@null</item>
+        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:layout_marginLeft">0dp</item>
+    </style>
+    
+	<style  name="TrackRepresentationBody" parent="@style/TrackRepresentation">
+    	<item name="android:src">@drawable/hist_track_body</item>
+    </style>
+			
+		
 	<style  name="ListViewHeader" parent="@style/myText">
     	<item name="android:layout_width">fill_parent</item>
-	   	<item name="android:background">#F89614</item>    
+	   	<item name="android:background">@color/colorful</item>    
 	    <item name="android:gravity">left</item> 
-        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textColor">@color/white</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
 
@@ -99,10 +147,10 @@
 	<style  name="TrackPoint" parent="android:Theme">
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
-	    <item name="android:background">#FFFFFF</item>    
+	    <item name="android:background">@color/general_light_background</item>    
 	    <item name="android:gravity">left</item> 
     
-    	<item name="android:paddingLeft">20dp</item>
+    	<item name="android:paddingLeft">10dp</item>
     	<item name="android:paddingRight">20dp</item>
     	<item name="android:paddingTop">0dp</item>
     	<item name="android:paddingBottom">0dp</item>
@@ -116,10 +164,10 @@
 	<style  name="TrackHeader" parent="android:Theme">
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
-	    <item name="android:background">#CACACA</item>    
+	    <item name="android:background">@color/middle_light_gray</item>    
 	    <item name="android:gravity">left</item> 
     
-    	<item name="android:paddingLeft">20dp</item>
+    	<item name="android:paddingLeft">10dp</item>
     	<item name="android:paddingRight">20dp</item>
     	<item name="android:paddingTop">0dp</item>
     	<item name="android:paddingBottom">0dp</item>
@@ -142,7 +190,7 @@
         <item name="android:layout_alignParentLeft">true</item>
         <item name="android:layout_alignParentTop">true</item>
         
-        <item name="android:textColor">#000000</item>
+        <item name="android:textColor">@color/very_dark_text</item>
         <item name="android:textSize">18sp</item>
         </style>
 		
@@ -156,7 +204,7 @@
     	<item name="android:paddingBottom">0dp</item>
     	
         
-        <item name="android:textColor">#898989</item>
+        <item name="android:textColor">@color/middle_gray</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">bold</item>
     </style>
@@ -164,9 +212,9 @@
 	<style name="GenericTextHeader" parent="android:Theme">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-	    <item name="android:background">#ffffff</item>    
+	    <item name="android:background">@color/general_light_background</item>    
 	    <item name="android:gravity">left</item> 
-        <item name="android:textColor">#1E2C93</item>
+        <item name="android:textColor">@color/colorfulHeaderText</item>
         <item name="android:textSize">17sp</item>
         <item name="android:textStyle">bold</item>
 	    
@@ -175,9 +223,9 @@
 	<style name="GenericAttributeName" parent="android:Theme">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-	    <item name="android:background">#ffffff</item>    
+	    <item name="android:background">@color/general_light_background</item>    
 	    <item name="android:gravity">left</item> 
-        <item name="android:textColor">#444444</item>
+        <item name="android:textColor">@color/dark_gray</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:typeface">monospace</item>
@@ -186,9 +234,9 @@
 	<style name="GenericAttributeVal" parent="android:Theme">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-	    <item name="android:background">#ffffff</item>    
+	    <item name="android:background">@color/general_light_background</item>    
 	    <item name="android:gravity">left</item> 
-        <item name="android:textColor">#000000</item>
+        <item name="android:textColor">@color/very_dark_text</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:typeface">monospace</item>

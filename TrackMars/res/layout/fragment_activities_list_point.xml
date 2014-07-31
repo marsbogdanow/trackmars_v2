@@ -47,31 +47,20 @@
 
         <RelativeLayout
             android:id="@+id/removableTerm"
-            android:layout_width="wrap_content"
-            android:layout_height="4dp"
+            style="@style/TerminatingLineOutBound"
             android:layout_alignLeft="@+id/buttonTrack"
-            android:layout_below="@+id/datesOfTheTrack"
-            android:layout_marginTop="15dp"
-            android:padding="1dp"
-            android:background="#555555" >
+            android:layout_below="@+id/datesOfTheTrack">
 
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_margin="0dp"
-            android:background="#D8D8D8">
+        <RelativeLayout 
+            style="@style/TerminatingLineInnerBound"
+		>
             
         <TextView
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:layout_marginTop="0dp"
-	        android:layout_marginLeft="1dp"
-	        android:layout_marginRight="1dp"
 	        android:text="-"
 	        android:textColor="#D8D8D8"
-	        android:textSize="12sp" 
-			android:singleLine="false"
-	        android:layout_gravity="fill"/>
+	        android:textSize="12sp"/>
         
         </RelativeLayout>
         </RelativeLayout>

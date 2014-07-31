@@ -42,6 +42,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TableLayout;
@@ -504,16 +505,16 @@ public class TrackRecordActivity extends FragmentActivity implements ILocationRe
 				Integer kind = historyItem.COLUMN_KIND;
 			
 				if (kind == null || kind.equals(0)) {
-					((ImageButton)tR.findViewById(R.id.buttonTrack)).setImageBitmap(null);
+					((ImageView)tR.findViewById(R.id.buttonTrack)).setImageBitmap(null);
 				} else {
 					if (kind.equals(RepresentationUtils.KindOfPoint.ATTRACTIVE.val())) {
-						((ImageButton)tR.findViewById(R.id.buttonTrack)).setImageResource(R.drawable.sm_attractive);
+						((ImageView)tR.findViewById(R.id.buttonTrack)).setImageResource(R.drawable.sm_attractive);
 					} else if (kind.equals(RepresentationUtils.KindOfPoint.FOOD.val())) {
-						((ImageButton)tR.findViewById(R.id.buttonTrack)).setImageResource(R.drawable.sm_food);
+						((ImageView)tR.findViewById(R.id.buttonTrack)).setImageResource(R.drawable.sm_food);
 					} else if (kind.equals(RepresentationUtils.KindOfPoint.NIGHT.val())) {
-						((ImageButton)tR.findViewById(R.id.buttonTrack)).setImageResource(R.drawable.sm_night);
+						((ImageView)tR.findViewById(R.id.buttonTrack)).setImageResource(R.drawable.sm_night);
 					} else if (kind.equals(RepresentationUtils.KindOfPoint.NOTE.val())) {
-						((ImageButton)tR.findViewById(R.id.buttonTrack)).setImageResource(R.drawable.sm_note);
+						((ImageView)tR.findViewById(R.id.buttonTrack)).setImageResource(R.drawable.sm_note);
 					}
 				}
 				

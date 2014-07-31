@@ -129,6 +129,8 @@ containing a value of this type.
         public static final int zOrderOnTop=0x7f01000d;
     }
     public static final class color {
+        public static final int colorful=0x7f040010;
+        public static final int colorfulHeaderText=0x7f040011;
         public static final int common_action_bar_splitter=0x7f040009;
         /**  Sign-in Button Colors 
          */
@@ -141,10 +143,13 @@ containing a value of this type.
         public static final int common_signin_btn_light_text_disabled=0x7f040006;
         public static final int common_signin_btn_light_text_focused=0x7f040007;
         public static final int common_signin_btn_light_text_pressed=0x7f040005;
-        public static final int common_signin_btn_text_dark=0x7f04000d;
-        public static final int common_signin_btn_text_light=0x7f04000e;
-        public static final int middle_gray=0x7f04000b;
-        public static final int middle_light_gray=0x7f04000c;
+        public static final int common_signin_btn_text_dark=0x7f040012;
+        public static final int common_signin_btn_text_light=0x7f040013;
+        public static final int dark_gray=0x7f04000d;
+        public static final int general_light_background=0x7f04000b;
+        public static final int middle_gray=0x7f04000e;
+        public static final int middle_light_gray=0x7f04000f;
+        public static final int very_dark_text=0x7f04000c;
         public static final int white=0x7f04000a;
     }
     public static final class dimen {
@@ -485,11 +490,16 @@ containing a value of this type.
  All customizations that are NOT specific to a particular API-level can go here. 
          */
         public static final int AppTheme=0x7f080001;
-        public static final int CustomListViewRow=0x7f080007;
-        public static final int CustomListViewRowHeader=0x7f080008;
-        public static final int DateText=0x7f08000d;
-        public static final int GenericAttributeName=0x7f08000f;
-        public static final int GenericAttributeVal=0x7f080010;
+        public static final int CustomListViewRow=0x7f080008;
+        /** 
+		/////////////////////////////////////////////
+		Стили разных типов строк в кастомном ListView 
+	 
+         */
+        public static final int CustomListViewRowHeader=0x7f080007;
+        public static final int DateText=0x7f080011;
+        public static final int GenericAttributeName=0x7f080013;
+        public static final int GenericAttributeVal=0x7f080014;
         public static final int GenericFullScreenWindow=0x7f080004;
         /**   Стили для рисования окна ожидания 
          */
@@ -498,11 +508,31 @@ containing a value of this type.
         /**  елемент списка 
          */
         public static final int GenericTableRow=0x7f080005;
-        public static final int GenericTextHeader=0x7f08000e;
-        public static final int ListViewHeader=0x7f080009;
-        public static final int TrackHeader=0x7f08000b;
-        public static final int TrackNameText=0x7f08000c;
-        public static final int TrackPoint=0x7f08000a;
+        public static final int GenericTextHeader=0x7f080012;
+        public static final int ListViewHeader=0x7f08000d;
+        public static final int TerminatingLineInnerBound=0x7f08000a;
+        /** 
+		/////////////////////////////////////////////
+	 
+
+		/////////////////////////////////////////////
+		Стили линии разделителя 
+	 
+         */
+        public static final int TerminatingLineOutBound=0x7f080009;
+        public static final int TrackHeader=0x7f08000f;
+        public static final int TrackNameText=0x7f080010;
+        public static final int TrackPoint=0x7f08000e;
+        /** 
+		/////////////////////////////////////////////
+	 
+
+	//////////////////////////////////////////////////
+	Стиль картинки трека сбоку 
+	 
+         */
+        public static final int TrackRepresentation=0x7f08000b;
+        public static final int TrackRepresentationBody=0x7f08000c;
         public static final int myText=0x7f080006;
     }
     public static final class styleable {

@@ -3,7 +3,6 @@
     style="@style/CustomListViewRow" >
 
     <RelativeLayout style="@style/TrackHeader" >
-
     
         <TextView
             android:id="@+id/nameOfTheTrack"
@@ -11,7 +10,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="50dp"
+            android:layout_marginLeft="35dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="6dp"
             android:singleLine="false"
@@ -30,40 +29,25 @@
         
         <ImageView
             android:id="@+id/removableTrackBd1"
-            
-            android:layout_width="wrap_content"
+            style="@style/TrackRepresentation"
             android:layout_height="fill_parent"
-            
-            android:layout_alignParentLeft="true"
             android:layout_alignParentBottom="true"
-            
-            android:layout_marginLeft="10dp"
             android:layout_marginBottom="0dp"
             android:src="@drawable/hist_track_body_mini" />
         
         <ImageView
             android:id="@+id/removableTrackBd2"
-            
-            android:layout_width="wrap_content"
+            style="@style/TrackRepresentation"
             android:layout_height="fill_parent"
-            
-            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            
-            android:layout_marginLeft="10dp"
             android:layout_marginTop="33dp"
             android:src="@drawable/hist_track_body_mini" />
         
         <ImageView
             android:id="@+id/pointOfTheTrack"
-            
-            android:layout_width="wrap_content"
+            style="@style/TrackRepresentation"
             android:layout_height="fill_parent"
-            
-            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            
-            android:layout_marginLeft="10dp"
             android:layout_marginTop="15dp"
             android:src="@drawable/hist_track_point" />
         

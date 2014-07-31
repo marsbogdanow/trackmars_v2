@@ -49,8 +49,17 @@
     <string name="name_the_trip">Name the trip</string>
     
     <color name="white">#FFFFFF</color>
+    <color name="general_light_background">#FFFFFF</color>
+    <color name="very_dark_text">#000000</color>
+    <color name="dark_gray">#444444</color>
     <color name="middle_gray">#848484</color>
 	<color name="middle_light_gray">#c9c9c9</color>
+	<color name="colorful">#F89614</color>
+	<color name="colorfulHeaderText">#1E2C93</color>
+		
+	
+	
+	
     
 	<string name="gps">gps</string>
 	<string name="network">network</string>

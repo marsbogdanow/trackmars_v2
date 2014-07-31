@@ -14,7 +14,7 @@
             android:layout_marginTop="0dp"
             android:layout_marginLeft="0dp"
             android:padding="10dp"
-            android:background="#D8D8D8" >
+            android:background="@color/middle_gray" >
 
             
         <TextView
@@ -24,7 +24,7 @@
 	        android:layout_marginLeft="1dp"
 	        android:layout_marginRight="1dp"
 	        android:text="-"
-	        android:textColor="#D8D8D8"
+	        android:textColor="@color/middle_gray"
 	        android:textSize="1sp" 
 			android:singleLine="false"
 	        android:layout_gravity="fill"/>
