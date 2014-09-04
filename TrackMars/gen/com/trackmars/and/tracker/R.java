@@ -231,8 +231,8 @@ containing a value of this type.
         public static final int track=0x7f020041;
     }
     public static final class id {
-        public static final int SpinnerInterval=0x7f050048;
-        public static final int action_settings=0x7f05004a;
+        public static final int SpinnerInterval=0x7f050049;
+        public static final int action_settings=0x7f05004b;
         public static final int addr2=0x7f050027;
         public static final int addr3=0x7f05002a;
         public static final int addr4=0x7f05002d;
@@ -251,19 +251,19 @@ containing a value of this type.
         public static final int buttonNote=0x7f050033;
         public static final int buttonOk=0x7f050023;
         public static final int buttonPoints=0x7f05000a;
-        public static final int buttonTrack=0x7f05003b;
+        public static final int buttonTrack=0x7f05003c;
         public static final int check1=0x7f050026;
         public static final int check2=0x7f050029;
         public static final int check3=0x7f05002c;
         public static final int check4=0x7f05002f;
         public static final int chooseTheAddress=0x7f050024;
-        public static final int coord=0x7f050044;
-        public static final int datesOfTheTrack=0x7f05003c;
-        public static final int detailsText=0x7f050042;
+        public static final int coord=0x7f050045;
+        public static final int datesOfTheTrack=0x7f05003d;
+        public static final int detailsText=0x7f050043;
         public static final int distTitle=0x7f05001b;
         public static final int distance=0x7f05001c;
         public static final int editText1=0x7f050017;
-        public static final int geocode=0x7f050046;
+        public static final int geocode=0x7f050047;
         public static final int header=0x7f050005;
         public static final int headerIntervalButton=0x7f050009;
         public static final int hybrid=0x7f050004;
@@ -280,32 +280,33 @@ containing a value of this type.
         public static final int loadingPanel=0x7f050012;
         public static final int map=0x7f05000d;
         public static final int map_back=0x7f050021;
+        public static final int moreButton=0x7f05003a;
         public static final int nameOfTheGeo=0x7f050034;
         public static final int nameOfTheMonth=0x7f050039;
-        public static final int nameOfThePoint=0x7f05003a;
-        public static final int nameOfTheTrack=0x7f05003f;
+        public static final int nameOfThePoint=0x7f05003b;
+        public static final int nameOfTheTrack=0x7f050040;
         public static final int nameThePoint=0x7f050018;
         public static final int no_points=0x7f050013;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
-        public static final int pointDate=0x7f050045;
-        public static final int pointOfTheTrack=0x7f05003e;
+        public static final int pointDate=0x7f050046;
+        public static final int pointOfTheTrack=0x7f05003f;
         public static final int pointOfTheTrackBd1=0x7f050036;
         public static final int pointOfTheTrackBd2=0x7f050037;
         public static final int pointOfTheTrackBd3=0x7f050038;
         public static final int removableTerm=0x7f050035;
-        public static final int removableTrackBd1=0x7f050040;
-        public static final int removableTrackBd2=0x7f050041;
-        public static final int removableTrackBody=0x7f05003d;
+        public static final int removableTrackBd1=0x7f050041;
+        public static final int removableTrackBd2=0x7f050042;
+        public static final int removableTrackBody=0x7f05003e;
         public static final int satellite=0x7f050002;
-        public static final int sign=0x7f050043;
+        public static final int sign=0x7f050044;
         public static final int startDate=0x7f050019;
         public static final int startIcon=0x7f050015;
         public static final int terrain=0x7f050003;
         public static final int text=0x7f050014;
-        public static final int textView1=0x7f050047;
+        public static final int textView1=0x7f050048;
         public static final int time=0x7f05001a;
-        public static final int trackDate=0x7f050049;
+        public static final int trackDate=0x7f05004a;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
@@ -319,15 +320,16 @@ containing a value of this type.
         public static final int fragment_activities_list_geo=0x7f030008;
         public static final int fragment_activities_list_geo_of_track=0x7f030009;
         public static final int fragment_activities_list_month=0x7f03000a;
-        public static final int fragment_activities_list_point=0x7f03000b;
-        public static final int fragment_activities_list_point_of_track=0x7f03000c;
-        public static final int fragment_activities_list_track=0x7f03000d;
-        public static final int fragment_header=0x7f03000e;
-        public static final int fragment_test=0x7f03000f;
-        public static final int point_info=0x7f030010;
-        public static final int popup_settings=0x7f030011;
-        public static final int settings=0x7f030012;
-        public static final int track_list_item=0x7f030013;
+        public static final int fragment_activities_list_more=0x7f03000b;
+        public static final int fragment_activities_list_point=0x7f03000c;
+        public static final int fragment_activities_list_point_of_track=0x7f03000d;
+        public static final int fragment_activities_list_track=0x7f03000e;
+        public static final int fragment_header=0x7f03000f;
+        public static final int fragment_test=0x7f030010;
+        public static final int point_info=0x7f030011;
+        public static final int popup_settings=0x7f030012;
+        public static final int settings=0x7f030013;
+        public static final int track_list_item=0x7f030014;
     }
     public static final class menu {
         public static final int dialog_create_point=0x7f090000;
@@ -441,6 +443,7 @@ containing a value of this type.
         public static final int min2_4=0x7f06002f;
         public static final int min5_0=0x7f060030;
         public static final int minute=0x7f060027;
+        public static final int more=0x7f060048;
         public static final int mph=0x7f06003a;
         public static final int name_the_point=0x7f060018;
         public static final int name_the_trip=0x7f060042;

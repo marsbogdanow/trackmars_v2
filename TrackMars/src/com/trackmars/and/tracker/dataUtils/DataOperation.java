@@ -1,5 +1,7 @@
 package com.trackmars.and.tracker.dataUtils;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import android.content.Context;
@@ -73,4 +75,14 @@ public class DataOperation {
 		
 		return track;
 	}
+	
+	static public List<IEntity> getPointsByTrack(Context context, Integer trackId) throws IllegalAccessException, InstantiationException {
+		
+		EntityHelper entityHelper = new EntityHelper(context, Point.class);
+		List<IEntity> points = entityHelper.getAllRowsWhere("COLUMN_ID_TRACK", trackId.toString(), 0, null, null);
+		
+		return points;
+		
+	}
+	
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import ru.elifantiev.android.roboerrorreporter.Logger;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -34,6 +36,7 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 	private final long MAX_SERIA_TIME = 1000 * 60 * 1;
 	private final Integer MAX_SERIA_QUANTITY = 50;
 	private final long MIN_INTERNAL_BETWEEN_POINTS = 10;
+	private final int SPEED_OF_SOUND = 330;
 	
 	private LocationUtils locationUtils;
 	private ManagerBinder binder = new ManagerBinder();
@@ -249,13 +252,12 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		return getAllTrackPoint(null);
 	}
 	
-	public List<TrackPointData> getAllTrackPoint (Integer trackId) throws IllegalAccessException, InstantiationException {
-		EntityHelper entityHelper = new EntityHelper(getApplicationContext(), TrackPoint.class);
+	public static List<TrackPointData> getAllTrackPointByTrack (Integer trackId, Context context) throws IllegalAccessException, InstantiationException {
+		EntityHelper entityHelper = new EntityHelper(context, TrackPoint.class);
 		
 		List<TrackPointData> locations = new ArrayList<TrackPointData>();
 		
-		if (trackId != null || track != null) {
-			for (IEntity trackPoint : entityHelper.getAllRowsWhere("id_track", trackId!=null?trackId.toString():track.ID.toString(), 0, null, "created")) {
+			for (IEntity trackPoint : entityHelper.getAllRowsWhere("id_track", trackId.toString(), 0, null, "created")) {
 				String pointData = ((TrackPoint)trackPoint).POINTS_DATA;
 				
 				List<TrackPointData> datas = new ArrayList<TrackPointData>();
@@ -267,6 +269,18 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 				locations.addAll(datas);
 				
 			}
+
+		return locations;
+	}
+	
+	public List<TrackPointData> getAllTrackPoint (Integer trackId) throws IllegalAccessException, InstantiationException {
+		EntityHelper entityHelper = new EntityHelper(getApplicationContext(), TrackPoint.class);
+		
+		List<TrackPointData> locations;
+		
+		if (trackId != null || track != null) {
+			
+			locations = TrackRecorderService.getAllTrackPointByTrack(trackId!=null?trackId:track.ID, getApplicationContext());
 			
 			if (trackId == null) {
 				
@@ -277,9 +291,12 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 				}
 				
 			}
+			
+			return locations;
 		}
+		
+		return new ArrayList<TrackPointData>(); // ничего не нашли
 
-		return locations;
 	}
 	
 	public Integer startRecord(Boolean resumeLastTrack) throws IllegalAccessException, InstantiationException{
@@ -506,7 +523,21 @@ public class TrackRecorderService extends Service implements ILocationReceiver{
 		Intent intent = new Intent(LocationUtils.LOCATION_RECEIVER_ACTION);
 		sendBroadcast(intent);
 		
-		if (isRecording && 
+		// проверка на резкий возврат в точку, где последний раз видел сеть
+		// попробую делать так: если скорось превышает скорость звука, то не буду ставить точку
+		int instanteSpeed = 0;
+		
+		if (lastSavedLocation != null) {
+			instanteSpeed = (int) (LocationUtils.distFrom(this.location, lastSavedLocation.getLocation())  /
+			(new Date().getTime() - this.lastSavedLocation.getTime()) * 1000);
+		}
+		
+		if (instanteSpeed > 330) {
+			Logger.log("GAP!");
+		}
+		
+		if (	instanteSpeed < SPEED_OF_SOUND &&
+				isRecording && 
 				!isPaused && 
 				(this.lastSavedLocation == null || LocationUtils.isDistantOutOfAccuracy(this.location, this.lastSavedLocation.getLocation()) &&
 				(new Date().getTime() - this.lastSavedLocation.getTime()) > (MIN_INTERNAL_BETWEEN_POINTS * 1000))

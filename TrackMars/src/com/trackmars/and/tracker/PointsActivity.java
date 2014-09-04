@@ -40,7 +40,7 @@ public class PointsActivity extends FragmentActivity {
 	    @Override
 	    protected Void doInBackground(Void... params) {
 	      //TimeUnit.SECONDS.sleep(2);
-		  createList();
+		  createList(0, 15);
 	      return null;
 	    }
 
@@ -51,14 +51,16 @@ public class PointsActivity extends FragmentActivity {
 	    }
 	  }	
 	
-	private void createList() {
+	
+	private Integer firstRow = 0; 
+	private void createList(Integer startRow, Integer count) {
 		
 		EntityHelper entityHelper;
 		try {
 			entityHelper = new EntityHelper(getApplicationContext(), History.class);
 		
 			try {
-				List<IEntity> historyRecords = entityHelper.getAllRows(0, null, "created DESC");
+				List<IEntity> historyRecords = entityHelper.getAllRows(startRow, count, "created DESC");
 
 				
 				/////////////////////
@@ -71,11 +73,13 @@ public class PointsActivity extends FragmentActivity {
 				        
 				        anyItemFound = true;
 			        
+				        firstRow++;
 				}
 				
 		        Message msg = new Message();
 		        msg.obj = Integer.valueOf(0);
 		        handler.sendMessage(msg);
+		        
 				
 			} catch (IllegalArgumentException e) {
 				// TODO Auto-generated catch block
@@ -216,11 +220,19 @@ public class PointsActivity extends FragmentActivity {
 		        
 		        if (!anyItemFound) {
 			        findViewById(R.id.no_points).setVisibility(View.VISIBLE);
-		        } /*else {
-		        	if (histories != null && histories.size() > 0) {
-		        		showUnknownPlaces(tableLayout);
-		        	}
-		        }*/
+		        } else {
+		        	
+		        	TableRow trMoreButton = (TableRow) tableLayout.findViewById(R.id.moreButton);
+		        	
+		        	TableRow tR = (TableRow)LayoutInflater.from(tableLayout.getContext()).inflate(R.layout.fragment_activities_list_more, null);
+					tR.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							PointsActivity.this.createList(PointsActivity.this.firstRow, 15);
+						}
+					});
+			        tableLayout.addView(tR);
+		        }
 		        
 		        return;
 			}

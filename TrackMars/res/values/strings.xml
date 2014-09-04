@@ -56,9 +56,6 @@
 	<color name="middle_light_gray">#c9c9c9</color>
 	<color name="colorful">#F89614</color>
 	<color name="colorfulHeaderText">#1E2C93</color>
-		
-	
-	
 	
     
 	<string name="gps">gps</string>
@@ -66,5 +63,6 @@
 	<string name="unknown_place">Unsorted places</string>
 	<string name="no_places">There are saved neither locations nor travels yet. Start you trip!</string>
 	<string name="new_trip">New trip</string>
-		
+	<string name="more">More</string>
+			
 </resources>

@@ -8,31 +8,150 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
-	<LinearLayout
-	    android:id="@+id/map_back"
-	    android:layout_width="match_parent"
-	    android:layout_height="match_parent"
-	    android:layout_alignParentBottom="true"
-	    android:layout_alignParentTop="true"
-	    android:layout_alignParentLeft="true"
-	    android:layout_alignParentRight="true"
-	    android:layout_marginTop="0dp"
-	    android:layout_marginBottom="110dp"
-	    android:background="@drawable/back">
-    	<fragment
-	    android:id="@+id/map"
-	    android:layout_width="match_parent"
-	    android:layout_height="match_parent"
-	    class="com.google.android.gms.maps.SupportMapFragment" />
-    </LinearLayout>
-    <FrameLayout
-	    android:id="@+id/intoFrame"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_alignParentBottom="true"
-        >
-    </FrameLayout>
+	<ScrollView 
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+	    >
+	    	<TableLayout 
+				    android:layout_width="match_parent"
+				    android:layout_height="wrap_content"
+	    	    >
+		    	<LinearLayout
+				    android:id="@+id/map_back"
+				    android:layout_width="match_parent"
+				    android:layout_height="wrap_content"
+				    android:layout_marginTop="0dp"
+				    android:background="@drawable/back">
+				    
+			    	<fragment
+					    android:id="@+id/map"
+					    android:layout_width="match_parent"
+					    android:layout_height="wrap_content"
+					    class="com.google.android.gms.maps.SupportMapFragment" />
+		    </LinearLayout>
+		    <FrameLayout
+			    android:id="@+id/intoFrame"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+		        >
+		    </FrameLayout>
+
+		    
+	    <TableLayout
+	        android:id="@+id/listTable"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:stretchColumns="1"
+			android:background="#ffffff"
+			android:shrinkColumns="*"
+			android:paddingLeft="20dp" 
+			android:paddingRight="20dp" 
+	        >
+	        
+	        <TableRow style="@style/GenericTableRow">
+	            <RelativeLayout 
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content">
+						                
+	                <TextView 
+	                	android:id="@+id/startDate"
+	                    style="@style/GenericTextHeader"
+    					android:text="111"    
+	                    />
+	                
+	                <TextView 
+	                	android:id="@+id/time"
+	                    style="@style/GenericTextHeader"
+	                    android:layout_below="@+id/startDate"
+    					android:text="111"    
+	                    />
+	            </RelativeLayout>
+	        </TableRow>
+	        
+	        <TableRow style="@style/GenericTableRow">
+	            <RelativeLayout 
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content">
+	                >
+	                
+	                <TextView 
+	                    android:id="@+id/distTitle"
+	                    style="@style/GenericAttributeName"
+	                    android:text="@string/distance"
+	                    />
+	                
+	                <TextView 
+	    	    		android:id="@+id/distance"
+	                    style="@style/GenericAttributeVal"
+	                    android:layout_below="@+id/distTitle"
+	                    android:text="@string/distance"
+	                    />
+	                	                
+	                
+	            </RelativeLayout>
+	        </TableRow>
+	        
+
+	        <TableRow style="@style/GenericTableRow">
+	            <RelativeLayout 
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content">
+	                >
+	                
+	                <TextView 
+	                    android:id="@+id/inMotionTitle"
+	                    style="@style/GenericAttributeName"
+	                    android:text="@string/in_motion"
+	                    />
+	                
+	                <TextView 
+	                    style="@style/GenericAttributeVal"
+	                    android:id="@+id/in_motion"
+	                    android:layout_below="@+id/inMotionTitle"
+	                    android:text="@string/in_motion"
+	                    />
+	                
+	            </RelativeLayout>
+	        </TableRow>
+	        	        
+
+	        <TableRow style="@style/GenericTableRow">
+	            <RelativeLayout 
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content">
+	                >
+	                
+	                <TextView 
+	                    android:id="@+id/avgSpeedTitle"
+	                    style="@style/GenericAttributeName"
+	                    android:text="@string/avg_speed"
+	                    />
+	                
+	                <TextView 
+	                    style="@style/GenericAttributeVal"
+	                    android:id="@+id/avg_speed"
+	                    android:layout_below="@+id/avgSpeedTitle"
+	                    android:text="@string/avg_speed"
+	                    />
+	                
+	            </RelativeLayout>
+	        </TableRow>
+	        	        
+	        	        	        
+	        	        
+	    </TableLayout>
+		    		    
+		    
+		    
+		    
+	</TableLayout>
     
+	</ScrollView>
+	
 	<RelativeLayout
 	    style="@style/GenericProgressBackground"
 	    android:id="@+id/loadingPanel">

@@ -28,6 +28,7 @@ import android.test.suitebuilder.annotation.LargeTest;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.trackmars.and.tracker.dataUtils.EntityHelper;
 import com.trackmars.and.tracker.dataUtils.IEntity;
+import com.trackmars.and.tracker.dataUtils.XMLFile;
 import com.trackmars.and.tracker.model.Point;
 import com.trackmars.and.tracker.model.Track;
 import com.trackmars.and.tracker.model.TrackPointData;
@@ -283,6 +284,24 @@ public class TrackViewActivity extends FragmentActivity {
 			}
 	    	
 	        findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+	        
+	        XMLFile xmlFile = new XMLFile(TrackViewActivity.this.getApplicationContext());	  
+	        try {
+				xmlFile.addTrack(track);
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        
+			try {
+				xmlFile.serialize(null);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	    	
 	    	
 		}
