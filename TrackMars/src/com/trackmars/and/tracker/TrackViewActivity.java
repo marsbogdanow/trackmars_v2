@@ -20,12 +20,15 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.test.suitebuilder.annotation.LargeTest;
+import android.text.Html;
 
 import com.google.android.gms.maps.SupportMapFragment;
+import com.trackmars.and.tracker.dataUtils.DateUtils;
 import com.trackmars.and.tracker.dataUtils.EntityHelper;
 import com.trackmars.and.tracker.dataUtils.IEntity;
 import com.trackmars.and.tracker.dataUtils.XMLFile;
@@ -38,8 +41,14 @@ import com.trackmars.and.tracker.utils.RepresentationUtils;
 
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import java.util.Date;
 import java.util.List;
 
 public class TrackViewActivity extends FragmentActivity {
@@ -79,6 +88,8 @@ public class TrackViewActivity extends FragmentActivity {
 	  }	
 	
 	
+	SupportMapFragment mapFragment;
+	
     @SuppressLint("NewApi")
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,11 +106,13 @@ public class TrackViewActivity extends FragmentActivity {
 		title = extras.getString("title");
 
         try {
-	        map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
-	                .getMap();
+        	mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+	        map = mapFragment.getMap();
+	        
         } finally {}
         
-        //FrameLayout frameLayout = (FrameLayout) findViewById(R.id.intoFrame);
+        
+        
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
         ListTracksItemTrack listTracksItemTrack = new ListTracksItemTrack();
@@ -140,7 +153,7 @@ public class TrackViewActivity extends FragmentActivity {
     		this.shapeRectangle = getRectangle(track);
     		
 			List<TrackPointData> latLngs = trackRecorderService.getAllTrackPoint(id);
-			
+
 			EntityHelper entityHelperPoint = new EntityHelper(getApplicationContext(), Point.class);
 			List<IEntity> points = entityHelperPoint.getAllRowsWhere("COLUMN_ID_TRACK", track.ID.toString(), 0, null, null);
 			
@@ -186,6 +199,8 @@ public class TrackViewActivity extends FragmentActivity {
 			
 			if (map != null) {
 			
+	    		Toast.makeText(TrackViewActivity.this, "Start thread...", Toast.LENGTH_LONG).show();
+	    		
 				final TrackWithPoinsToShow trackWithPoinsToShow = (TrackWithPoinsToShow) msg.obj;
 				final List<TrackPointData> latLngs = trackWithPoinsToShow.getTrackPoints();
 				final List<IEntity> points = trackWithPoinsToShow.getPoints();
@@ -201,6 +216,9 @@ public class TrackViewActivity extends FragmentActivity {
 		    	
 		    	boolean startOfTrck = true;
 		    	boolean startOfSeg = false;
+		    	
+
+	    		Toast.makeText(TrackViewActivity.this, "Start for...", Toast.LENGTH_LONG).show();
 		    	
 		    	for (TrackPointData latLng : latLngs) {
 		    		
@@ -247,6 +265,9 @@ public class TrackViewActivity extends FragmentActivity {
 		    		
 		    	}
 	
+	    		Toast.makeText(TrackViewActivity.this, "End for...", Toast.LENGTH_LONG).show();
+		    	
+		    	
 		    	if (map != null) {
 			    	map.addPolyline(polylineOptions);
 		    	}
@@ -274,8 +295,6 @@ public class TrackViewActivity extends FragmentActivity {
 		    		zoom = 16;
 		    	}
 		    	
-		    	
-		    	
 		    	if (map != null && track != null && track.TOP != null && track.BOTTOM != null && track.LEFT != null && track.RIGHT != null) {
 		        	LatLng myCurrentPosition = new LatLng((track.TOP + track.BOTTOM) / 2, (track.LEFT + track.RIGHT) / 2); 
 		            map.moveCamera(CameraUpdateFactory.newLatLngZoom(myCurrentPosition, zoom));
@@ -283,8 +302,56 @@ public class TrackViewActivity extends FragmentActivity {
 	    	
 			}
 	    	
+	        // заполним детали трека
+	        final Long travelTime = track.TRAVEL_TIME;
+	        final Double distance = track.DISTANCE;
+	        
+	        final Long totalTime = track.FINISHED != null?(track.FINISHED - track.CREATED):
+	        	new Date().getTime() - track.CREATED;
+	        
+	        Resources res = getResources();
+	        
+	        if (track.CREATED != null) {
+		        
+		        ((TextView)findViewById(R.id.startDate)).setText(DateUtils.getDateVisualRepresentaion(track.CREATED, TrackViewActivity.this));
+		        
+		        ((TextView)findViewById(R.id.time)).setText(Html.fromHtml(
+		        		RepresentationUtils.getDurationHTMLView(totalTime, res)
+		        ));
+	        
+	        }
+	        
+	        if (travelTime != null) {
+	        	
+		        ((TextView)findViewById(R.id.in_motion)).setText(Html.fromHtml(
+		        		RepresentationUtils.getDurationHTMLView(travelTime, res)
+		        ));
+	        
+	        }
+	        
+	        if (distance != null) {
+		        
+		        ((TextView)findViewById(R.id.distance)).setText(Html.fromHtml(
+		        		RepresentationUtils.getDistanceHTMLView(distance, res)
+		        ));
+	        
+	        }
+	        
+	        ((TextView)findViewById(R.id.avg_speed)).setText(Html.fromHtml(
+	        		RepresentationUtils.getSpeedHTMLView(distance, travelTime, res)
+	        ));
+			
+			// Установим размер карты
 	        findViewById(R.id.loadingPanel).setVisibility(View.GONE);
 	        
+	        ViewGroup.LayoutParams params = mapFragment.getView().getLayoutParams();
+	        params.height = (int)(TrackViewActivity.this.getWindow().getDecorView().getHeight() / 100 * 30);
+	        mapFragment.getView().setLayoutParams(params);
+			
+	        
+	        // выгрузка .gpx файла на карту памяти
+	        // временный код
+	        /*
 	        XMLFile xmlFile = new XMLFile(TrackViewActivity.this.getApplicationContext());	  
 	        try {
 				xmlFile.addTrack(track);
@@ -302,11 +369,11 @@ public class TrackViewActivity extends FragmentActivity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			*/
 	    	
 	    	
 		}
 	};		
-    
     
     @Override
     protected void onResume() {
@@ -317,8 +384,28 @@ public class TrackViewActivity extends FragmentActivity {
     	
     }
     
+    boolean expanded = false;
+    
 	public void onClick(View view) {
- 	}
+		if (view.getId() == R.id.expandMap) {
+			
+	        ViewGroup.LayoutParams params = mapFragment.getView().getLayoutParams();
+	        
+			ImageButton antennaIndicator = (ImageButton) this.findViewById(R.id.expandMap);
+			
+			if (!expanded) {
+		        params.height = (int)(TrackViewActivity.this.getWindow().getDecorView().getHeight() / 100 * 90);
+	        	antennaIndicator.setImageResource(R.drawable.collapce);
+			} else {
+		        params.height = (int)(TrackViewActivity.this.getWindow().getDecorView().getHeight() / 100 * 30);
+	        	antennaIndicator.setImageResource(R.drawable.expand);
+			}
+			
+			expanded = !expanded;
+			
+	        mapFragment.getView().setLayoutParams(params);
+		}
+	}
 
 	
 }

@@ -8,19 +8,15 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
-	<ScrollView 
+	<TableLayout 
         android:layout_alignParentTop="true"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="0dp"
         android:layout_marginRight="0dp"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-	    >
-	    	<TableLayout 
-				    android:layout_width="match_parent"
-				    android:layout_height="wrap_content"
-	    	    >
-		    	<LinearLayout
+        android:layout_height="wrap_content">
+				    
+		    <RelativeLayout
 				    android:id="@+id/map_back"
 				    android:layout_width="match_parent"
 				    android:layout_height="wrap_content"
@@ -31,8 +27,23 @@
 					    android:id="@+id/map"
 					    android:layout_width="match_parent"
 					    android:layout_height="wrap_content"
+					    android:onClick="onClick"
 					    class="com.google.android.gms.maps.SupportMapFragment" />
-		    </LinearLayout>
+			    	
+		    <ImageButton
+		        android:id="@+id/expandMap"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentLeft="true"
+		        android:layout_alignParentTop="true"
+		        android:layout_marginLeft="10dp"
+		        android:layout_marginTop="10dp"
+		        android:onClick="onClick"
+		        android:background="@null"
+		        android:src="@drawable/expand" />
+			    	
+			</RelativeLayout>
+		    
 		    <FrameLayout
 			    android:id="@+id/intoFrame"
 			    android:layout_width="match_parent"
@@ -40,7 +51,14 @@
 		        >
 		    </FrameLayout>
 
-		    
+	<ScrollView 
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+		    		    
 	    <TableLayout
 	        android:id="@+id/listTable"
 	        android:layout_width="fill_parent"
@@ -140,17 +158,13 @@
 	                
 	            </RelativeLayout>
 	        </TableRow>
-	        	        
-	        	        	        
-	        	        
 	    </TableLayout>
-		    		    
-		    
-		    
-		    
-	</TableLayout>
+	    
+	    </ScrollView>
+	    
+	    
     
-	</ScrollView>
+	</TableLayout>
 	
 	<RelativeLayout
 	    style="@style/GenericProgressBackground"

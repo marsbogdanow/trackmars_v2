@@ -5,10 +5,13 @@ import java.util.List;
 import java.util.Locale;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
+import android.text.Html;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -16,6 +19,7 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.trackmars.and.tracker.R;
+import com.trackmars.and.tracker.dataUtils.DateUtils;
 import com.trackmars.and.tracker.model.Point;
 
 public class RepresentationUtils {
@@ -167,6 +171,86 @@ public class RepresentationUtils {
 		
 		
 		return string;
+	}
+	
+	public static String getDistanceHTMLView(Double distance, Resources res) {
+		
+        final Integer km = (int) (distance / 1000);
+        final Integer meter = (int)(distance - km * 1000);
+        
+        
+        String fieldText = "<big><big><b>" + km.toString() + "</b></big></big>";
+        fieldText += "<small>" + res.getString(R.string.kilometer) + ", </small>";
+        fieldText += "  <big><big><b>" + meter.toString() + "</b></big></big>";
+        fieldText += "<small>" + res.getString(R.string.meter) + "</small>";
+        
+        return fieldText;
+        
+	}
+	
+	public static String getSpeedHTMLView(Double distance, Long msDuration, Resources res ) {
+		
+        String fieldText = new String();
+		
+		if (distance != null && msDuration != null && msDuration != 0l && distance != 0d) {
+			
+        	Integer speed = (int)  (distance / (double)msDuration / 1000d * (double)DateUtils.MILLISECONDS_IN_HOUR); 
+
+	        fieldText = "<big><big><b>" + speed.toString() + "</b></big></big>";
+	        fieldText += "<small>" + res.getString(R.string.kmph) + ", </small>";
+        
+        } else {
+        	
+	        fieldText = "<big><big><b> --</b></big></big>";
+	        fieldText += "<small>" + res.getString(R.string.kmph) + ", </small>";
+        	
+        }
+        
+        return fieldText;
+		
+	}
+	
+	public static String getDurationHTMLView (Long msDuration, Resources res) {
+        Integer hours = (int) (msDuration / DateUtils.MILLISECONDS_IN_HOUR);
+        final Integer minutes = (int)((msDuration - hours * DateUtils.MILLISECONDS_IN_HOUR) / DateUtils.MILLISECONDS_IN_MINUTE);
+        
+        String fieldText = new String();
+        
+        if (hours > 23) {
+        	int dayCount = (int) Math.floor(hours / 24);
+        	int dayCountType = dayCount;
+        	String dayWord = new String();
+        	
+        	if (dayCount > 10) {
+        		dayCountType = dayCount % 10;
+        	}
+        	
+        	if (dayCountType == 1) {
+        		dayWord = res.getString(R.string.day1);
+        	} else if (dayCountType > 1 && dayCountType < 5) {
+        		dayWord = res.getString(R.string.day2_4);
+        	} else {
+        		dayWord = res.getString(R.string.day5_0);
+        	}
+        	
+        	hours = hours % 24;
+        	
+        	
+        	fieldText = "<big><big><b>" + String.valueOf(dayCount) + "</b></big></big>";
+        	fieldText += "<small>" + dayWord + ":</small>";
+        	fieldText += "<big><big><b>" + hours.toString() + "</b></big></big>";
+        	fieldText += "<small>" + res.getString(R.string.hour) + ":</small>";
+        	fieldText += "  <big><big><b>" + minutes.toString() + "</b></big></big>";
+        	fieldText += "<small>" + res.getString(R.string.minute) + "</small>";
+        } else {
+        	fieldText = "<big><big><b>" + hours.toString() + "</b></big></big>";
+        	fieldText += "<small>" + res.getString(R.string.hour) + ":</small>";
+        	fieldText += "  <big><big><b>" + minutes.toString() + "</b></big></big>";
+        	fieldText += "<small>" + res.getString(R.string.minute) + "</small>";
+        }
+        
+        return fieldText;
+		
 	}
 	
 }

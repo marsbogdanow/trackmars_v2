@@ -212,97 +212,35 @@ public class TrackRecordActivity extends FragmentActivity implements ILocationRe
         Resources res = getResources();
         
         if (this.trackRecorderService.getTrackCreatedTime() != null) {
-        	
-	        Integer hours = (int) (totalTime / DateUtils.MILLISECONDS_IN_HOUR);
-	        final Integer minutes = (int)((totalTime - hours * DateUtils.MILLISECONDS_IN_HOUR) / DateUtils.MILLISECONDS_IN_MINUTE);
-	        
-	        String fieldText = new String();
-	        
-	        if (hours > 23) {
-	        	int dayCount = (int) Math.floor(hours / 24);
-	        	int dayCountType = dayCount;
-	        	String dayWord = new String();
-	        	
-	        	if (dayCount > 10) {
-	        		dayCountType = dayCount % 10;
-	        	}
-	        	
-	        	if (dayCountType == 1) {
-	        		dayWord = res.getString(R.string.day1);
-	        	} else if (dayCountType > 1 && dayCountType < 5) {
-	        		dayWord = res.getString(R.string.day2_4);
-	        	} else {
-	        		dayWord = res.getString(R.string.day5_0);
-	        	}
-	        	
-	        	hours = hours % 24;
-	        	
-	        	
-	        	fieldText = "<big><big><b>" + String.valueOf(dayCount) + "</b></big></big>";
-	        	fieldText += "<small>" + dayWord + ":</small>";
-	        	fieldText += "<big><big><b>" + hours.toString() + "</b></big></big>";
-	        	fieldText += "<small>" + res.getString(R.string.hour) + ":</small>";
-	        	fieldText += "  <big><big><b>" + minutes.toString() + "</b></big></big>";
-	        	fieldText += "<small>" + res.getString(R.string.minute) + "</small>";
-	        } else {
-	        	fieldText = "<big><big><b>" + hours.toString() + "</b></big></big>";
-	        	fieldText += "<small>" + res.getString(R.string.hour) + ":</small>";
-	        	fieldText += "  <big><big><b>" + minutes.toString() + "</b></big></big>";
-	        	fieldText += "<small>" + res.getString(R.string.minute) + "</small>";
-	        }
 	        
 	        ((TextView)findViewById(R.id.startDate)).setText(DateUtils.getDateVisualRepresentaion(this.trackRecorderService.getTrackCreatedTime(), this));
-	        ((TextView)findViewById(R.id.time)).setText(Html.fromHtml(fieldText));
+	        
+	        ((TextView)findViewById(R.id.time)).setText(Html.fromHtml(
+	        		RepresentationUtils.getDurationHTMLView(totalTime, res)
+	        ));
         
         }
-
         
         if (travelTime != null) {
         	
-	        final Integer hours = (int) (travelTime / DateUtils.MILLISECONDS_IN_HOUR);
-	        final Integer minutes = (int)((travelTime - hours * DateUtils.MILLISECONDS_IN_HOUR) / DateUtils.MILLISECONDS_IN_MINUTE);
-	        
-	        String fieldText = "<big><big><b>" + hours.toString() + "</b></big></big>";
-	        fieldText += "<small>" + res.getString(R.string.hour) + ":</small>";
-	        fieldText += "  <big><big><b>" + minutes.toString() + "</b></big></big>";
-	        fieldText += "<small>" + res.getString(R.string.minute) + "</small>";
-	        
-	        ((TextView)findViewById(R.id.in_motion)).setText(Html.fromHtml(fieldText));
+	        ((TextView)findViewById(R.id.in_motion)).setText(Html.fromHtml(
+	        		RepresentationUtils.getDurationHTMLView(travelTime, res)
+	        ));
         
         }
         
         if (distance != null) {
-        	
-	        final Integer km = (int) (distance / 1000);
-	        final Integer meter = (int)(distance - km * 1000);
 	        
-	        
-	        String fieldText = "<big><big><b>" + km.toString() + "</b></big></big>";
-	        fieldText += "<small>" + res.getString(R.string.kilometer) + ", </small>";
-	        fieldText += "  <big><big><b>" + meter.toString() + "</b></big></big>";
-	        fieldText += "<small>" + res.getString(R.string.meter) + "</small>";
-	        
-	        ((TextView)findViewById(R.id.distance)).setText(Html.fromHtml(fieldText));
+	        ((TextView)findViewById(R.id.distance)).setText(Html.fromHtml(
+	        		RepresentationUtils.getDistanceHTMLView(distance, res)
+	        ));
         
         }
         
-        if (distance != null && travelTime != null && travelTime != 0l && distance != 0d) {
-        	Integer speed = (int)  (distance / (double)travelTime / 1000d * (double)DateUtils.MILLISECONDS_IN_HOUR); 
+        ((TextView)findViewById(R.id.avg_speed)).setText(Html.fromHtml(
+        		RepresentationUtils.getSpeedHTMLView(distance, travelTime, res)
+        ));
 
-	        String fieldText = "<big><big><b>" + speed.toString() + "</b></big></big>";
-	        fieldText += "<small>" + res.getString(R.string.kmph) + ", </small>";
-	        
-	        ((TextView)findViewById(R.id.avg_speed)).setText(Html.fromHtml(fieldText));
-        
-        
-        } else {
-        	
-	        String fieldText = "<big><big><b> --</b></big></big>";
-	        fieldText += "<small>" + res.getString(R.string.kmph) + ", </small>";
-	        
-	        ((TextView)findViewById(R.id.avg_speed)).setText(Html.fromHtml(fieldText));
-        	
-        }
         
         buttonsArrange();
         

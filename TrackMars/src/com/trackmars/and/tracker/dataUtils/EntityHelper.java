@@ -20,7 +20,7 @@ import com.trackmars.and.tracker.model.TrackPoint;
 public class EntityHelper extends SQLiteOpenHelper {
 	
 	static final private String DATABASE_NAME = "trackmars.db";
-	static final private Integer DATABASE_VERSION = 27;
+	static final private Integer DATABASE_VERSION = 29;
 	
 	private Class entityClass; 
 	//private Context context;
@@ -612,7 +612,11 @@ public class EntityHelper extends SQLiteOpenHelper {
 
 			}
 
-    	
+			if (n == 29) {
+				String sqlS = "CREATE INDEX IF NOT EXISTS IDXPoint_id_track ON Point (column_id_track)";
+				db.execSQL(sqlS);
+			}
+			
     	}
 	}
 	
